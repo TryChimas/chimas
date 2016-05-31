@@ -1,3 +1,10 @@
+# insert the embedded modules so that the upstream doesn't break Chimas
+#from sys.path import insert
+import sys
+sys.path.insert(1, sys.path[0]+'/inc/')
+
+print(sys.path)
+
 from eve import Eve
 
 from eve_sqlalchemy import SQL
