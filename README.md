@@ -1,3 +1,5 @@
+This `chimas-EX` is the old Chimas repository which will be used later to be the repository for the Python Package wrapper.
+
 # CHIMAS BBS API
 
 This project has in mind to develop a modularized, extensible and easily maintainable API-based forum, so that it can be used with standalone clients for example: command line interface, tui, telnet and web.
