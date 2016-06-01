@@ -2,7 +2,7 @@ from core import Boards, Posts, Users
 
 from flask import current_app as app
 
-from os.path import abspath
+from os.path import abspath, join
 
 basedir = abspath(".") # FIXME: this gets parent directory from 'etc/'
 
