@@ -1,0 +1,39 @@
+[submodule "vendor/eve"]
+	path = vendor/eve
+	url = https://github.com/TryChimas/eve.git
+[submodule "vendor/flask"]
+	path = vendor/flask
+	url = https://github.com/TryChimas/flask.git
+[submodule "vendor/simplejson"]
+	path = vendor/simplejson
+	url = https://github.com/TryChimas/simplejson.git
+[submodule "vendor/jinja"]
+	path = vendor/jinja
+	url = https://github.com/TryChimas/jinja.git
+[submodule "vendor/werkzeug"]
+	path = vendor/werkzeug
+	url = https://github.com/TryChimas/werkzeug.git
+[submodule "vendor/cerberus"]
+	path = vendor/cerberus
+	url = https://github.com/TryChimas/cerberus.git
+[submodule "vendor/mongo-python-driver"]
+	path = vendor/mongo-python-driver
+	url = https://github.com/TryChimas/mongo-python-driver.git
+[submodule "vendor/eve-sqlalchemy"]
+	path = vendor/eve-sqlalchemy
+	url = https://github.com/TryChimas/eve-sqlalchemy.git
+[submodule "vendor/flask-pymongo"]
+	path = vendor/flask-pymongo
+	url = https://github.com/TryChimas/flask-pymongo.git
+[submodule "vendor/markupsafe"]
+	path = vendor/markupsafe
+	url = https://github.com/TryChimas/markupsafe.git
+[submodule "vendor/itsdangerous"]
+	path = vendor/itsdangerous
+	url = https://github.com/TryChimas/itsdangerous.git
+[submodule "vendor/events"]
+	path = vendor/events
+	url = https://github.com/TryChimas/events.git
+[submodule "vendor/click"]
+	path = vendor/click
+	url = https://github.com/TryChimas/click.git

@@ -1,0 +1,4 @@
+include CHANGES LICENSE tests.py tox.ini
+graft docs
+prune docs/_build
+recursive-exclude docs/_themes *.pyc .git*
