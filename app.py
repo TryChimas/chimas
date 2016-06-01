@@ -3,7 +3,7 @@
 import sys
 sys.path.insert(1, sys.path[0]+'/inc/')
 
-print(sys.path)
+#print(sys.path)
 
 from eve import Eve
 

@@ -1,6 +1,6 @@
 import sys
 
-print("hey buddy, i'm inside module's __init__() and sys.path[0] is ''{0}''".format(sys.path[0]))
+#print("hey buddy, i'm inside module's __init__() and sys.path[0] is ''{0}''".format(sys.path[0]))
 
 from sqlalchemy.ext.declarative import declarative_base
 from eve_sqlalchemy.decorators import registerSchema
