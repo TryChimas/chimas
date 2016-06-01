@@ -5,7 +5,7 @@ users_schema = {
     'allowed_roles': [], #FIXME!!
     'allowed_write_roles': ['public'],
     'allowed_item_read_roles': ['admin', 'owner'],
-    'allowed_item_roles': ['admin', 'owner']
+    'allowed_item_roles': ['admin', 'owner'],
     'allowed_item_write_roles': ['admin', 'owner'],
     'datasource': {
         'projection': {
@@ -23,7 +23,7 @@ users_schema = {
     'id_field': 'login',
     'item_lookup': True,
     'item_lookup_field': 'login',
-    'item_methods': ['GET', 'HEAD', 'PATCH', 'DELETE'],
+    'item_methods': ['GET', 'PATCH', 'DELETE'],
     'item_url': 'regex("[0-9]+")',
     'resource_methods': ['POST'],
     'schema': {
