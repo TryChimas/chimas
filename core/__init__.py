@@ -1,6 +1,11 @@
 import sys
 
-#print("hey buddy, i'm inside module's __init__() and sys.path[0] is ''{0}''".format(sys.path[0]))
+ROOT_PATH = sys.path[0]
+INCLUDE_PATH = ROOT_PATH + "/inc/"
+ETC_PATH = ROOT_PATH + "/etc/"
+
+#from eve.utils import config as EVE_CONFIG # FIXME
+#EVE_CONFIG.ID_FIELD = 'id'
 
 from sqlalchemy.ext.declarative import declarative_base
 from eve_sqlalchemy.decorators import registerSchema
@@ -18,9 +23,7 @@ from .schemas.boards import boards_schema
 from .schemas.posts import posts_schema
 from .schemas.users import users_schema
 
-from eve.utils import config # FIXME
-config.ID_FIELD = 'id'
-#config.LAST_UPDATED = 'updated'
+
 
 from flask import current_app as app
 from flask import abort

@@ -1,5 +1,3 @@
-# insert the embedded modules so that the upstream doesn't break Chimas
-#from sys.path import insert
 import sys
 sys.path.insert(1, sys.path[0]+'/inc/')
 
@@ -16,15 +14,8 @@ from core import Base as Base
 from core import CommonTable
 from core import Users, Boards, Posts
 
-
 app = Eve(settings='etc/eve-settings.py', auth=ChimasAuth, validator=ValidatorSQL, data=SQL)
-
-#print("app.root_path: {0}\n".format(app.instance_path))
-
-#db = app.data.driver
-#Base.metadata.bind = db.engine
-#db.Model = Base
-#db.create_all()
+print(app.config)
 
 Base.metadata.bind = app.data.driver.engine
 app.data.driver.Model = Base
