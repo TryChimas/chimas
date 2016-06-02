@@ -1,8 +1,10 @@
 import sys
 
-ROOT_PATH = sys.path[0]
-INCLUDE_PATH = ROOT_PATH + "/inc/"
-ETC_PATH = ROOT_PATH + "/etc/"
+# all our _PATH globals should end with '/', our _FILEPATH(s) should not
+
+ROOT_PATH = sys.path[0] + "/"
+INCLUDE_PATH = ROOT_PATH + "inc/"
+ETC_PATH = ROOT_PATH + "etc/"
 
 #from eve.utils import config as EVE_CONFIG # FIXME
 #EVE_CONFIG.ID_FIELD = 'id'
@@ -22,8 +24,6 @@ from sqlalchemy import func
 from .schemas.boards import boards_schema
 from .schemas.posts import posts_schema
 from .schemas.users import users_schema
-
-
 
 from flask import current_app as app
 from flask import abort
@@ -96,17 +96,6 @@ class Users(CommonTable):
     login = Column(String, primary_key=True, unique=True)
     email = Column(String, unique=True)
     password = Column(String)
-
-#    def pre_get(res,req,lookup):
-#        print("res: {0} - req: {1} - lookup: {2}\n".format(res,req,lookup))
-
-#    def pre_post(res,req,lookup):
-#        print("We're inside the pre_post method. And trying to abort(301)")
-#        abort(301)
-
-#    def post_post(res,req,payload):
-#        print("We're inside the post_post method.")
-#        print(payload)
 
 class Roles(CommonTable):
     __tablename__ = 'roles'
