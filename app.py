@@ -11,13 +11,13 @@ from eve_sqlalchemy.validation import ValidatorSQL
 from core.auth import ChimasAuth
 from core import Base as Base
 
-#from core import CommonTable
+from core import CommonTable
 #from core import Users, Boards, Posts
 
 app = Eve(settings='etc/eve-settings.py', auth=ChimasAuth, validator=ValidatorSQL, data=SQL)
 #print(app.config)
-#import pprint
-#pprint.pprint(app.config, width=1)
+import pprint
+pprint.pprint(app.config, width=1)
 
 Base.metadata.bind = app.data.driver.engine
 app.data.driver.Model = Base

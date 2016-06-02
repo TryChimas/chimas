@@ -1,3 +1,6 @@
+from core import DOMAIN
+from core import SQLALCHEMY_DATABASE_URI
+
 # -*- coding: utf-8 -*-
 
 """

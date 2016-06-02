@@ -2,7 +2,7 @@ import toml
 
 from core import ROOT_PATH, ETC_PATH
 
-import argparse
+#import argparse
 
 DEFAULT_CONFIG_FILEPATH = ETC_PATH + "/chimas-default.conf"
 USER_CONFIG_FILEPATH = ROOT_PATH + "/chimas.conf"
@@ -16,6 +16,13 @@ with open(USER_CONFIG_FILEPATH) as user_config_file:
 chimas_config = default_config
 chimas_config.update(user_config)
 
-#class ConfigParser:
-#    def __init__(self, config_file = USER_CONFIG_FILE):
-#        pass
+class ConfigParser:
+    def __init__(self, config=user_config):
+
+
+        pass
+
+class TranslateConfig:
+
+    def servername(listen,port):
+        return listen:port
