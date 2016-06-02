@@ -129,3 +129,11 @@ registerSchema('users')(Users)
 Boards._eve_schema['boards'].update(boards_schema)
 Posts._eve_schema['posts'].update(posts_schema)
 Users._eve_schema['users'].update(users_schema)
+
+DOMAIN = {
+    'boards' : Boards._eve_schema['boards'],
+    'posts'  : Posts._eve_schema['posts'],
+    'users'  : Users._eve_schema['users'],
+}
+
+SQLALCHEMY_DATABASE_URI = "sqlite:///{0}dummy.sqlite3-autocreate".format(ROOT_PATH)

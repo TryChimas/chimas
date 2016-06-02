@@ -11,11 +11,13 @@ from eve_sqlalchemy.validation import ValidatorSQL
 from core.auth import ChimasAuth
 from core import Base as Base
 
-from core import CommonTable
-from core import Users, Boards, Posts
+#from core import CommonTable
+#from core import Users, Boards, Posts
 
 app = Eve(settings='etc/eve-settings.py', auth=ChimasAuth, validator=ValidatorSQL, data=SQL)
-print(app.config)
+#print(app.config)
+#import pprint
+#pprint.pprint(app.config, width=1)
 
 Base.metadata.bind = app.data.driver.engine
 app.data.driver.Model = Base
@@ -34,6 +36,5 @@ for each_method in methods_list:
     setattr(app, 'on_post_{0}'.format(each_method), CommonTable.do_post_method)
 
 if __name__ == "__main__":
-
 
     app.run();
