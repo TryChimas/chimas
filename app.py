@@ -14,10 +14,14 @@ from core import Base as Base
 from core import CommonTable
 #from core import Users, Boards, Posts
 
+from core.config import ConfigParser
+
 app = Eve(settings='etc/eve-settings.py', auth=ChimasAuth, validator=ValidatorSQL, data=SQL)
+ConfigParser(app)
+
 #print(app.config)
-import pprint
-pprint.pprint(app.config, width=1)
+#import pprint
+#pprint.pprint(app.config, width=1)
 
 Base.metadata.bind = app.data.driver.engine
 app.data.driver.Model = Base
