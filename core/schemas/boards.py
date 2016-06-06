@@ -2,7 +2,7 @@ from sqlalchemy import func
 
 boards_schema = {
     'allowed_read_roles': ['public'],
-    'allowed_roles': [], #FIXME!!
+    'allowed_roles': ['public'], #FIXME!!
     'allowed_write_roles': ['admin'],
     'allowed_item_read_roles': ['public'],
     'allowed_item_roles': [],
@@ -13,12 +13,13 @@ boards_schema = {
             'deleted': 1,
             'description': 1,
             'etag': 1,
-            'id': 1,
+#            'id': 1,
             'title': 1,
             'updated': 1
         },
         'source': 'Boards'
     },
+    'id_field': 'title',
     'item_lookup': True,
     'item_lookup_field': 'id',
     'item_url': 'regex("[0-9]+")',
@@ -51,11 +52,11 @@ boards_schema = {
             'type': 'string',
             'unique': False
          },
-        'id': {
-            'required': False,
-            'type': 'integer',
-            'unique': True
-        },
+#        'id': {
+#            'required': False,
+#            'type': 'integer',
+#            'unique': True
+#        },
         'title': {
             'nullable': True,
             'required': False,

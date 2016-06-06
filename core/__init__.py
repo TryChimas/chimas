@@ -6,9 +6,6 @@ ROOT_PATH = sys.path[0] + "/"
 INCLUDE_PATH = ROOT_PATH + "inc/"
 ETC_PATH = ROOT_PATH + "etc/"
 
-#from eve.utils import config as EVE_CONFIG # FIXME
-#EVE_CONFIG.ID_FIELD = 'id'
-
 from sqlalchemy.ext.declarative import declarative_base
 from eve_sqlalchemy.decorators import registerSchema
 

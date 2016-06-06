@@ -1,7 +1,7 @@
 import requests
 from requests.auth import HTTPBasicAuth
 
-host = "http://127.0.0.1:5000"
+host = "http://127.0.0.1:41345"
 authdata = ("admin","abc123")
 
 users = [
@@ -13,7 +13,7 @@ users = [
         ]
 
 boards = [
-        {'title':'first board','description':'This is our first board'},
+        {'title':'first_board','description':'This is our first board'},
         {'title':'second board','description':'Yet another board'},
         {'title':'third board','description':'Third board here.'},
         {'title':'another board','description':'Yet still another board.'},

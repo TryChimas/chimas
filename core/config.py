@@ -21,16 +21,16 @@ class ConfigParser:
 
     def __init__(self, app):
 
-        #print("Opening default config...")
+        print("Opening default config file: {0}".format(DEFAULT_CONFIG_FILEPATH))
         with open(DEFAULT_CONFIG_FILEPATH) as default_config_file:
             default_config = toml.loads(default_config_file.read())
 
         if args.config_filename:
-            #print("Opening config file: [filename]...")
+            print("Opening config file: {0}".format(args.config_filename))
             with open(args.config_filename) as user_config_file:
                 user_config = toml.loads(user_config_file.read())
         else:
-            #print("Opening user config file: [filename]...")
+            print("Opening config file: {0}".format(USER_CONFIG_FILEPATH))
             with open(USER_CONFIG_FILEPATH) as user_config_file:
                 user_config = toml.loads(user_config_file.read())
 

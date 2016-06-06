@@ -18,7 +18,7 @@ class ChimasAuth(BasicAuth):
 
         if 'public' in allowed_roles:
             return True
-            
+
         is_authenticated = False
 
         try:
@@ -50,7 +50,7 @@ class ChimasAuth(BasicAuth):
             if posts!= None:
                 return True
 
-            if login == 'admin' and is_authenticated:
-                return True
+        if login == 'admin' and is_authenticated:
+            return True
 
         return False
