@@ -5,7 +5,7 @@ host = "http://127.0.0.1:41345"
 authdata = ("admin","abc123")
 
 users = [
-        {'login':'admin','email':'admin@ourhost.fqdn','password':'4dm1n'},
+        {'login':'admin','email':'admin@ourhost.fqdn','password':'abc123'},
         {'login':'mercurio','email':'mercurioo@ourhost.fqdn','password':'4dmi11n'},
         {'login':'ouser','email':'ouser@ourhost.fqdn','password':'4dmi12n'},
         {'login':'h3ll0_user','email':'hell0@ourhost.fqdn','password':'4dmi331n'},
@@ -13,7 +13,7 @@ users = [
         ]
 
 boards = [
-        {'title':'first_board','description':'This is our first board'},
+        {'title':'first board','description':'This is our first board'},
         {'title':'second board','description':'Yet another board'},
         {'title':'third board','description':'Third board here.'},
         {'title':'another board','description':'Yet still another board.'},

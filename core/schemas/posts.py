@@ -3,7 +3,7 @@ from sqlalchemy import func
 posts_schema = {
     'allowed_read_roles' : ['public'],
     'allowed_roles': [],
-    'allowed_write_roles' : ['registered'],
+    'allowed_write_roles' : ['admin','registered'],
     'allowed_item_read_roles': ['public'],
     'allowed_item_roles': [],
     'allowed_item_write_roles': ['admin', 'owner'],
@@ -70,7 +70,7 @@ posts_schema = {
         },
         'id': {
             'required': False,
-            'type': 'integer',
+            'type': 'string', #FIXME
             'unique': True
         },
         'post_text': {
