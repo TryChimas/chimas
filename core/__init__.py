@@ -1,10 +1,20 @@
 import sys
+#print(sys.path)
 
 # all our _PATH globals should end with '/', our _FILEPATH(s) should not
 
 ROOT_PATH = sys.path[0] + "/"
 INCLUDE_PATH = ROOT_PATH + "inc/"
 ETC_PATH = ROOT_PATH + "etc/"
+
+from eve import Eve
+
+from eve_sqlalchemy import SQL
+from eve_sqlalchemy.validation import ValidatorSQL
+
+from .auth import ChimasAuth
+
+from .config import ConfigParser
 
 from sqlalchemy.ext.declarative import declarative_base
 from eve_sqlalchemy.decorators import registerSchema
@@ -22,8 +32,10 @@ from .schemas.boards import boards_schema
 from .schemas.posts import posts_schema
 from .schemas.users import users_schema
 
-from flask import current_app as app
-from flask import abort
+#from flask import current_app as app
+#from flask import abort
+
+#APP = Eve(settings=ETC_PATH+'eve-settings.py', auth=ChimasAuth, validator=ValidatorSQL, data=SQL)
 
 Base = declarative_base()
 
@@ -42,28 +54,6 @@ class CommonTable(Base):
     updated = Column(DateTime, default = func.now(), onupdate = func.now())
     etag = Column(String)
     deleted = Column(String)
-
-    def do_method(preorpost_prefix, resource, request, lookup):
-
-        method = request.method.lower()
-        table = get_class_by_tablename(resource)
-
-        if table != None:
-            print("table {0} found!\n".format(table.__tablename__))
-            try :
-                print("We're trying '{0}' the method".format(preorpost_prefix))
-                methodCall = getattr(table, preorpost_prefix + method)
-                return methodCall(resource, request, lookup)
-            except:
-                pass
-
-            print("Passed executing method")
-
-    def do_pre_method(resource, request, lookup=None):
-        __class__.do_method('pre_', resource, request, lookup)
-
-    def do_post_method(resource, request, payload=None):
-        __class__.do_method('post_', resource, request, payload)
 
 class Boards(CommonTable):
     __tablename__ = 'boards'
@@ -84,6 +74,10 @@ class Posts(CommonTable):
     title = Column(String)
     post_text = Column(String)
     hash_id = Column(String)
+
+#def get_topic(self, topid_id):
+#    #posts = Posts.query.filter(Posts.id == topic_id).first()
+#    return "we are inside post item"
 
 class Users(CommonTable):
     __tablename__ = 'users'
@@ -119,7 +113,6 @@ class Roles(CommonTable):
 
         #login = user.login
 
-
 registerSchema('boards')(Boards)
 registerSchema('posts')(Posts)
 registerSchema('users')(Users)
@@ -134,3 +127,12 @@ DOMAIN = {
 }
 
 SQLALCHEMY_DATABASE_URI = "sqlite:///{0}dummy.sqlite3-autocreate".format(ROOT_PATH)
+
+APP = Eve(settings=ETC_PATH+'eve-settings.py', auth=ChimasAuth, validator=ValidatorSQL, data=SQL)
+ConfigParser(APP)
+
+Base.metadata.bind = APP.data.driver.engine
+APP.data.driver.Model = Base
+APP.data.driver.create_all()
+
+Base.query = APP.data.driver.session.query_property()

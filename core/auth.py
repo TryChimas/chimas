@@ -1,11 +1,16 @@
+import sys
+
+print(sys.path)
+
+
 from eve.auth import BasicAuth
 from flask import current_app as app
 from flask import request as current_request
 
-from core import Base
-from core import Posts
-from core import Users
-from core import Roles
+#from . import Base
+#from . import Posts
+#from . import Users
+#from . import Roles
 
 #from core import get_class_by_tablename
 
