@@ -10,7 +10,7 @@ ETC_PATH = ROOT_PATH + "etc/"
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from .auth import ChimasAuth
+#from .auth import ChimasAuth
 
 from .config import ConfigParser
 
@@ -91,7 +91,7 @@ class Roles(CommonTable):
         pass
 
 @APP.route('/posts/<int:topic_id>')
-def get_topic(self, topid_id):
+def get_topic(topic_id):
     #posts = Posts.query.filter(Posts.id == topic_id).first()
     return "we are inside post item"
 

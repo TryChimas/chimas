@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(1, sys.path[0]+'/inc/')
+#sys.path.insert(1, sys.path[0]+'/inc/')
 
 from core import APP
 
