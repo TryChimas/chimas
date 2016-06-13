@@ -7,17 +7,19 @@ ROOT_PATH = sys.path[0] + "/"
 INCLUDE_PATH = ROOT_PATH + "inc/"
 ETC_PATH = ROOT_PATH + "etc/"
 
-from eve import Eve
+from flask import Flask
+from flask_sqlalchmy import SQLAlchemy
+#from eve import Eve
 
-from eve_sqlalchemy import SQL
-from eve_sqlalchemy.validation import ValidatorSQL
+#from eve_sqlalchemy import SQL
+#from eve_sqlalchemy.validation import ValidatorSQL
 
 from .auth import ChimasAuth
 
 from .config import ConfigParser
 
 from sqlalchemy.ext.declarative import declarative_base
-from eve_sqlalchemy.decorators import registerSchema
+#from eve_sqlalchemy.decorators import registerSchema
 
 from sqlalchemy import (
         Column,
@@ -113,26 +115,42 @@ class Roles(CommonTable):
 
         #login = user.login
 
-registerSchema('boards')(Boards)
-registerSchema('posts')(Posts)
-registerSchema('users')(Users)
-Boards._eve_schema['boards'].update(boards_schema)
-Posts._eve_schema['posts'].update(posts_schema)
-Users._eve_schema['users'].update(users_schema)
+#registerSchema('boards')(Boards)
+#registerSchema('posts')(Posts)
+#registerSchema('users')(Users)
+#Boards._eve_schema['boards'].update(boards_schema)
+#Posts._eve_schema['posts'].update(posts_schema)
+#Users._eve_schema['users'].update(users_schema)
 
-DOMAIN = {
-    'boards' : Boards._eve_schema['boards'],
-    'posts'  : Posts._eve_schema['posts'],
-    'users'  : Users._eve_schema['users'],
-}
+#DOMAIN = {
+#    'boards' : Boards._eve_schema['boards'],
+#    'posts'  : Posts._eve_schema['posts'],
+#    'users'  : Users._eve_schema['users'],
+#}
 
 SQLALCHEMY_DATABASE_URI = "sqlite:///{0}dummy.sqlite3-autocreate".format(ROOT_PATH)
 
-APP = Eve(settings=ETC_PATH+'eve-settings.py', auth=ChimasAuth, validator=ValidatorSQL, data=SQL)
-ConfigParser(APP)
+#APP = Eve(settings=ETC_PATH+'eve-settings.py', auth=ChimasAuth, validator=ValidatorSQL, data=SQL)
+APP = Flask(__name__)
+#ConfigParser(APP)
 
-Base.metadata.bind = APP.data.driver.engine
-APP.data.driver.Model = Base
+#class Chimas(Flask):
+
+#    def __init__(self, import_name=__package__, **kwargs):
+#        super(Chimas, self).__init__(import_name, **kwargs)
+
+
+#APP = Chimas(__name__)
+
+#Db = SQLAlchemy(APP, metadata=Base.metadata)
+
+@APP.route('/posts/<int:topic_id>')
+def get_topic(self, topid_id):
+    #posts = Posts.query.filter(Posts.id == topic_id).first()
+    return "we are inside post item"
+
+#Base.metadata.bind = APP.data.driver.engine
+#APP.data.driver.Model = Base
 APP.data.driver.create_all()
 
 Base.query = APP.data.driver.session.query_property()
