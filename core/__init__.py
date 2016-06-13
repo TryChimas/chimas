@@ -56,6 +56,9 @@ class CommonTable(DB.Model):
 #    class Meta:
 #        model = CommonTable
 
+#    def __init__(self):
+#        super(CommonSchema, self).__init__()
+
 class Boards(CommonTable):
     __tablename__ = 'boards'
 
@@ -63,6 +66,7 @@ class Boards(CommonTable):
     title = Column(String, primary_key=True, unique=True)
     description = Column(String)
 
+#class BoardsSchema(CommonSchema):
 class BoardsSchema(MA.ModelSchema):
     class Meta:
         model = Boards
@@ -107,7 +111,16 @@ class Roles(CommonTable):
 @APP.route('/posts/<int:topic_id>')
 def get_topic(topic_id):
     #posts = Posts.query.filter(Posts.id == topic_id).first()
-    posts = Posts.get(topic_id)
+    posts = Posts().query_class.filter_by(topic_id=topic_id).first()
     return posts
+
+@APP.route('/boards')
+def list_boards():
+    #posts = Posts.query.filter(Posts.id == topic_id).first()
+    boards_schema = BoardsSchema(many=True)
+    boards = Boards().query.all()
+    from flask import jsonify
+    return jsonify(boards_schema.dump(boards).data)
+    #return boards
 
 DB.create_all()
