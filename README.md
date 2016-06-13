@@ -10,6 +10,7 @@ This project has in mind to develop a modularized, extensible and easily maintai
 * ~~Cerberus~~ ([website](http://python-cerberus.org/) / [github](https://github.com/nicolaiarocci/cerberus))
 * Flask ([website](http://flask.pocoo.org/) / [github](https://github.com/pallets/flask))
 
+```
 click==6.6
 Flask==0.11.1
 flask-marshmallow==0.6.2
@@ -22,6 +23,7 @@ six==1.10.0
 SQLAlchemy==1.0.13
 toml==0.9.1
 Werkzeug==0.11.10
+```
 
 ### Good to know
 
