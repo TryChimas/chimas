@@ -4,11 +4,11 @@ This project has in mind to develop a modularized, extensible and easily maintai
 
 ### Dependencies:
 
-* ~~Python EVE~~ ([docs](http://python-eve.org/))
-* ~~Eve SQLAlchemy extension~~ ([docs](https://eve-sqlalchemy.readthedocs.io/))
-* SQLAlchemy ([website](http://www.sqlalchemy.org/) / [docs](http://docs.sqlalchemy.org/en/rel_1_0/))
-* ~~Cerberus~~ ([website](http://python-cerberus.org/) / [github](https://github.com/nicolaiarocci/cerberus))
 * Flask ([website](http://flask.pocoo.org/) / [github](https://github.com/pallets/flask))
+* SQLAlchemy ([website](http://www.sqlalchemy.org/) / [docs](http://docs.sqlalchemy.org/en/rel_1_0/))
+* Flask SQLAlchemy ([docs](flask-sqlalchemy.pocoo.org))
+* Flask Marshmallow ([docs](https://flask-marshmallow.readthedocs.io/en/latest/))
+* TOML
 
 ```
 click==6.6
