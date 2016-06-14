@@ -8,7 +8,7 @@ This project has in mind to develop a modularized, extensible and easily maintai
 * SQLAlchemy ([website](http://www.sqlalchemy.org/) / [docs](http://docs.sqlalchemy.org/en/rel_1_0/))
 * Flask SQLAlchemy ([docs](flask-sqlalchemy.pocoo.org))
 * Flask Marshmallow ([docs](https://flask-marshmallow.readthedocs.io/en/latest/))
-* TOML ([website](https://github.com/uiri/toml))
+* TOML ([github](https://github.com/uiri/toml) / [specification](https://github.com/toml-lang/toml))
 
 ```
 click==6.6

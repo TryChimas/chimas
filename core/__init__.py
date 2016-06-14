@@ -110,8 +110,10 @@ class Roles(CommonTable):
 
 @APP.route('/posts/<int:topic_id>')
 def get_topic(topic_id):
+    posts_schema = PostsSchema(many=True)
     #posts = Posts.query.filter(Posts.id == topic_id).first()
-    posts = Posts().query_class.filter_by(topic_id=topic_id).first()
+    #posts = Posts().query_class.filter_by(topic_id=topic_id).first()
+    posts = Posts().query.filter_by(topic_id=topic_id).first()
     return posts
 
 @APP.route('/boards')
@@ -120,7 +122,7 @@ def list_boards():
     boards_schema = BoardsSchema(many=True)
     boards = Boards().query.all()
     from flask import jsonify
-    return jsonify(boards_schema.dump(boards).data)
+    return boards_schema.dumps(boards).data
     #return boards
 
 DB.create_all()
