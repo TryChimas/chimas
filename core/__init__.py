@@ -121,8 +121,21 @@ def list_boards():
     #posts = Posts.query.filter(Posts.id == topic_id).first()
     boards_schema = BoardsSchema(many=True)
     boards = Boards().query.all()
-    from flask import jsonify
+    #from flask import jsonify
     return boards_schema.dumps(boards).data
     #return boards
+
+#@APP.route('/boards/<string:board_id>')
+@APP.route('/boards/<board_id>')
+def list_topics(board_id):
+    posts_schema = PostsSchema(many=True)
+    #posts = Posts.query.filter(Posts.id == topic_id).first()
+    #posts = Posts().query_class.filter_by(topic_id=topic_id).first()
+    #posts = Posts().query.filter_by(board_id=board_id, reply_to_id=0).all()
+    posts = Posts().query.filter_by(board_id=board_id).all()
+
+    from flask import jsonify
+    return jsonify(posts_schema.dump(posts).data)
+
 
 DB.create_all()
