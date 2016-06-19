@@ -10,6 +10,7 @@ ETC_PATH = ROOT_PATH + "etc/"
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from flask_marshmallow
 
 #from .auth import ChimasAuth
 
@@ -108,34 +109,43 @@ class Roles(CommonTable):
     def is_authorized(user, is_authenticated, allowed_roles, resource, method, lookup):
         pass
 
-@APP.route('/posts/<int:topic_id>')
-def get_topic(topic_id):
-    posts_schema = PostsSchema(many=True)
-    #posts = Posts.query.filter(Posts.id == topic_id).first()
-    #posts = Posts().query_class.filter_by(topic_id=topic_id).first()
-    posts = Posts().query.filter_by(topic_id=topic_id).first()
-    return posts
-
-@APP.route('/boards')
+@APP.route('/boards', methods=['GET'])
 def list_boards():
-    #posts = Posts.query.filter(Posts.id == topic_id).first()
     boards_schema = BoardsSchema(many=True)
     boards = Boards().query.all()
-    #from flask import jsonify
     return boards_schema.dumps(boards).data
-    #return boards
+
+@APP.route('/boards', methods=['POST'])
+def new_boards_item():
+    boards_schema = BoardsSchema()
+    boards = Boards().query.all()
+    return boards_schema.dumps(boards).data
 
 #@APP.route('/boards/<string:board_id>')
-@APP.route('/boards/<board_id>')
+@APP.route('/topics/<string:board_id>', methods=['GET'])
 def list_topics(board_id):
     posts_schema = PostsSchema(many=True)
-    #posts = Posts.query.filter(Posts.id == topic_id).first()
-    #posts = Posts().query_class.filter_by(topic_id=topic_id).first()
-    #posts = Posts().query.filter_by(board_id=board_id, reply_to_id=0).all()
-    posts = Posts().query.filter_by(board_id=board_id).all()
+    from urllib.parse import unquote
+    bid = unquote(board_id)
+    posts = Posts().query.filter_by(board_id=bid, reply_to_id=0).all()
 
     from flask import jsonify
-    return jsonify(posts_schema.dump(posts).data)
+    return posts_schema.dumps(posts).data
 
+@APP.route('/topics/<string:board_id>', methods=['POST'])
+def post_topic(board_id):
+    posts_schema = PostsSchema()
+    from urllib.parse import unquote
+    bid = unquote(board_id)
+    posts = Posts().query.filter_by(board_id=bid, reply_to_id=0).all()
+
+    from flask import jsonify
+    return posts_schema.dumps(posts).data
+
+@APP.route('/posts/<int:topic_id>', methods=['GET'])
+def get_topic(topic_id):
+    posts_schema = PostsSchema(many=True)
+    posts = Posts().query.filter_by(topic_id=topic_id).first()
+    return posts
 
 DB.create_all()
