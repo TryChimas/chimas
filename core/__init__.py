@@ -10,7 +10,9 @@ ETC_PATH = ROOT_PATH + "etc/"
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-from flask_marshmallow
+from flask_marshmallow import fields
+
+from flask import request
 
 #from .auth import ChimasAuth
 
@@ -117,6 +119,7 @@ def list_boards():
 
 @APP.route('/boards', methods=['POST'])
 def new_boards_item():
+    print(request.data)
     boards_schema = BoardsSchema()
     boards = Boards().query.all()
     return boards_schema.dumps(boards).data
