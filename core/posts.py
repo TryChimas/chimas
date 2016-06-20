@@ -1,4 +1,11 @@
-from . import APP, MA, CommonTable
+from . import APP, DB, MA, CommonTable
+
+from .boards import Boards
+
+from flask import request, abort
+
+from marshmallow.validate import Validator
+from marshmallow import post_load
 
 from sqlalchemy import (
         Column,
@@ -14,7 +21,7 @@ class Posts(CommonTable):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     topic_id = Column(String) # FIXME: int is returning 422 when using python's requests
-    reply_to_id = Column(String) # FIXME: int is returning 422 when using python's requests
+    reply_to_id = Column(String, default='0') # FIXME: int is returning 422 when using python's requests
 
     board_id = Column(String)
     author_id = Column(String)
@@ -22,23 +29,22 @@ class Posts(CommonTable):
     post_text = Column(String)
     hash_id = Column(String)
 
+#class PostsValidator(object):
+#    def reply_to_id():
+
+
 class PostsSchema(MA.ModelSchema):
     class Meta:
         model = Posts
 
-#class PostsSchema(MA.ModelSchema):
+#    @validates_schema()
+#    def validate_schema(self, data):
+#        pass
 
-#    id = fields.Integer()
-#    topic_id = fields.Integer()
-#    reply_to_id = fields.Integer()
+    @post_load
+    def return_obj(self, **data):
+        return Posts(**data)
 
-#    board_id = fields.String
-#    author_id = fields.String
-#    title = fields.String
-#    post_text = fields.String
-#    hash_id = fields.String
-
-#@APP.route('/boards/<string:board_id>')
 @APP.route('/topics/<string:board_id>', methods=['GET'])
 def list_topics(board_id):
     posts_schema = PostsSchema(many=True)
@@ -49,9 +55,34 @@ def list_topics(board_id):
     from flask import jsonify
     return posts_schema.dumps(posts).data
 
-
 @APP.route('/topics/<string:board_id>', methods=['POST'])
 def post_topic(board_id):
+
+    print("hello")
+    board = Boards().query.filter_by(title=board_id).first()
+    if board == None:
+        abort(404)
+
+    from pprint import pprint
+    pprint(request.form)
+    if request.form['reply_to_id'] == 0:
+        data = {
+            'board_id' : request.form['board_id'],
+            'title' : request.form['title'],
+            'post_text' : request.form['text'],
+            'author_id': 'TEST1NG AUTHOR',
+            'hash_id': 'testing hash'
+        }
+        post = PostsSchema.load(data)
+
+        DB.session.add(post)
+        DB.session.commit()
+
+    return "hey"
+
+
+    #reply_to_id == request.form['reply_to_id']
+
     posts_schema = PostsSchema()
     from urllib.parse import unquote
     bid = unquote(board_id)

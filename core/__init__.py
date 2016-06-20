@@ -55,6 +55,9 @@ class CommonTable(DB.Model):
     etag = Column(String)
     deleted = Column(String)
 
+#class CommonSchema(MA.ModelSchema):
+#    class Meta:
+#        model = CommonTable
 #class Boards(CommonTable):
 #    __tablename__ = 'boards'
 #
