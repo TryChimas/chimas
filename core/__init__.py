@@ -55,50 +55,58 @@ class CommonTable(DB.Model):
     etag = Column(String)
     deleted = Column(String)
 
-#class CommonSchema(MA.ModelSchema):
-#    class Meta:
-#        model = CommonTable
-
-#    def __init__(self):
-#        super(CommonSchema, self).__init__()
-
-class Boards(CommonTable):
-    __tablename__ = 'boards'
-
-    id = None
-    title = Column(String, primary_key=True, unique=True)
-    description = Column(String)
+#class Boards(CommonTable):
+#    __tablename__ = 'boards'
+#
+#    id = None
+#    title = Column(String, primary_key=True, unique=True)
+#    description = Column(String)
 
 #class BoardsSchema(CommonSchema):
-class BoardsSchema(MA.ModelSchema):
-    class Meta:
-        model = Boards
+#class BoardsSchema(MA.ModelSchema):
+#    class Meta:
+#        model = Boards
 
-class Posts(CommonTable):
-    __tablename__ = 'posts'
+#class Posts(CommonTable):
+#    __tablename__ = 'posts'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    topic_id = Column(String) # FIXME: int is returning 422 when using python's requests
-    reply_to_id = Column(String) # FIXME: int is returning 422 when using python's requests
+#    id = Column(Integer, primary_key=True, autoincrement=True)
+#    topic_id = Column(String) # FIXME: int is returning 422 when using python's requests
+#    reply_to_id = Column(String) # FIXME: int is returning 422 when using python's requests
 
-    board_id = Column(String)
-    author_id = Column(String)
-    title = Column(String)
-    post_text = Column(String)
-    hash_id = Column(String)
+#    board_id = Column(String)
+#    author_id = Column(String)
+#    title = Column(String)
+#    post_text = Column(String)
+#    hash_id = Column(String)
 
-class PostsSchema(MA.ModelSchema):
-    class Meta:
-        model = Posts
+#class PostsSchema(MA.ModelSchema):
+#    class Meta:
+#        model = Posts
 
-class Users(CommonTable):
-    __tablename__ = 'users'
+#class PostsSchema(MA.ModelSchema):
 
+#    id = fields.Integer()
+#    topic_id = fields.Integer()
+#    reply_to_id = fields.Integer()
+
+#    board_id = fields.String
+#    author_id = fields.String
+#    title = fields.String
+#    post_text = fields.String
+#    hash_id = fields.String
+from . import boards
+from . import posts
+from . import users
+
+#class Users(CommonTable):
+#    __tablename__ = 'users'
+#
     #id = Column(Integer, autoincrement=True, unique=True)
-    id = None
-    login = Column(String, primary_key=True, unique=True)
-    email = Column(String, unique=True)
-    password = Column(String)
+#    id = None
+#    login = Column(String, primary_key=True, unique=True)
+#    email = Column(String, unique=True)
+#    password = Column(String)
 
 class Roles(CommonTable):
     __tablename__ = 'roles'
@@ -111,44 +119,33 @@ class Roles(CommonTable):
     def is_authorized(user, is_authenticated, allowed_roles, resource, method, lookup):
         pass
 
-@APP.route('/boards', methods=['GET'])
-def list_boards():
-    boards_schema = BoardsSchema(many=True)
-    boards = Boards().query.all()
-    return boards_schema.dumps(boards).data
 
-@APP.route('/boards', methods=['POST'])
-def new_boards_item():
-    print(request.data)
-    boards_schema = BoardsSchema()
-    boards = Boards().query.all()
-    return boards_schema.dumps(boards).data
 
 #@APP.route('/boards/<string:board_id>')
-@APP.route('/topics/<string:board_id>', methods=['GET'])
-def list_topics(board_id):
-    posts_schema = PostsSchema(many=True)
-    from urllib.parse import unquote
-    bid = unquote(board_id)
-    posts = Posts().query.filter_by(board_id=bid, reply_to_id=0).all()
+#@APP.route('/topics/<string:board_id>', methods=['GET'])
+#def list_topics(board_id):
+#    posts_schema = PostsSchema(many=True)
+#    from urllib.parse import unquote
+#    bid = unquote(board_id)
+#    posts = Posts().query.filter_by(board_id=bid, reply_to_id=0).all()
 
-    from flask import jsonify
-    return posts_schema.dumps(posts).data
+#    from flask import jsonify
+#    return posts_schema.dumps(posts).data
 
-@APP.route('/topics/<string:board_id>', methods=['POST'])
-def post_topic(board_id):
-    posts_schema = PostsSchema()
-    from urllib.parse import unquote
-    bid = unquote(board_id)
-    posts = Posts().query.filter_by(board_id=bid, reply_to_id=0).all()
+#@APP.route('/topics/<string:board_id>', methods=['POST'])
+#def post_topic(board_id):
+#    posts_schema = PostsSchema()
+#    from urllib.parse import unquote
+#    bid = unquote(board_id)
+#    posts = Posts().query.filter_by(board_id=bid, reply_to_id=0).all()
 
-    from flask import jsonify
-    return posts_schema.dumps(posts).data
+#    from flask import jsonify
+#    return posts_schema.dumps(posts).data
 
-@APP.route('/posts/<int:topic_id>', methods=['GET'])
-def get_topic(topic_id):
-    posts_schema = PostsSchema(many=True)
-    posts = Posts().query.filter_by(topic_id=topic_id).first()
-    return posts
+#@APP.route('/posts/<int:topic_id>', methods=['GET'])
+#def get_topic(topic_id):
+#    posts_schema = PostsSchema(many=True)
+#    posts = Posts().query.filter_by(topic_id=topic_id).first()
+#    return posts
 
 DB.create_all()
