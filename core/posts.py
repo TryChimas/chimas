@@ -64,8 +64,8 @@ def post_topic(board_id):
         abort(404)
 
     from pprint import pprint
-    pprint(request.form)
-    if request.form['reply_to_id'] == 0:
+    pprint(request.form['reply_to_id'])
+    if request.form['reply_to_id'] == '0':
         data = {
             'board_id' : request.form['board_id'],
             'title' : request.form['title'],
@@ -73,7 +73,7 @@ def post_topic(board_id):
             'author_id': 'TEST1NG AUTHOR',
             'hash_id': 'testing hash'
         }
-        post = PostsSchema.load(data)
+        post = PostsSchema().load(data)
 
         DB.session.add(post)
         DB.session.commit()
