@@ -1,5 +1,7 @@
 # CHIMAS BBS API
 
+[![Build Status](https://travis-ci.org/TryChimas/chimas.svg?branch=master)](https://travis-ci.org/TryChimas/chimas)
+
 This project has in mind to develop a modularized, extensible and easily maintainable API-based forum, so that it can be used with standalone clients for example: command line interface, tui, telnet and web.
 
 ### Dependencies:

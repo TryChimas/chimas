@@ -37,12 +37,12 @@ class PostsSchema(MA.ModelSchema):
     class Meta:
         model = Posts
 
-#    @validates_schema()
-#    def validate_schema(self, data):
-#        pass
+        #    @validates_schema()
+        #    def validate_schema(self, data):
+        #        pass
 
     @post_load
-    def return_obj(self, **data):
+    def return_obj(self, data):
         return Posts(**data)
 
 @APP.route('/topics/<string:board_id>', methods=['GET'])
@@ -58,24 +58,30 @@ def list_topics(board_id):
 @APP.route('/topics/<string:board_id>', methods=['POST'])
 def post_topic(board_id):
 
-    print("hello")
     board = Boards().query.filter_by(title=board_id).first()
     if board == None:
         abort(404)
 
     from pprint import pprint
-    pprint(request.form['reply_to_id'])
+    print(request.form)
     if request.form['reply_to_id'] == '0':
+        print("hello")
+
         data = {
-            'board_id' : request.form['board_id'],
+            'board_id' : board_id,
             'title' : request.form['title'],
             'post_text' : request.form['text'],
+            'reply_to_id': '0',
             'author_id': 'TEST1NG AUTHOR',
             'hash_id': 'testing hash'
         }
-        post = PostsSchema().load(data)
+        schema = PostsSchema()
+        #result = schema.loads(request.form)
+        result = schema.load(data)
 
-        DB.session.add(post)
+        pprint(result.data)
+
+        DB.session.add(result.data)
         DB.session.commit()
 
     return "hey"
