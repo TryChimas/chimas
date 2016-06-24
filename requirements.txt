@@ -1,5 +1,5 @@
 click==6.6
-coverage==4.1
+coverage==4.0.3
 Flask==0.10.1
 flask-marshmallow==0.6.2
 Flask-SQLAlchemy==2.1
@@ -11,6 +11,10 @@ marshmallow==2.7.3
 marshmallow-sqlalchemy==0.8.1
 py==1.4.31
 pytest==2.9.2
+python-coveralls==2.7.0
+PyYAML==3.11
+requests==2.10.0
+sh==1.11
 six==1.10.0
 SQLAlchemy==1.0.13
 toml==0.9.1
