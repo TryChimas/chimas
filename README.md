@@ -1,6 +1,6 @@
 # CHIMAS BBS API
 
-[![Build Status](https://travis-ci.org/TryChimas/chimas.svg?branch=master)](https://travis-ci.org/TryChimas/chimas)
+[![Build Status](https://travis-ci.org/TryChimas/chimas.png?branch=master)](https://travis-ci.org/TryChimas/chimas)
 
 
 [![Coverage Status](https://coveralls.io/repos/github/TryChimas/chimas/badge.svg?branch=master)](https://coveralls.io/github/TryChimas/chimas?branch=master)
