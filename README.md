@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/TryChimas/chimas.png?branch=master)](https://travis-ci.org/TryChimas/chimas)
 
 
-[![Coverage Status](https://coveralls.io/repos/github/TryChimas/chimas/badge.svg?branch=master)](https://coveralls.io/github/TryChimas/chimas?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/TryChimas/chimas/badge.png?branch=master)](https://coveralls.io/github/TryChimas/chimas?branch=master)
 
 This project has in mind to develop a modularized, extensible and easily maintainable API-based forum, so that it can be used with standalone clients for example: command line interface, tui, telnet and web.
 
