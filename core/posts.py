@@ -41,9 +41,9 @@ class PostsSchema(MA.ModelSchema):
         #    def validate_schema(self, data):
         #        pass
 
-    @post_load
-    def return_obj(self, data):
-        return Posts(**data)
+#    @post_load
+#    def return_obj(self, data):
+#        return Posts(**data)
 
 @APP.route('/topics/<string:board_id>', methods=['GET'])
 def list_topics(board_id):
@@ -68,16 +68,21 @@ def post_topic(board_id):
         print("hello")
 
         data = {
+            #'id':
+            #'topic_id':
+            'reply_to_id': '0',
             'board_id' : board_id,
+            'author_id': 'TEST1NGAUTHOR',
+
             'title' : request.form['title'],
             'post_text' : request.form['text'],
-            'reply_to_id': '0',
-            'author_id': 'TEST1NG AUTHOR',
-            'hash_id': 'testing hash'
+            'hash_id': 'testinghash'
         }
+
         schema = PostsSchema()
         #result = schema.loads(request.form)
         result = schema.load(data)
+
 
         pprint(result.data)
 
