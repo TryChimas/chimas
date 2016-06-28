@@ -3,6 +3,7 @@ from . import APP, DB, MA, CommonTable
 from .boards import Boards
 
 from flask import request, abort
+from flask.views import MethodView
 
 from marshmallow.validate import Validator
 from marshmallow import post_load
@@ -45,65 +46,52 @@ class PostsSchema(MA.ModelSchema):
 #    def return_obj(self, data):
 #        return Posts(**data)
 
-@APP.route('/topics/<string:board_id>', methods=['GET'])
-def list_topics(board_id):
-    posts_schema = PostsSchema(many=True)
-    from urllib.parse import unquote
-    bid = unquote(board_id)
-    posts = Posts().query.filter_by(board_id=bid, reply_to_id=0).all()
+class PostsAPI(MethodView):
 
-    from flask import jsonify
-    return posts_schema.dumps(posts).data
+    def get(self, board_id):
+        posts_schema = PostsSchema(many=True)
+        from urllib.parse import unquote
+        bid = unquote(board_id)
+        posts = Posts().query.filter_by(board_id=bid, reply_to_id=0).all()
 
-@APP.route('/topics/<string:board_id>', methods=['POST'])
-def post_topic(board_id):
+        from flask import jsonify
+        return posts_schema.dumps(posts).data
+        #pass
 
-    board = Boards().query.filter_by(title=board_id).first()
-    if board == None:
-        abort(404)
+    def post(self, board_id):
+        board = Boards().query.filter_by(title=board_id).first()
+        if board == None:
+            abort(404)
 
-    from pprint import pprint
-    print(request.form)
-    if request.form['reply_to_id'] == '0':
-        print("hello")
+        from pprint import pprint
+        print(request.form)
+        if request.form['reply_to_id'] == '0':
+            print("hello")
 
-        data = {
-            #'id':
-            #'topic_id':
-            'reply_to_id': '0',
-            'board_id' : board_id,
-            'author_id': 'TEST1NGAUTHOR',
+            data = {
+                #'id':
+                #'topic_id':
+                'reply_to_id': '0',
+                'board_id' : board_id,
+                'author_id': 'TEST1NGAUTHOR',
 
-            'title' : request.form['title'],
-            'post_text' : request.form['text'],
-            'hash_id': 'testinghash'
-        }
+                'title' : request.form['title'],
+                'post_text' : request.form['text'],
+                'hash_id': 'testinghash'
+            }
 
-        schema = PostsSchema()
-        #result = schema.loads(request.form)
-        result = schema.load(data)
-
-
-        pprint(result.data)
-
-        DB.session.add(result.data)
-        DB.session.commit()
-
-    return "hey"
+            schema = PostsSchema()
+            #result = schema.loads(request.form)
+            result = schema.load(data)
 
 
-    #reply_to_id == request.form['reply_to_id']
+            pprint(result.data)
 
-    posts_schema = PostsSchema()
-    from urllib.parse import unquote
-    bid = unquote(board_id)
-    posts = Posts().query.filter_by(board_id=bid, reply_to_id=0).all()
+            DB.session.add(result.data)
+            DB.session.commit()
 
-    from flask import jsonify
-    return posts_schema.dumps(posts).data
+        return "hey"
+        pass
 
-@APP.route('/posts/<int:topic_id>', methods=['GET'])
-def get_topic(topic_id):
-    posts_schema = PostsSchema(many=True)
-    posts = Posts().query.filter_by(topic_id=topic_id).first()
-    return posts
+posts_view = PostsAPI.as_view('posts_api')
+APP.add_url_rule('/topics/<string:board_id>', view_func=posts_view, methods=['GET', 'POST'])
