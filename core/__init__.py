@@ -70,4 +70,7 @@ class Roles(CommonTable):
     def is_authorized(user, is_authenticated, allowed_roles, resource, method, lookup):
         pass
 
+#class AppError(Exception):
+#    pass
+
 DB.create_all()

@@ -6,7 +6,7 @@ from flask import request, abort
 from flask.views import MethodView
 
 from marshmallow.validate import Validator
-from marshmallow import post_load
+from marshmallow import pre_load, post_load
 
 from sqlalchemy import (
         Column,
@@ -16,6 +16,8 @@ from sqlalchemy import (
         DateTime )
 
 from sqlalchemy import func
+
+from hashlib import sha256
 
 class Posts(CommonTable):
     __tablename__ = 'posts'
@@ -42,9 +44,14 @@ class PostsSchema(MA.ModelSchema):
         #    def validate_schema(self, data):
         #        pass
 
-#    @post_load
-#    def return_obj(self, data):
-#        return Posts(**data)
+    #hash_id = fields.Method(deserialize="make_post_hash")
+
+    @pre_load
+    def make_post_hash(self, data):
+         data['hash_id'] = sha256( data['post_text'].encode() ).hexdigest()
+
+    def handle_error(self, exc, data):
+        raise AppError('Input error.')
 
 class PostsAPI(MethodView):
 
