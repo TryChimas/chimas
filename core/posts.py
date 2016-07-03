@@ -5,8 +5,8 @@ from .boards import Boards
 from flask import request, abort
 from flask.views import MethodView
 
-from marshmallow.validate import Validator
-from marshmallow import pre_load, post_load
+from marshmallow.validate import Validator, ValidationError
+from marshmallow import pre_load, post_load, validates_schema
 
 from sqlalchemy import (
         Column,
@@ -32,26 +32,21 @@ class Posts(CommonTable):
     post_text = Column(String)
     hash_id = Column(String)
 
-#class PostsValidator(object):
-#    def reply_to_id():
-
-
 class PostsSchema(MA.ModelSchema):
     class Meta:
         model = Posts
 
-        #    @validates_schema()
-        #    def validate_schema(self, data):
-        #        pass
-
-    #hash_id = fields.Method(deserialize="make_post_hash")
+    @validates_schema
+    def validate_input(self, data):
+        if len(data['post_text']) < 5:
+            raise ValidationError('Post text should be grater than 5 chars', 'post_text')
 
     @pre_load
-    def make_post_hash(self, data):
+    def preload_values(self, data):
          data['hash_id'] = sha256( data['post_text'].encode() ).hexdigest()
 
-    def handle_error(self, exc, data):
-        raise AppError('Input error.')
+    #def handle_error(self, exc, data): # PLEASE IMPLEMENT MEE!!!!!
+    #    raise AppError('Input error.')
 
 class PostsAPI(MethodView):
 
@@ -87,9 +82,11 @@ class PostsAPI(MethodView):
                 'hash_id': 'testinghash'
             }
 
+            received_data = request.form
+
             schema = PostsSchema()
             #result = schema.loads(request.form)
-            result = schema.load(data)
+            result = schema.load(received_data)
 
 
             pprint(result.data)
