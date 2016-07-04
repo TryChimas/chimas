@@ -1,4 +1,9 @@
-from . import APP, MA, CommonTable
+from . import APP, DB, MA, CommonTable
+
+from flask.views import MethodView
+
+from marshmallow.validate import Validator, ValidationError
+from marshmallow import pre_load, post_load, validates_schema
 
 from sqlalchemy import (
         Column,
@@ -39,3 +44,6 @@ class UsersAPI(MethodView):
 
 #posts_view = PostsAPI.as_view('posts_api')
 #APP.add_url_rule('/topics/<string:board_id>', view_func=posts_view, methods=['GET', 'POST'])
+
+#users_view = PostsAPI.as_view('users_api')
+#APP.add_url_rule('/users/<string:board_id>', view_func=users_view, methods=['GET', 'POST'])
