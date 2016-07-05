@@ -36,14 +36,15 @@ class PostsSchema(MA.ModelSchema):
     class Meta:
         model = Posts
 
-    @validates_schema
-    def validate_input(self, data):
-        if len(data['post_text']) < 5:
-            raise ValidationError('Post text should be grater than 5 chars', 'post_text')
+    #@validates_schema
+    #def validate_input(self, data):
+    #    if len(data['post_text']) < 5:
+    #        raise ValidationError('Post text should be grater than 5 chars', 'post_text')
 
     @pre_load
     def preload_values(self, data):
-         data['hash_id'] = sha256( data['post_text'].encode() ).hexdigest()
+        print(data)
+        data['hash_id'] = sha256( data['post_text'].encode() ).hexdigest()
 
     #def handle_error(self, exc, data): # PLEASE IMPLEMENT MEE!!!!!
     #    raise AppError('Input error.')
@@ -65,29 +66,35 @@ class PostsAPI(MethodView):
         if board == None:
             abort(404)
 
-        from pprint import pprint
-        print(request.form)
-        if request.form['reply_to_id'] == '0':
+        #received_data = request.form[0]
+
+        received_data = dict()
+
+        for k, v in request.args.iteritems(multi=False):
+            received_data.update( [k,v] )
+
+        #from pprint import pprint
+        #print(request.form)
+        if received_data['reply_to_id'] == '0':
             print("hello")
 
-            data = {
-                #'id':
-                #'topic_id':
-                'reply_to_id': '0',
-                'board_id' : board_id,
-                'author_id': 'TEST1NGAUTHOR',
+            #data = {
+            #    #'id':
+            #    #'topic_id':
+            #    'reply_to_id': '0',
+            #    'board_id' : board_id,
+            #    'author_id': 'TEST1NGAUTHOR',
 
-                'title' : request.form['title'],
-                'post_text' : request.form['text'],
-                'hash_id': 'testinghash'
-            }
-
-            received_data = request.form
+            #    'title' : request.form['title'],
+            #    'post_text' : request.form['text'],
+            #    'hash_id': 'testinghash'
+            #}
 
             schema = PostsSchema()
             #result = schema.loads(request.form)
             result = schema.load(received_data)
 
+            print("hey buddy")
 
             pprint(result.data)
 
