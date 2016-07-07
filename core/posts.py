@@ -36,10 +36,10 @@ class PostsSchema(MA.ModelSchema):
     class Meta:
         model = Posts
 
-    #@validates_schema
-    #def validate_input(self, data):
-    #    if len(data['post_text']) < 5:
-    #        raise ValidationError('Post text should be grater than 5 chars', 'post_text')
+    @validates_schema
+    def validate_input(self, data):
+        if len(data['post_text']) < 5:
+            raise ValidationError('Post text should be grater than 5 chars', 'post_text')
 
     @pre_load
     def preload_values(self, data):
@@ -68,13 +68,12 @@ class PostsAPI(MethodView):
 
         #received_data = request.form[0]
 
-        received_data = dict()
+        received_data = {}
+        received_data = request.form.to_dict()
 
-        for k, v in request.args.iteritems(multi=False):
-            received_data.update( [k,v] )
 
-        #from pprint import pprint
-        #print(request.form)
+        print(received_data)
+
         if received_data['reply_to_id'] == '0':
             print("hello")
 
@@ -96,7 +95,7 @@ class PostsAPI(MethodView):
 
             print("hey buddy")
 
-            pprint(result.data)
+            #pprint(result.data)
 
             DB.session.add(result.data)
             DB.session.commit()
