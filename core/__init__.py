@@ -14,7 +14,7 @@ from flask_marshmallow import fields
 
 from flask import request
 
-#from .auth import ChimasAuth
+from .auth import check_auth
 
 from .config import ConfigParser
 
@@ -45,6 +45,8 @@ APP.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///{0}dummy.sqlite3-autocreate".
 
 DB = SQLAlchemy(APP)
 MA = Marshmallow(APP)
+
+APP.before_request(check_auth)
 
 class CommonTable(DB.Model):
     __abstract__ =  True
