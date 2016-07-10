@@ -7,7 +7,8 @@ def check_auth():
     request_data = request.values.to_dict()
     print(request_data)
 
-    print("HEADERS", request.headers)
+    print("HEADERS:")
+    print(request.headers)
 
 #from . import Base
 #from . import Posts
