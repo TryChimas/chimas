@@ -29,6 +29,8 @@ from sqlalchemy import (
 
 from sqlalchemy import func
 
+from flask.ext.security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
+
 Base = declarative_base()
 
 #APP = Flask(__name__)
@@ -59,20 +61,23 @@ class CommonTable(DB.Model):
 
 from . import boards
 from . import posts
+from . import roles
 from . import users
 
-class Roles(CommonTable):
-    __tablename__ = 'roles'
+#roles_users = db.Table('roles_users',
+#        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
+#        db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
 
-    id = Column(Integer, autoincrement=True, unique=True)
-    title = Column(String, primary_key=True, unique=True)
-    prefix = Column(String)
-    users = Column(String)
-
-    def is_authorized(user, is_authenticated, allowed_roles, resource, method, lookup):
-        pass
+user_datastore = SQLAlchemyUserDatastore(DB, users.Users, roles.Roles)
+security = Security(APP, user_datastore)
 
 #class AppError(Exception):
 #    pass
 
-DB.create_all()
+#DB.create_all()
+
+@APP.before_first_request
+def create_user():
+    DB.create_all()
+    user_datastore.create_user(login='admin', email='kassivs@gmail.com', password='p4ssw0rd')
+    DB.session.commit()
