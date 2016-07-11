@@ -53,6 +53,7 @@ class UsersAPI(MethodView):
         pass
 
 #posts_view = PostsAPI.as_view('posts_api')
+
 #APP.add_url_rule('/topics/<string:board_id>', view_func=posts_view, methods=['GET', 'POST'])
 
 #users_view = PostsAPI.as_view('users_api')

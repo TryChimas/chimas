@@ -8,6 +8,9 @@ from flask.views import MethodView
 from marshmallow.validate import Validator, ValidationError
 from marshmallow import pre_load, post_load, validates_schema
 
+from flask.ext.security.decorators import  auth_token_required
+
+
 from sqlalchemy import (
         Column,
         String,
@@ -104,4 +107,6 @@ class PostsAPI(MethodView):
         pass
 
 posts_view = PostsAPI.as_view('posts_api')
+
+@auth_token_required
 APP.add_url_rule('/topics/<string:board_id>', view_func=posts_view, methods=['GET', 'POST'])

@@ -76,8 +76,13 @@ security = Security(APP, user_datastore)
 
 #DB.create_all()
 
-@APP.before_first_request
-def create_user():
-    DB.create_all()
+#@APP.before_first_request
+#def create_user():
+DB.create_all()
+
+try:
     user_datastore.create_user(login='admin', email='kassivs@gmail.com', password='p4ssw0rd')
     DB.session.commit()
+
+except:
+    pass
