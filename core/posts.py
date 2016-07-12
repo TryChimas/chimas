@@ -54,6 +54,7 @@ class PostsSchema(MA.ModelSchema):
 
 class PostsAPI(MethodView):
 
+    @auth_token_required
     def get(self, board_id):
         posts_schema = PostsSchema(many=True)
         from urllib.parse import unquote
@@ -64,6 +65,7 @@ class PostsAPI(MethodView):
         return posts_schema.dumps(posts).data
         #pass
 
+    @auth_token_required
     def post(self, board_id):
         board = Boards().query.filter_by(title=board_id).first()
         if board == None:
@@ -107,6 +109,4 @@ class PostsAPI(MethodView):
         pass
 
 posts_view = PostsAPI.as_view('posts_api')
-
-@auth_token_required
 APP.add_url_rule('/topics/<string:board_id>', view_func=posts_view, methods=['GET', 'POST'])

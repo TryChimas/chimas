@@ -44,6 +44,9 @@ APP = Chimas(__name__)
 
 APP.config['DEBUG'] = True
 APP.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///{0}dummy.sqlite3-autocreate".format(ROOT_PATH)
+APP.config['SECRET_KEY'] = 'super-secret'
+APP.config['SECURITY_TOKEN_AUTHENTICATION_HEADER'] = 'lolwat'
+
 
 DB = SQLAlchemy(APP)
 MA = Marshmallow(APP)
