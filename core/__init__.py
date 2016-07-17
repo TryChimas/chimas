@@ -29,8 +29,6 @@ from sqlalchemy import (
 
 from sqlalchemy import func
 
-from flask.ext.security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
-
 Base = declarative_base()
 
 #APP = Flask(__name__)
@@ -45,8 +43,6 @@ APP = Chimas(__name__)
 APP.config['DEBUG'] = True
 APP.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///{0}dummy.sqlite3-autocreate".format(ROOT_PATH)
 APP.config['SECRET_KEY'] = 'super-secret'
-APP.config['SECURITY_TOKEN_AUTHENTICATION_HEADER'] = 'lolwat'
-
 
 DB = SQLAlchemy(APP)
 MA = Marshmallow(APP)
@@ -71,9 +67,6 @@ from . import users
 #        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
 #        db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
 
-user_datastore = SQLAlchemyUserDatastore(DB, users.Users, roles.Roles)
-security = Security(APP, user_datastore)
-
 #class AppError(Exception):
 #    pass
 
@@ -83,9 +76,9 @@ security = Security(APP, user_datastore)
 #def create_user():
 DB.create_all()
 
-try:
-    user_datastore.create_user(login='admin', email='kassivs@gmail.com', password='p4ssw0rd')
-    DB.session.commit()
+#try:
+#    user_datastore.create_user(login='admin', email='kassivs@gmail.com', password='p4ssw0rd')
+#    DB.session.commit()
 
-except:
-    pass
+#except:
+#    pass

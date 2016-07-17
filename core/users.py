@@ -15,9 +15,9 @@ from sqlalchemy import (
 
 from sqlalchemy import func
 
-from flask.ext.security import UserMixin
+#from flask.ext.security import UserMixin
 
-from .roles import Roles, Roles_Users
+#from .roles import Roles, Roles_Users
 
 class Users(CommonTable, UserMixin):
     __tablename__ = 'users'
@@ -29,8 +29,8 @@ class Users(CommonTable, UserMixin):
     email = Column(String, unique=True)
     password = Column(String)
     active = Column(String)
-    roles = DB.relationship('Roles', secondary="roles_users",
-                            backref=DB.backref('users', lazy='dynamic'))
+    #roles = DB.relationship('Roles', secondary="roles_users",
+    #                        backref=DB.backref('users', lazy='dynamic'))
 
 
 class UsersSchema(MA.ModelSchema):

@@ -8,9 +8,6 @@ from flask.views import MethodView
 from marshmallow.validate import Validator, ValidationError
 from marshmallow import pre_load, post_load, validates_schema
 
-from flask.ext.security.decorators import  auth_token_required
-
-
 from sqlalchemy import (
         Column,
         String,
@@ -54,7 +51,6 @@ class PostsSchema(MA.ModelSchema):
 
 class PostsAPI(MethodView):
 
-    @auth_token_required
     def get(self, board_id):
         posts_schema = PostsSchema(many=True)
         from urllib.parse import unquote
@@ -65,7 +61,6 @@ class PostsAPI(MethodView):
         return posts_schema.dumps(posts).data
         #pass
 
-    @auth_token_required
     def post(self, board_id):
         board = Boards().query.filter_by(title=board_id).first()
         if board == None:
@@ -108,5 +103,5 @@ class PostsAPI(MethodView):
         return "hey"
         pass
 
-posts_view = PostsAPI.as_view('posts_api')
+#posts_view = PostsAPI.as_view('posts_api')
 APP.add_url_rule('/topics/<string:board_id>', view_func=posts_view, methods=['GET', 'POST'])

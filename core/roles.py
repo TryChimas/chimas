@@ -17,11 +17,11 @@ from sqlalchemy import func
 
 from flask.ext.security import RoleMixin
 
-class Roles_Users(CommonTable):
-    __tablename__ = 'roles_users'
+#class Roles_Users(CommonTable):
+#    __tablename__ = 'roles_users'
 
-    user_id = Column(Integer, DB.ForeignKey('users.id'))
-    role_id = Column(Integer, DB.ForeignKey('roles.id'))
+#    user_id = Column(Integer, DB.ForeignKey('users.id'))
+#    role_id = Column(Integer, DB.ForeignKey('roles.id'))
 
 #class Groups(CommonTable):
 #    __tablename__ = 'roles'
@@ -30,11 +30,11 @@ class Roles_Users(CommonTable):
 #    descriṕtion = Column(String)
 #    users = Column(String)
 
-class Roles(CommonTable, RoleMixin):
-    __tablename__ = 'roles'
+#class Roles(CommonTable, RoleMixin):
+#    __tablename__ = 'roles'
 
-    name = Column(String, primary_key=True, unique=True)
-    descriṕtion = Column(String)
+#    name = Column(String, primary_key=True, unique=True)
+#    descriṕtion = Column(String)
 #    users = Column(String, ForeignKey('users.login'))
 
 #    def is_authorized(user, is_authenticated, allowed_roles, resource, method, lookup):
