@@ -103,5 +103,5 @@ class PostsAPI(MethodView):
         return "hey"
         pass
 
-#posts_view = PostsAPI.as_view('posts_api')
+posts_view = PostsAPI.as_view('posts_api')
 APP.add_url_rule('/topics/<string:board_id>', view_func=posts_view, methods=['GET', 'POST'])

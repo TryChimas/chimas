@@ -19,7 +19,7 @@ from sqlalchemy import func
 
 #from .roles import Roles, Roles_Users
 
-class Users(CommonTable, UserMixin):
+class Users(CommonTable):
     __tablename__ = 'users'
 
     #id = Column(Integer, autoincrement=True, unique=True)
@@ -28,7 +28,7 @@ class Users(CommonTable, UserMixin):
     login = Column(String, unique=True)
     email = Column(String, unique=True)
     password = Column(String)
-    active = Column(String)
+    #active = Column(String)
     #roles = DB.relationship('Roles', secondary="roles_users",
     #                        backref=DB.backref('users', lazy='dynamic'))
 

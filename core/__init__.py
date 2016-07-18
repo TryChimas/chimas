@@ -60,7 +60,7 @@ class CommonTable(DB.Model):
 
 from . import boards
 from . import posts
-from . import roles
+#from . import roles
 from . import users
 
 #roles_users = db.Table('roles_users',
