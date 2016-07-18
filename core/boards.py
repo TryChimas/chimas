@@ -1,7 +1,5 @@
 from . import APP, DB, MA, CommonTable
 
-#from .boards import Boards
-
 from flask import request, abort
 from flask.views import MethodView
 

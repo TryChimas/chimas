@@ -1,5 +1,4 @@
 from . import APP, DB, MA, CommonTable
-#from . import Roles_Users
 
 from flask.views import MethodView
 
@@ -15,23 +14,13 @@ from sqlalchemy import (
 
 from sqlalchemy import func
 
-#from flask.ext.security import UserMixin
-
-#from .roles import Roles, Roles_Users
-
 class Users(CommonTable):
     __tablename__ = 'users'
 
-    #id = Column(Integer, autoincrement=True, unique=True)
-    #id = None
-    #login = Column(String, primary_key=True, unique=True)
-    login = Column(String, unique=True)
+    id = None
+    login = Column(String, primary_key=True, unique=True)
     email = Column(String, unique=True)
     password = Column(String)
-    #active = Column(String)
-    #roles = DB.relationship('Roles', secondary="roles_users",
-    #                        backref=DB.backref('users', lazy='dynamic'))
-
 
 class UsersSchema(MA.ModelSchema):
     class Meta:

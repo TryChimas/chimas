@@ -1,5 +1,6 @@
 from . import APP, DB, MA, CommonTable
 
+from .auth import auth
 from .boards import Boards
 
 from flask import request, abort
@@ -46,11 +47,9 @@ class PostsSchema(MA.ModelSchema):
         print(data)
         data['hash_id'] = sha256( data['post_text'].encode() ).hexdigest()
 
-    #def handle_error(self, exc, data): # PLEASE IMPLEMENT MEE!!!!!
-    #    raise AppError('Input error.')
-
 class PostsAPI(MethodView):
 
+    @auth.login_required
     def get(self, board_id):
         posts_schema = PostsSchema(many=True)
         from urllib.parse import unquote
