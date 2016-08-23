@@ -1,4 +1,5 @@
-from . import APP, DB, MA, CommonTable
+#from . import APP, DB, MA, CommonTable
+from . import APP, DB, CommonTable
 
 from .auth import auth
 from .boards import Boards

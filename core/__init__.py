@@ -8,8 +8,8 @@ ETC_PATH = ROOT_PATH + "etc/"
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
-from flask_marshmallow import fields
+#from flask_marshmallow import Marshmallow
+#from flask_marshmallow import fields
 
 from flask import request
 
@@ -39,10 +39,10 @@ APP = Chimas(__name__)
 
 APP.config['DEBUG'] = True
 APP.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///{0}dummy.sqlite3-autocreate".format(ROOT_PATH)
-APP.config['SECRET_KEY'] = 'super-secret'
+#APP.config['SECRET_KEY'] = 'super-secret'
 
 DB = SQLAlchemy(APP)
-MA = Marshmallow(APP)
+#MA = Marshmallow(APP)
 
 class CommonTable(DB.Model):
     __abstract__ =  True

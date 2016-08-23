@@ -1,4 +1,5 @@
-from . import APP, DB, MA, CommonTable
+#from . import APP, DB, MA, CommonTable
+from . import APP, DB, CommonTable
 
 from flask import request, abort
 from flask.views import MethodView
@@ -33,7 +34,7 @@ class BoardsAPI(MethodView):
         #boards = Boards().query.all()
         #return boards_schema.dumps(boards).data
         pass
-        
+
     def post(self):
         pass
 
