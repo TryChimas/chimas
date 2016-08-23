@@ -3,8 +3,8 @@ from . import APP, DB, MA, CommonTable
 from flask import request, abort
 from flask.views import MethodView
 
-from marshmallow.validate import Validator, ValidationError
-from marshmallow import pre_load, post_load, validates_schema
+#from marshmallow.validate import Validator, ValidationError
+#from marshmallow import pre_load, post_load, validates_schema
 
 from sqlalchemy import (
         Column,
@@ -22,17 +22,18 @@ class Boards(CommonTable):
     title = Column(String, primary_key=True, unique=True)
     description = Column(String)
 
-class BoardsSchema(MA.ModelSchema):
-    class Meta:
-        model = Boards
+#class BoardsSchema(MA.ModelSchema):
+#    class Meta:
+#        model = Boards
 
 class BoardsAPI(MethodView):
 
     def get(self):
-        boards_schema = BoardsSchema(many=True)
-        boards = Boards().query.all()
-        return boards_schema.dumps(boards).data
-
+        #boards_schema = BoardsSchema(many=True)
+        #boards = Boards().query.all()
+        #return boards_schema.dumps(boards).data
+        pass
+        
     def post(self):
         pass
 

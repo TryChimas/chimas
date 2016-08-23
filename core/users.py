@@ -2,8 +2,8 @@ from . import APP, DB, MA, CommonTable
 
 from flask.views import MethodView
 
-from marshmallow.validate import Validator, ValidationError
-from marshmallow import pre_load, post_load, validates_schema
+#from marshmallow.validate import Validator, ValidationError
+#from marshmallow import pre_load, post_load, validates_schema
 
 from sqlalchemy import (
         Column,
@@ -22,17 +22,17 @@ class Users(CommonTable):
     email = Column(String, unique=True)
     password = Column(String)
 
-class UsersSchema(MA.ModelSchema):
-    class Meta:
-        model = Users
-
-    @validates_schema
-    def my_func(self):
-        pass
-
-    @pre_load
-    def preload_values(self):
-        pass
+#class UsersSchema(MA.ModelSchema):
+#    class Meta:
+#        model = Users
+#
+#    @validates_schema
+#    def my_func(self):
+#        pass
+#
+#    @pre_load
+#    def preload_values(self):
+#        pass
 
 class UsersAPI(MethodView):
     def get(self):
