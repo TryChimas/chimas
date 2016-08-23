@@ -1,9 +1,9 @@
 import sys
 
 # all our _PATH globals should end with '/', our _FILEPATH(s) should not
-print(sys.path[0])
+#print(sys.path[0])
 ROOT_PATH = sys.path[0] + "/"
-INCLUDE_PATH = ROOT_PATH + "inc/"
+#INCLUDE_PATH = ROOT_PATH + "inc/"
 ETC_PATH = ROOT_PATH + "etc/"
 
 from flask import Flask
