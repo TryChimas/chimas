@@ -1,11 +1,7 @@
-#from . import APP, DB, MA, CommonTable
 from . import APP, DB, CommonTable
 
 from flask import request, abort
 from flask.views import MethodView
-
-#from marshmallow.validate import Validator, ValidationError
-#from marshmallow import pre_load, post_load, validates_schema
 
 from sqlalchemy import (
         Column,
@@ -23,20 +19,13 @@ class Boards(CommonTable):
     title = Column(String, primary_key=True, unique=True)
     description = Column(String)
 
-#class BoardsSchema(MA.ModelSchema):
-#    class Meta:
-#        model = Boards
-
 class BoardsAPI(MethodView):
 
     def get(self):
-        #boards_schema = BoardsSchema(many=True)
-        #boards = Boards().query.all()
-        #return boards_schema.dumps(boards).data
-        pass
+        print('posts API [get]')
 
     def post(self):
-        pass
+        print('posts API [post]')
 
 boards_view = BoardsAPI.as_view('boards_api')
 APP.add_url_rule('/boards/', view_func=boards_view, methods=['GET', 'POST'])

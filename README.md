@@ -1,7 +1,7 @@
 # Chimas BBS Server
 
 
-Chimas BBS server is a simple, extensible and easily maintainable API-based discussion board server, focusing mainly on standalone clients as command line interface, tui, and web.
+Chimas BBS server is a simple, extensible and easily maintainable API-based discussion board server, focusing mainly on standalone clients as for command line interface, tui, and web.
 
 ### Dependencies:
 
