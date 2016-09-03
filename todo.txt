@@ -1,0 +1,30 @@
+users:
+	- REGISTER/ADD (POST /users/<login_id>? - lets have at least ip address to harden sec. against mass registration)
+	- EDIT (PATCH?)
+	- DELETE (DELETE)
+
+login:
+	- LOGIN (post)
+	- LOGOUT (post? DELETE user:token?)
+	- RECOVER PASSWORD
+
+boards:
+	- LIST (GET?)
+	- ADD (PUT)
+	- EDIT (PATCH?)
+	- DELETE (DELETE?)
+
+posts:
+	- LIST  (GET? where?)
+	- NEW TOPIC (POST? PUT <ID>?)
+	- REPLY (POST? PUT <parent_id>?)
+	- DELETE (DELETE)
+
+topics:
+	RELATIONSHIP between boards and posts (/topics/<board_id> ?)
+	- LIST THREADS/TOPICS (GET /topics/<board_id>)
+	- NEW TOPIC (POST /topics/<board_id>)
+
+groups:
+	- ADD (POST; user, which permission (which function, which args, eg. 'moderator','first board'), then check for permission to see if the user has it)
+	- DELETE(delete)
