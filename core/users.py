@@ -41,12 +41,15 @@ class UsersSchema(CommonSchema):
 def register_user():
     required_fields = ['username', 'password']
 
-    for required_field in required_fields:
-        if not request.form[required_field]:
+    user_data = {}
+    for field in required_fields:
+        if not request.form[field]:
             abort(400)
+        else:
+            user_data.update( { field : request.form[field] })
 
     #if request.form['username'] and request.form['password']:
-    user_data = { 'username': request.form['username'], 'password': request.form['password'] }
+    #user_data = { 'username': request.form['username'], 'password': request.form['password'] }
     newuser = UsersSchema(many=False).load(user_data).data
     #newuser = Users(username=request.form['username'], password=request.form['password'])
     DB.session.add(newuser)
