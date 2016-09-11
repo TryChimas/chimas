@@ -44,6 +44,7 @@ class CommonTable(DB.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     created = Column(DateTime, default = func.now())
     updated = Column(DateTime, default = func.now(), onupdate = func.now())
+    deleted = Column(Integer, default = 0)
 
 from . import users
 from . import boards
