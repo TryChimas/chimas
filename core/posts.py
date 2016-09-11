@@ -1,19 +1,16 @@
 from . import APP, DB, CommonTable
 
-from .auth import auth
-from .boards import Boards
-
-from flask import request, abort
-from flask.views import MethodView
-
 from sqlalchemy import (
         Column,
         String,
         Integer,
         ForeignKey,
-        DateTime )
+        DateTime,
+        func )
 
-from sqlalchemy import func
+from marshmallow import fields, Schema
+
+from flask import request
 
 class Posts(CommonTable):
     __tablename__ = 'posts'
@@ -28,14 +25,15 @@ class Posts(CommonTable):
     post_text = Column(String)
     hash_id = Column(String)
 
-class PostsAPI(MethodView):
+@APP.route('/posts/<string:post_id>/reply', methods=['POST'])
+def reply_to_post(post_id):
+    return "replying to post '{0}'\n".format(post_id)
 
-    @auth.login_required
-    def get(self, board_id):
-        print('posts API [get]')
+@APP.route('/posts/<string:post_id>/edit', methods=['POST'])
+def edit_post(post_id):
+    return "editing post '{0}'\n".format(post_id)
 
-    def post(self, board_id):
-        print('posts API [post]')
 
-posts_view = PostsAPI.as_view('posts_api')
-APP.add_url_rule('/topics/<string:board_id>', view_func=posts_view, methods=['GET', 'POST'])
+@APP.route('/posts/<string:post_id>/delete', methods=['POST'])
+def delete_post(post_id):
+    return "deleting post '{0}'\n".format(post_id)

@@ -1,16 +1,16 @@
 from . import APP, DB, CommonTable
 
-from flask import request, abort
-from flask.views import MethodView
-
 from sqlalchemy import (
         Column,
         String,
         Integer,
         ForeignKey,
-        DateTime )
+        DateTime,
+        func )
 
-from sqlalchemy import func
+from marshmallow import fields, Schema
+
+from flask import request
 
 class Boards(CommonTable):
     __tablename__ = 'boards'
@@ -19,13 +19,9 @@ class Boards(CommonTable):
     title = Column(String, primary_key=True, unique=True)
     description = Column(String)
 
-class BoardsAPI(MethodView):
-
-    def get(self):
-        print('posts API [get]')
-
-    def post(self):
-        print('posts API [post]')
-
-boards_view = BoardsAPI.as_view('boards_api')
-APP.add_url_rule('/boards/', view_func=boards_view, methods=['GET', 'POST'])
+@APP.route('/boards/new', methods=['POST'])
+def create_board():
+    if request.form['title'] and request.form['description']:
+            newboard = Boards(title=request.form['title'], description=request.form['description'])
+            DB.session.add(newboard)
+            DB.session.commit()

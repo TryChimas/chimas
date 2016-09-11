@@ -23,7 +23,7 @@ from sqlalchemy import (
 
 from marshmallow import fields, Schema
 
-from flask.views import MethodView
+#from flask.views import MethodView
 
 Base = declarative_base()
 
@@ -45,29 +45,10 @@ class CommonTable(DB.Model):
     created = Column(DateTime, default = func.now())
     updated = Column(DateTime, default = func.now(), onupdate = func.now())
 
-# users.py
-class Users(CommonTable):
-    __tablename__ = 'users'
-
-    id = None
-    username = Column(String, primary_key=True, unique=True)
-    #email = Column(String, unique=True)
-    password = Column(String)
-
-class UsersSchema(Schema):
-    username = fields.Str()
-    password = fields.Str()
-
-    created = fields.DateTime()
-    updated = fields.DateTime()
-
-class UsersAPI(MethodView):
-    def post(self):
-        user_schema = UsersSchema()
-        print('users API [post]')
-
-users_view = UsersAPI.as_view('users_api')
-APP.add_url_rule('/users', view_func=users_view, methods=['POST'])
+from . import users
+from . import boards
+from . import topics
+from . import posts
 
 DB.create_all()
 

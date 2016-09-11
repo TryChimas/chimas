@@ -17,8 +17,9 @@ boards:
 
 posts:
 	- NEW TOPIC (see 'topics:')
-	- REPLY (POST /posts/<post_id>)
-	- DELETE (POST /posts/delete <post_id>)
+	- REPLY (POST /posts/<post_id>/reply)
+	- EDIT (POST /posts/<post_id>/edit)
+	- DELETE (POST /posts/<post_id>/delete)
 
 topics (relation BOARDS x POSTS):
 	RELATIONSHIP between boards and posts
@@ -27,8 +28,8 @@ topics (relation BOARDS x POSTS):
 	- NEW TOPIC (POST /boards/<board_id>/topics)
 
 threads:
-	- GET THREAD (GET /threads/<post_id>? this is thread's "OP" and it's children) 
-	- GET THREAD TREE (GET /threads/<post_id>/tree? this is thread's "OP" parent and it's children, maybe only metadata (titles and ids)) 
+	- GET THREAD (GET /threads/<post_id>? this is thread's "OP" and it's children)
+	- GET THREAD TREE (GET /threads/<post_id>/tree? this is thread's "OP" parent and it's children, maybe only metadata (titles and ids))
 
 groups:
 	- LIST GROUPS (GET /groups - return "[group] [arguments] [[userlist] or [metadata]]")
