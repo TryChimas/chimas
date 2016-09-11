@@ -6,6 +6,7 @@ users:
 login:
 	- LOGIN (POST /users/login)
 	- LOGOUT (POST /users/logout {'login':'','token':''} user:token?)
+	- LOGOUT FROM ALL (POST /users/logoutall {'login':'','token':''} user:token?)
 	- RECOVER PASSWORD (POST /users/recover {'email':''})
 
 boards:
@@ -33,7 +34,9 @@ threads:
 
 groups:
 	- LIST GROUPS (GET /groups - return "[group] [arguments] [[userlist] or [metadata]]")
-	- LIST GROUP USERS (GET /groups/<group_id> - return "[group] [arguments] [userlist] [extra metadata]")
+	- LIST GROUP USERS (GET /groups/<group_id>/<arguments> - return "[group] [arguments] [userlist] [extra metadata]")
+	- LIST USER GROUPS (GET /groups/by_username/<user_id>)
+
 	- ADD USER TO "[group] [arguments]" (POST; user, which permission (which function, which args, eg. 'moderator','first board'), then check for permission to see if the user has it)
 	- DELETE(delete)
 
