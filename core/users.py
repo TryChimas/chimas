@@ -10,7 +10,7 @@ from sqlalchemy import (
 
 from marshmallow import fields, Schema, post_load, validates
 
-from flask import request
+from flask import request, abort
 
 class Users(CommonTable):
     __tablename__ = 'users'
@@ -23,10 +23,7 @@ class Users(CommonTable):
 class UsersSchema(CommonSchema):
     id = None
     username = fields.Str()
-    password = fields.Str()
-
-#    created = fields.DateTime()
-#    updated = fields.DateTime()
+    password = fields.Str(load_only=True) # write-only field
 
     @post_load
     def make_user(self, data):
@@ -42,9 +39,15 @@ class UsersSchema(CommonSchema):
 
 @APP.route('/users/new', methods=['POST'])
 def register_user():
-    if request.form['username'] and request.form['password']:
-            user_data = { 'username': request.form['username'], 'password': request.form['password'] }
-            newuser = UsersSchema(many=False).load(user_data).data
-            #newuser = Users(username=request.form['username'], password=request.form['password'])
-            DB.session.add(newuser)
-            DB.session.commit()
+    required_fields = ['username', 'password']
+
+    for required_field in required_fields:
+        if not request.form[required_field]:
+            abort(400)
+
+    #if request.form['username'] and request.form['password']:
+    user_data = { 'username': request.form['username'], 'password': request.form['password'] }
+    newuser = UsersSchema(many=False).load(user_data).data
+    #newuser = Users(username=request.form['username'], password=request.form['password'])
+    DB.session.add(newuser)
+    DB.session.commit()

@@ -50,9 +50,9 @@ class CommonSchema(Schema):
     class Meta:
         strict = True
     id = fields.Integer()
-    created = fields.DateTime()
-    updated = fields.DateTime()
-    deleted = fields.Integer()
+    created = fields.DateTime(dump_only=True) # read-only fields
+    updated = fields.DateTime(dump_only=True)
+    deleted = fields.Integer(dump_only=True)
 
 from . import users
 from . import boards
