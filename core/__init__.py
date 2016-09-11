@@ -9,17 +9,21 @@ ETC_PATH = ROOT_PATH + "etc/"
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 
-from .config import ConfigParser
+#from .config import ConfigParser
 
 from sqlalchemy.ext.declarative import declarative_base
 
 from sqlalchemy import (
-        Column,
-        String,
-        Integer,
-        ForeignKey,
-        DateTime,
-        func )
+    Column,
+    String,
+    Integer,
+    ForeignKey,
+    DateTime,
+    func )
+
+from marshmallow import fields, Schema
+
+from flask.views import MethodView
 
 Base = declarative_base()
 
@@ -40,19 +44,35 @@ class CommonTable(DB.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     created = Column(DateTime, default = func.now())
     updated = Column(DateTime, default = func.now(), onupdate = func.now())
-    etag = Column(String)
-    deleted = Column(String)
 
-from . import boards
-from . import posts
-from . import users
+# users.py
+class Users(CommonTable):
+    __tablename__ = 'users'
 
-from . import auth
+    id = None
+    username = Column(String, primary_key=True, unique=True)
+    #email = Column(String, unique=True)
+    password = Column(String)
+
+class UsersSchema(Schema):
+    username = fields.Str()
+    password = fields.Str()
+
+    created = fields.DateTime()
+    updated = fields.DateTime()
+
+class UsersAPI(MethodView):
+    def post(self):
+        user_schema = UsersSchema()
+        print('users API [post]')
+
+users_view = UsersAPI.as_view('users_api')
+APP.add_url_rule('/users', view_func=users_view, methods=['POST'])
 
 DB.create_all()
 
 try:
-    dummyuser = users.Users(login='admin', email='kassivs@gmail.com', password='p4ssw0rd')
+    dummyuser = users.Users(username='admin', password='p4ssw0rd')
     DB.session.add(dummyuser)
     DB.session.commit()
 except:

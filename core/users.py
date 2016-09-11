@@ -16,7 +16,7 @@ class Users(CommonTable):
 
     id = None
     login = Column(String, primary_key=True, unique=True)
-    email = Column(String, unique=True)
+    #email = Column(String, unique=True)
     password = Column(String)
 
 class UsersAPI(MethodView):
