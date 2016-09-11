@@ -8,7 +8,7 @@ from sqlalchemy import (
         DateTime,
         func )
 
-from marshmallow import fields, Schema, post_load
+from marshmallow import fields, Schema, post_load, validates
 
 from flask import request
 
@@ -30,6 +30,14 @@ class UsersSchema(Schema):
     @post_load
     def make_user(self, data):
         return Users(**data)
+
+    @validates('username')
+    def validate_username(self, value):
+        from marshmallow.validate import Length as ValidateLength
+        from marshmallow.validate import Regexp as ValidateRegexp
+
+        ValidateLength(min=3,max=15).__call__(value)
+        ValidateRegexp(regex="^[a-zA-Z0-9_.-]+$").__call__(value)
 
 @APP.route('/users/new', methods=['POST'])
 def register_user():
