@@ -46,6 +46,14 @@ class CommonTable(DB.Model):
     updated = Column(DateTime, default = func.now(), onupdate = func.now())
     deleted = Column(Integer, default = 0)
 
+class CommonSchema(Schema):
+    class Meta:
+        strict = True
+    id = fields.Integer()
+    created = fields.DateTime()
+    updated = fields.DateTime()
+    deleted = fields.Integer()
+
 from . import users
 from . import boards
 from . import topics

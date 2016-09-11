@@ -1,4 +1,4 @@
-from . import APP, DB, CommonTable
+from . import APP, DB, CommonTable, CommonSchema
 
 from sqlalchemy import (
         Column,
@@ -20,12 +20,13 @@ class Users(CommonTable):
     #email = Column(String, unique=True)
     password = Column(String)
 
-class UsersSchema(Schema):
+class UsersSchema(CommonSchema):
+    id = None
     username = fields.Str()
     password = fields.Str()
 
-    created = fields.DateTime()
-    updated = fields.DateTime()
+#    created = fields.DateTime()
+#    updated = fields.DateTime()
 
     @post_load
     def make_user(self, data):
