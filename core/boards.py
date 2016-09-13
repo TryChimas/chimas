@@ -21,8 +21,8 @@ class Boards(CommonTable):
     description = Column(String)
 
 class BoardsSchema(CommonSchema):
-    title = fields.Str()
-    description = fields.Str()
+    title = fields.Str(validate=validators.board_title)
+    description = fields.Str(validate=validators.board_description)
 
     @post_load
     def make_board(self, data):

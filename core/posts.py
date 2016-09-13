@@ -34,7 +34,6 @@ def reply_to_post(post_id):
 def edit_post(post_id):
     return "editing post '{0}'\n".format(post_id)
 
-
 @APP.route('/posts/<string:post_id>/delete', methods=['POST'])
 def delete_post(post_id):
     return "deleting post '{0}'\n".format(post_id)
