@@ -1,4 +1,5 @@
-from . import APP, DB, CommonTable
+from . import APP, DB, CommonTable, CommonSchema
+from . import validators
 
 from sqlalchemy import (
         Column,
@@ -8,14 +9,14 @@ from sqlalchemy import (
         DateTime,
         func )
 
-from marshmallow import fields, Schema
+from marshmallow import fields, Schema, post_load
 
-from flask import request
+from flask import request, abort
 
 class Posts(CommonTable):
     __tablename__ = 'posts'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    #id = Column(Integer, primary_key=True, autoincrement=True)
     topic_id = Column(String)
     reply_to_id = Column(String, default='0')
 

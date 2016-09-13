@@ -1,4 +1,5 @@
-from . import APP, DB, CommonTable
+from . import APP, DB, CommonTable, CommonSchema
+from . import validators
 
 from sqlalchemy import (
         Column,
@@ -8,20 +9,37 @@ from sqlalchemy import (
         DateTime,
         func )
 
-from marshmallow import fields, Schema
+from marshmallow import fields, Schema, post_load
 
-from flask import request
+from flask import request, abort
 
 class Boards(CommonTable):
     __tablename__ = 'boards'
 
-    id = None
-    title = Column(String, primary_key=True, unique=True)
+    #id = None
+    title = Column(String, unique=True)
     description = Column(String)
+
+class BoardsSchema(CommonSchema):
+    title = fields.Str()
+    description = fields.Str()
+
+    @post_load
+    def make_board(self, data):
+        return Boards(**data)
 
 @APP.route('/boards/new', methods=['POST'])
 def create_board():
-    if request.form['title'] and request.form['description']:
-            newboard = Boards(title=request.form['title'], description=request.form['description'])
-            DB.session.add(newboard)
-            DB.session.commit()
+    required_fields = ['title', 'description']
+
+    board_data = {}
+    for field in required_fields:
+        if not request.form[field]:
+            abort(400)
+        else:
+            board_data.update( { field : request.form[field] })
+
+    newboard = BoardsSchema(many=False).load(board_data).data
+
+    DB.session.add(newboard)
+    DB.session.commit()

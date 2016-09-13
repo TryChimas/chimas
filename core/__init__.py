@@ -41,7 +41,7 @@ DB = SQLAlchemy(APP)
 class CommonTable(DB.Model):
     __abstract__ =  True
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, unique=True, autoincrement=True)
     created = Column(DateTime, default = func.now())
     updated = Column(DateTime, default = func.now(), onupdate = func.now())
     deleted = Column(Integer, default = 0)
@@ -49,7 +49,8 @@ class CommonTable(DB.Model):
 class CommonSchema(Schema):
     class Meta:
         strict = True
-        
+        #dump_only = ['id', 'created', 'updated', 'deleted']
+
     id = fields.Integer(dump_only=True)
     created = fields.DateTime(dump_only=True) # read-only fields
     updated = fields.DateTime(dump_only=True)
