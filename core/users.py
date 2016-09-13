@@ -39,9 +39,6 @@ def register_user():
         else:
             user_data.update( { field : request.form[field] })
 
-    #if request.form['username'] and request.form['password']:
-    #user_data = { 'username': request.form['username'], 'password': request.form['password'] }
     newuser = UsersSchema(many=False).load(user_data).data
-    #newuser = Users(username=request.form['username'], password=request.form['password'])
     DB.session.add(newuser)
     DB.session.commit()

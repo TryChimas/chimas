@@ -26,6 +26,20 @@ class Posts(CommonTable):
     post_text = Column(String)
     hash_id = Column(String)
 
+class PostsSchema(CommonSchema):
+    topic_id = fields.Str()
+    reply_to_id = fields.Str()
+
+    board_id = fields.Str()
+    author_id = fields.Str()
+    title = fields.Str(validate=validators.post_title)
+    post_text = fields.Str(validate=validators.post_text)
+    hash_id = fields.Str()
+
+    @post_load
+    def make_post(self, data):
+        return Posts(**data)
+
 @APP.route('/posts/<string:post_id>/reply', methods=['POST'])
 def reply_to_post(post_id):
     return "replying to post '{0}'\n".format(post_id)

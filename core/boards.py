@@ -40,6 +40,5 @@ def create_board():
             board_data.update( { field : request.form[field] })
 
     newboard = BoardsSchema(many=False).load(board_data).data
-
     DB.session.add(newboard)
     DB.session.commit()
