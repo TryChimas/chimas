@@ -49,7 +49,8 @@ class CommonTable(DB.Model):
 class CommonSchema(Schema):
     class Meta:
         strict = True
-    id = fields.Integer()
+        
+    id = fields.Integer(dump_only=True)
     created = fields.DateTime(dump_only=True) # read-only fields
     updated = fields.DateTime(dump_only=True)
     deleted = fields.Integer(dump_only=True)
