@@ -43,8 +43,6 @@ def show_topic(board_id, topic_id):
     topic_dump_json = PostsSchema().dumps(topic).data
     return topic_dump_json
 
-    #return "Showing topic '{0}' from board '{1}'\n".format(topic_id, board_id)
-
 @APP.route('/boards/<string:board_id>/topics/', methods=['POST'])
 def new_topic(board_id):
 

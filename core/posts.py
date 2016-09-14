@@ -8,6 +8,7 @@ from sqlalchemy import (
         ForeignKey,
         DateTime,
         func )
+from sqlalchemy.orm import relationship
 
 from marshmallow import fields, Schema, post_load
 
@@ -16,15 +17,16 @@ from flask import request, abort
 class Posts(CommonTable):
     __tablename__ = 'posts'
 
-    #id = Column(Integer, primary_key=True, autoincrement=True)
     topic_id = Column(String)
-    reply_to_id = Column(String, default='0')
+    reply_to_id = Column(String, ForeignKey('posts.id'), default='0')
 
     board_id = Column(String)
     author_id = Column(String)
     title = Column(String)
     post_text = Column(String)
     hash_id = Column(String)
+
+    children = relationship("Posts")
 
 class PostsSchema(CommonSchema):
     topic_id = fields.Int()
@@ -35,6 +37,8 @@ class PostsSchema(CommonSchema):
     title = fields.Str(validate=validators.post_title)
     post_text = fields.Str(validate=validators.post_text)
     hash_id = fields.Str()
+
+    children = fields.Nested('PostsSchema', many=True)
 
     @post_load
     def make_post(self, data):
