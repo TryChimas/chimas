@@ -21,7 +21,8 @@ posts:
 	- REPLY (POST /posts/<post_id>/reply)
 	- EDIT (POST /posts/<post_id>/edit)
 	- DELETE (POST /posts/<post_id>/delete)
-
+	- GET POST (GET /posts/<post/id>)
+	
 topics (relation BOARDS x POSTS):
 	RELATIONSHIP between boards and posts
 	- LIST TOPICS (GET /boards/<board_id>/topics maybe extra metadata as title, description, no. of posts, replies etc)

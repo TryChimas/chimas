@@ -1,5 +1,6 @@
 from . import APP, DB, CommonTable
 
+from sqlalchemy.orm import relationship, noload, joinedload
 from marshmallow import fields, Schema
 
 from flask import request, abort
@@ -7,16 +8,12 @@ from flask import request, abort
 from .boards import Boards
 from .posts import Posts, PostsSchema
 
+class Topics(Posts):
+    __tablename__ = 'posts'
 
-#    topic_id = fields.Str()
-#     reply_to_id = fields.Str()
-#
-#     board_id = fields.Str()
-#     author_id = fields.Str()
-#     title = fields.Str(validate=validators.post_title)
-#     post_text = fields.Str(validate=validators.post_text)
-#     hash_id = fields.Str()
+    children = relationship("Topics", lazy='joined', join_depth=5)
 
+# list topics
 @APP.route('/boards/<string:board_id>/topics/', methods=['GET'])
 def list_board_topics(board_id):
 
@@ -24,11 +21,17 @@ def list_board_topics(board_id):
     if not board_exists:
         abort(404)
 
-    board_topics = Posts.query.filter_by( board_id=board_id, reply_to_id='0' ).limit(3).all()
+    board_topics = Topics.query.\
+            filter_by( board_id=board_id, reply_to_id='0' ).\
+            order_by(Topics.created.desc()).\
+            options(noload('children')).\
+            limit(3).\
+            all()
 
     topics_dump_json = PostsSchema(many=True).dumps(board_topics).data
     return topics_dump_json
 
+# show topic
 @APP.route('/boards/<string:board_id>/topics/<string:topic_id>', methods=['GET'])
 def show_topic(board_id, topic_id):
 
@@ -36,13 +39,21 @@ def show_topic(board_id, topic_id):
     if not board_exists:
         abort(404)
 
-    topic = Posts.query.filter_by( board_id=board_id, id=topic_id, reply_to_id='0' ).first()
+    topic = Topics.query.\
+        filter_by( board_id=board_id, id=topic_id, reply_to_id='0' ).\
+        order_by(Topics.created).\
+        options(joinedload('children')).\
+        enable_eagerloads(True).\
+        first()
+        #enable_eagerloads(True).\
+
     if not topic:
         abort(404)
 
     topic_dump_json = PostsSchema().dumps(topic).data
     return topic_dump_json
 
+# new topic
 @APP.route('/boards/<string:board_id>/topics/', methods=['POST'])
 def new_topic(board_id):
 

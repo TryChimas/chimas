@@ -26,7 +26,7 @@ class Posts(CommonTable):
     post_text = Column(String)
     hash_id = Column(String)
 
-    children = relationship("Posts", lazy='joined', join_depth=1)
+    children = relationship("Posts", lazy='noload')
 
 class PostsSchema(CommonSchema):
     topic_id = fields.Int()
@@ -44,6 +44,7 @@ class PostsSchema(CommonSchema):
     def make_post(self, data):
         return Posts(**data)
 
+# reply to post
 @APP.route('/posts/<string:post_id>/reply', methods=['POST'])
 def reply_to_post(post_id):
 
@@ -52,6 +53,21 @@ def reply_to_post(post_id):
         abort(404)
 
     post_dump = PostsSchema().dump(post_to_reply_to).data
+
+    # let's see if we reached max threading deepness or we can reply to the post
+    # FIXME: write a better algorithm for this recursion
+
+    MAX_THREADING_LEVEL = 3
+
+    parent_id = post_dump['reply_to_id']
+    count = 1
+
+    while parent_id != 0:
+        parent_id = PostsSchema().dump( Posts.query.filter_by( id=parent_id ).first() ).data['reply_to_id']
+        if count >= MAX_THREADING_LEVEL:
+            abort(400)
+        count += 1
+
 
     required_fields = ['post_text']
 
@@ -80,10 +96,12 @@ def reply_to_post(post_id):
     DB.session.add(newpost)
     DB.session.commit()
 
+# edit post
 @APP.route('/posts/<string:post_id>/edit', methods=['POST'])
 def edit_post(post_id):
     return "editing post '{0}'\n".format(post_id)
 
+# delete post
 @APP.route('/posts/<string:post_id>/delete', methods=['POST'])
 def delete_post(post_id):
     return "deleting post '{0}'\n".format(post_id)

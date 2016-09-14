@@ -23,8 +23,6 @@ from sqlalchemy import (
 
 from marshmallow import fields, Schema
 
-#from flask.views import MethodView
-
 Base = declarative_base()
 
 class Chimas(Flask):
@@ -60,6 +58,7 @@ from . import users
 from . import boards
 from . import topics
 from . import posts
+from . import threads
 
 DB.create_all()
 
