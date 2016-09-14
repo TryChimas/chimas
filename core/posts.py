@@ -27,8 +27,8 @@ class Posts(CommonTable):
     hash_id = Column(String)
 
 class PostsSchema(CommonSchema):
-    topic_id = fields.Str()
-    reply_to_id = fields.Str()
+    topic_id = fields.Int()
+    reply_to_id = fields.Int()
 
     board_id = fields.Str()
     author_id = fields.Str()
@@ -42,7 +42,39 @@ class PostsSchema(CommonSchema):
 
 @APP.route('/posts/<string:post_id>/reply', methods=['POST'])
 def reply_to_post(post_id):
-    return "replying to post '{0}'\n".format(post_id)
+
+    post_to_reply_to = Posts.query.filter_by( id=post_id ).first()
+    if not post_to_reply_to:
+        abort(404)
+
+    post_dump = PostsSchema().dump(post_to_reply_to).data
+
+    required_fields = ['post_text']
+
+    post_data = {}
+    for field in required_fields:
+        if not request.form[field]:
+            abort(400)
+        else:
+            post_data.update( { field : request.form[field] })
+
+    if post_dump['reply_to_id'] == 0:
+        this_topic_id = post_dump['id']
+    else:
+        this_topic_id = post_dump['topic_id']
+
+    post_data.update({
+        'title': 're {0}'.format(post_dump['title']),
+        'topic_id': this_topic_id,
+        'reply_to_id': post_dump['id'],
+        'board_id': post_dump['board_id'],
+        'author_id': 'admin',
+        'hash_id': 'dUmMyHash'
+    })
+
+    newpost = PostsSchema(many=False).load(post_data).data
+    DB.session.add(newpost)
+    DB.session.commit()
 
 @APP.route('/posts/<string:post_id>/edit', methods=['POST'])
 def edit_post(post_id):
