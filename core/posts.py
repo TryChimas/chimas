@@ -26,7 +26,7 @@ class Posts(CommonTable):
     post_text = Column(String)
     hash_id = Column(String)
 
-    children = relationship("Posts")
+    children = relationship("Posts", lazy='joined', join_depth=1)
 
 class PostsSchema(CommonSchema):
     topic_id = fields.Int()
