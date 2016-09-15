@@ -15,7 +15,7 @@ from flask import request
 class Groups(CommonTable):
     __tablename__ = 'groups'
 
-    id = None
+    #id = None
     role = Column(String, primary_key=True, unique=True)
     arguments = Column(String)
     username = Column(String)

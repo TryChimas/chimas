@@ -8,6 +8,8 @@ from flask import request, abort
 from .boards import Boards
 from .posts import Posts, PostsSchema
 
+from .auth import auth
+
 class Topics(Posts):
     __tablename__ = 'posts'
 
@@ -33,6 +35,7 @@ def list_board_topics(board_id):
 
 # show topic
 @APP.route('/boards/<string:board_id>/topics/<string:topic_id>', methods=['GET'])
+@auth.login_required
 def show_topic(board_id, topic_id):
 
     board_exists = Boards.query.filter_by( id=board_id ).first()

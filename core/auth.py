@@ -1,17 +1,38 @@
-#import sys
+from . import APP, DB, CommonTable, CommonSchema
 
-#from flask import current_app as app
-#from flask import request
+from flask_httpauth import HTTPTokenAuth
 
-from flask_httpauth import HTTPBasicAuth
+from werkzeug.http import parse_authorization_header
 
 from .users import Users
 
-auth = HTTPBasicAuth()
+#class AuthTokens(CommonTable):
+#    __tablename__ = 'authtokens'
 
-@auth.get_password
-def get_pw(username):
-        this_user = Users().query.filter_by(login=username).first()
-        if this_user:
-            return this_user.password
-        return None
+    #id = None
+#    username = Column(String)
+#    token = Column(String)
+#    expires = Column(String)
+
+class ChimasAuth(HTTPTokenAuth):
+    def __init__(self, scheme='Token', realm=None):
+        super(ChimasAuth, self).__init__(scheme=scheme, realm=realm)
+
+        self.verify_token(self.check_token)
+
+    #@super(ChimasAuth, self).verify_token
+    def check_token(self, token):
+        print('Good Morning')
+        return False
+
+    def verify_authorization(self, endpoint_function, roles_allowed=None):
+
+        if not roles_allowed:
+            abort(401)
+
+
+
+def check_authorization(read_roles, write_roles):
+    pass
+
+auth = ChimasAuth(scheme='Token')

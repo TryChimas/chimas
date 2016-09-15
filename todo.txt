@@ -22,7 +22,7 @@ posts:
 	- EDIT (POST /posts/<post_id>/edit)
 	- DELETE (POST /posts/<post_id>/delete)
 	- GET POST (GET /posts/<post/id>)
-	
+
 topics (relation BOARDS x POSTS):
 	RELATIONSHIP between boards and posts
 	- LIST TOPICS (GET /boards/<board_id>/topics maybe extra metadata as title, description, no. of posts, replies etc)
@@ -32,6 +32,7 @@ topics (relation BOARDS x POSTS):
 threads:
 	- GET THREAD (GET /threads/<post_id>? this is thread's "OP" and it's children)
 	- GET THREAD TREE (GET /threads/<post_id>/tree? this is thread's "OP" parent and it's children, maybe only metadata (titles and ids))
+	- GET THREAD UPTREE (GET /threads/<post_id>/uptree get from TOPIC POST tu current POST_ID this is an idea.)
 
 groups:
 	- LIST GROUPS (GET /groups - return "[group] [arguments] [[userlist] or [metadata]]")
