@@ -59,6 +59,8 @@ from . import boards
 from . import topics
 from . import posts
 from . import threads
+from . import auth
+from . import login
 
 DB.create_all()
 

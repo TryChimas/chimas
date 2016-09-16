@@ -22,7 +22,8 @@ class Users(CommonTable):
 class UsersSchema(CommonSchema):
     #id = None
     username = fields.Str(validate=validators.validate_username)
-    password = fields.Str(load_only=True) # write-only field
+    #password = fields.Str(load_only=True) # write-only field
+    password = fields.Str() # write-only field
 
     @post_load
     def make_user(self, data):
