@@ -5,7 +5,7 @@ from marshmallow import fields, Schema
 
 from flask import request, abort
 
-from .boards import Boards
+from .boards import Boards, BoardsSchema
 from .posts import Posts, PostsSchema
 
 from .auth import chimas_auth
@@ -35,7 +35,7 @@ def list_board_topics(board_id):
 
 # show topic
 @APP.route('/boards/<string:board_id>/topics/<string:topic_id>', methods=['GET'])
-@chimas_auth.verify_authorization(allowed_roles=['public'])
+@chimas_auth.verify_authorization(allowed_roles=[])
 def show_topic(board_id, topic_id):
 
     board_exists = Boards.query.filter_by( id=board_id ).first()

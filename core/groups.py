@@ -17,7 +17,7 @@ class Groups(CommonTable):
 
     #id = None
     role = Column(String, primary_key=True, unique=True)
-    arguments = Column(String)
+    arguments = Column(String) # FIXME: arguments is best if a json/dict,eg. {'board_id':'41'}
     username = Column(String)
 
 @APP.route('/groups', methods=['GET'])

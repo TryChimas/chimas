@@ -21,8 +21,8 @@ def login_user():
         else:
             user_req.update( { field : request.form[field] })
 
-    user_logging_in = Users.query.filter_by( username=user_req['username'] ).\
-        first()
+    user_logging_in = \
+        Users.query.filter_by( username=user_req['username'] ).first()
 
     if not user_logging_in:
         abort(401)
@@ -54,7 +54,7 @@ def login_user():
         abort(401)
 
 @APP.route('/users/logout', methods=['POST'])
-def logout_user_token():
+def unregister_user_token():
     required_fields = ['username', 'token']
 
     user_req = {}

@@ -15,6 +15,9 @@ from flask import request, abort, make_response, session
 from werkzeug.datastructures import Authorization
 
 from .users import Users
+from .boards import Boards
+from .groups import Groups
+
 
 class AuthTokens(CommonTable):
     __tablename__ = 'authtokens'
@@ -57,10 +60,11 @@ class ChimasAuth:
                     abort(401)
 
                 # verify if user has permission roles to acess endpoint
-                has_permission = verify_permision(user_token['username'], allowed_roles)
+                has_permission = self.verify_permission(user_token['username'], allowed_roles)
                 if not has_permission:
                     abort(401)
 
+                # else
                 return endpoint_function(*args, **kwargs)
 
             return decorated
@@ -87,14 +91,42 @@ class ChimasAuth:
     def process_token(self, token):
         username, auth_token = token.split(sep=':', maxsplit=1)
 
-        if AuthTokens.query.filter_by(username=username, token=auth_token).first():
-            return { 'username':username, 'auth_token':auth_token }
+        if AuthTokens.query.filter_by(username=username,\
+            token=auth_token).first():
 
+            return { 'username':username, 'auth_token':auth_token }
         # else
         return None
 
-    def verify_roles(username, allowed_roles):
-        pass
+    def verify_permission(self, username, allowed_roles):
+
+        if 'public' in allowed_roles:
+            return True
+
+        if 'admin' in allowed_roles and 'username' == 'admin':
+            # FIXME: use db groups/roles instead of static username
+            return True
+
+        if 'owner' in allowed_roles:
+            post_id = request.view_args['author_id']
+            author_id = request.view_args['author_id']
+            is_user_owner = Posts.query.filter_by(id=post_id,\
+                author_id=username).first()
+
+            if is_user_owner:
+                return True
+
+        if 'moderators' in allowed_roles:
+            board_id = request.view_args['board_id']
+            user_in_group = Groups.query.filter_by(role=moderators,\
+                username=username, arguments=board_id).first()
+            if user_in_group:
+                return True
+
+        import json
+        print(request.view_args) #ta-da!!
+        return True
+        #pass
 
 
 chimas_auth = ChimasAuth(scheme='Token')
