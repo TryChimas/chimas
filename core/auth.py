@@ -40,7 +40,7 @@ class ChimasAuth:
         self.realm = realm
 
     def verify_authorization(self, allowed_roles):
-
+        # http://stackoverflow.com/questions/10176226/how-to-pass-extra-arguments-to-python-decorator
         def actual_decorator(endpoint_function):
 
             @wraps(endpoint_function)
@@ -48,13 +48,21 @@ class ChimasAuth:
 
                 # process http header
                 auth = self.process_auth_http_header()
-                if auth and self.process_token(auth['token']):
-                    pass
-                else:
+                if not auth:
                     abort(401)
 
-                import json
-                return json.dumps(allowed_roles)
+                # process token to verify if user:token is valid
+                user_token = self.process_token(auth['token'])
+                if not user_token:
+                    abort(401)
+
+                # verify if user has permission roles to acess endpoint
+                has_permission = verify_permision(user_token['username'], allowed_roles)
+                if not has_permission:
+                    abort(401)
+
+                return endpoint_function(*args, **kwargs)
+
             return decorated
 
         return actual_decorator
@@ -80,9 +88,13 @@ class ChimasAuth:
         username, auth_token = token.split(sep=':', maxsplit=1)
 
         if AuthTokens.query.filter_by(username=username, token=auth_token).first():
-            return True
+            return { 'username':username, 'auth_token':auth_token }
 
         # else
-        return False
+        return None
+
+    def verify_roles(username, allowed_roles):
+        pass
+
 
 chimas_auth = ChimasAuth(scheme='Token')
