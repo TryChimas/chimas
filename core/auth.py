@@ -39,21 +39,25 @@ class ChimasAuth:
         self.scheme = scheme
         self.realm = realm
 
-    def verify_authorization(self, endpoint_function):
-        @wraps(endpoint_function)
-        def decorated(*args, **kwargs):
+    def verify_authorization(self, allowed_roles):
 
-            # process http header
-            auth = self.process_auth_http_header()
-            if not auth:
-                abort(401)
-            else:
-                # process auth token
-                self.process_token(auth['token'])
+        def actual_decorator(endpoint_function):
 
+            @wraps(endpoint_function)
+            def decorated(*args, **kwargs):
 
-            return endpoint_function(*args, **kwargs)
-        return decorated
+                # process http header
+                auth = self.process_auth_http_header()
+                if auth and self.process_token(auth['token']):
+                    pass
+                else:
+                    abort(401)
+
+                import json
+                return json.dumps(allowed_roles)
+            return decorated
+
+        return actual_decorator
 
     def process_auth_http_header(self):
         auth = None
@@ -65,14 +69,20 @@ class ChimasAuth:
                     split(sep=None, maxsplit=1)
                 auth = Authorization(auth_type, {'token': token})
             except ValueError:
-                pass
-
+                auth = None
+                #pass
+        else:
             auth = None
 
-        print(auth['token']) #works
         return auth
 
     def process_token(self, token):
-        pass
+        username, auth_token = token.split(sep=':', maxsplit=1)
+
+        if AuthTokens.query.filter_by(username=username, token=auth_token).first():
+            return True
+
+        # else
+        return False
 
 chimas_auth = ChimasAuth(scheme='Token')
