@@ -8,22 +8,24 @@ from sqlalchemy import (
         DateTime,
         func )
 
-#from flask_httpauth import HTTPTokenAuth
 from marshmallow import fields, Schema, post_load
 
-#from werkzeug.http import parse_authorization_header
+from functools import wraps
+from flask import request, abort, make_response, session
+from werkzeug.datastructures import Authorization
 
 from .users import Users
 
 class AuthTokens(CommonTable):
     __tablename__ = 'authtokens'
 
-    #id = None
+    id = None
     username = Column(String)
-    token = Column(String)
+    token = Column(String, primary_key=True, unique=True, autoincrement=True)
     expires = Column(String)
 
 class AuthTokensSchema(CommonSchema):
+    id = None
     username = fields.Str()
     token = fields.Str()
     expires = fields.Str()
@@ -31,12 +33,6 @@ class AuthTokensSchema(CommonSchema):
     @post_load
     def make_authtoken(self, data):
         return AuthTokens(**data)
-
-from functools import wraps
-from hashlib import md5
-from random import Random, SystemRandom
-from flask import request, make_response, session
-from werkzeug.datastructures import Authorization
 
 class ChimasAuth:
     def __init__(self, scheme='Token', realm=None):
@@ -63,26 +59,20 @@ class ChimasAuth:
         auth = None
 
         if 'Authorization' in request.headers:
-
             try:
                 # https://docs.python.org/3.5/library/stdtypes.html#str.split
                 auth_type, token = request.headers['Authorization'].\
                     split(sep=None, maxsplit=1)
                 auth = Authorization(auth_type, {'token': token})
             except ValueError:
-                # The Authorization header is either empty or has no token
                 pass
 
-        # if requested auth method is not our supported one (Token)
-        # then lets give error 401
-        if auth and auth.type.lower() != self.scheme.lower():
-            #abort(401) #return None
-            return None
+            auth = None
 
         print(auth['token']) #works
         return auth
 
-        def process_token(self, token):
-            pass
+    def process_token(self, token):
+        pass
 
 chimas_auth = ChimasAuth(scheme='Token')

@@ -35,7 +35,7 @@ def list_board_topics(board_id):
 
 # show topic
 @APP.route('/boards/<string:board_id>/topics/<string:topic_id>', methods=['GET'])
-@chimas_auth.verify_authorization
+@chimas_auth.verify_authorization(allowed_roles=['public'])
 def show_topic(board_id, topic_id):
 
     board_exists = Boards.query.filter_by( id=board_id ).first()
