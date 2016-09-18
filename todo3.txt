@@ -1,0 +1,27 @@
+# implement contexts
+
+CONTEXTS MAY BE GENERATED BASED on ENDPOINTS
+
+## examples:
+
+/boards/new endpoint
+would become
+BOARDS.NEW (lowercased)
+
+/boards/<string:board_id>/topics/
+would become
+boards.topics
+OR
+boards.item.topics
+OR
+boards_item.topics
+
+/boards/<string:board_id>/topics/<string:topic_id>
+would become
+BOARDS.TOPICS.ITEM
+OR
+BOARDS.ITEM.TOPICS.ITEM
+OR
+BAORDS_ITEM.TOPICS.ITEM
+
+being _ITEM meaning we HAVE THE IF FOR THE CURRENT (specific) BOARD
