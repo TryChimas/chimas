@@ -8,7 +8,7 @@ from flask import request, abort
 from .boards import Boards, BoardsSchema
 from .posts import Posts, PostsSchema
 
-from .authorization import authorization
+from .authorization import auth
 
 class Topics(Posts):
     __tablename__ = 'posts'
@@ -36,7 +36,7 @@ def list_board_topics(board_id):
 # show topic
 @APP.route('/boards/<string:board_id>/topics/<string:topic_id>', methods=['GET'])
 #@authorization.verify_authorization(context="GET:boards.topics")
-@authorization.verify_authorization()
+@auth.verify_authorization()
 def show_topic(board_id, topic_id):
 
     board_exists = Boards.query.filter_by( id=board_id ).first()
