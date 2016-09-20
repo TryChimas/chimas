@@ -21,9 +21,6 @@ with open(DEFAULT_CONFIG_FILEPATH) as default_config_file:
 print("Opening user config file: {0}".format(USER_CONFIG_FILEPATH))
 with open(USER_CONFIG_FILEPATH) as user_config_file:
     user_config = toml.loads(user_config_file.read())
-#def parse_config(self, app, config):
-#     if 'listen' in config and 'port' in config:
-#         app.config['SERVER_NAME'] = "{0}:{1}".format(config['listen'], config['port'])
 
 chimas_config = default_config
 chimas_config.update(user_config)
