@@ -8,7 +8,7 @@ from flask import request, abort
 from .boards import Boards, BoardsSchema
 from .posts import Posts, PostsSchema
 
-from .auth import chimas_auth
+from .authentication import chimas_auth
 
 class Topics(Posts):
     __tablename__ = 'posts'
