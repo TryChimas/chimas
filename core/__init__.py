@@ -65,15 +65,17 @@ from . import login
 
 @APP.before_request
 def check_authentication():
-    has_authentication = authentication.chimas_auth.verify_authentication()
+    has_authentication = authentication.authentication.verify_authentication()
 
     if has_authentication:
-        g.authorized = True
+        g.is_authenticated = True
         g.username = has_authentication['username']
     else:
-        g.authorized = False
-        abort(500)
+        g.is_authenticated = False
+        #abort(500)
 
+    import pprint
+    pprint.pprint(request.method)
 
 DB.create_all()
 

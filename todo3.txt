@@ -25,3 +25,11 @@ OR
 BAORDS_ITEM.TOPICS.ITEM
 
 being _ITEM meaning we HAVE THE IF FOR THE CURRENT (specific) BOARD
+
+## ENDPOINT CONTEXTS
+DOT (.) MEANS ITEM
+(list of topics)
+/boards/<string:board_id>/topics/
+has context METHOD:words and . for items:
+
+GET:boards.topics

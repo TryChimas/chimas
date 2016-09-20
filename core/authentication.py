@@ -15,8 +15,8 @@ from flask import request, abort, make_response, session
 from werkzeug.datastructures import Authorization
 
 from .users import Users
-from .boards import Boards
-from .roles import Roles
+#from .boards import Boards
+#from .roles import Roles
 
 
 class AuthTokens(CommonTable):
@@ -81,4 +81,4 @@ class ChimasAuthentication:
         # else
         return None
 
-chimas_auth = ChimasAuthentication(scheme='Token')
+authentication = ChimasAuthentication(scheme='Token')

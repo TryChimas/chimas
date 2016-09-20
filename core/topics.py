@@ -8,7 +8,7 @@ from flask import request, abort
 from .boards import Boards, BoardsSchema
 from .posts import Posts, PostsSchema
 
-from .authentication import chimas_auth
+from .authorization import authorization
 
 class Topics(Posts):
     __tablename__ = 'posts'
@@ -35,7 +35,7 @@ def list_board_topics(board_id):
 
 # show topic
 @APP.route('/boards/<string:board_id>/topics/<string:topic_id>', methods=['GET'])
-#@chimas_auth.verify_authorization(allowed_roles=[])
+@authorization.verify_authorization(context="GET:boards.topics.")
 def show_topic(board_id, topic_id):
 
     board_exists = Boards.query.filter_by( id=board_id ).first()
@@ -57,7 +57,7 @@ def show_topic(board_id, topic_id):
     return topic_dump_json
 
 # new topic
-#@APP.route('/boards/<string:board_id>/topics/', methods=['POST'])
+@APP.route('/boards/<string:board_id>/topics/', methods=['POST'])
 def new_topic(board_id):
 
     board_exists = Boards.query.filter_by( id=board_id ).first()
