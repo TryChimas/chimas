@@ -6,7 +6,7 @@ ROOT_PATH = sys.path[0] + "/"
 #INCLUDE_PATH = ROOT_PATH + "inc/"
 ETC_PATH = ROOT_PATH + "etc/"
 
-from flask import Flask, request
+from flask import Flask, request, g, abort
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -62,6 +62,18 @@ from . import posts
 from . import threads
 from . import authentication
 from . import login
+
+@APP.before_request
+def check_authentication():
+    has_authentication = authentication.chimas_auth.verify_authentication()
+
+    if has_authentication:
+        g.authorized = True
+        g.username = has_authentication['username']
+    else:
+        g.authorized = False
+        abort(500)
+
 
 DB.create_all()
 

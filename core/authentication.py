@@ -37,39 +37,23 @@ class AuthTokensSchema(CommonSchema):
     def make_authtoken(self, data):
         return AuthTokens(**data)
 
-class ChimasAuth:
+class ChimasAuthentication:
     def __init__(self, scheme='Token', realm=None):
         self.scheme = scheme
         self.realm = realm
 
-    def verify_authorization(self, allowed_roles):
-        # http://stackoverflow.com/questions/10176226/how-to-pass-extra-arguments-to-python-decorator
-        def actual_decorator(endpoint_function):
+    def verify_authentication(self):
+        # process http header
+        auth = self.process_auth_http_header()
+        if not auth:
+            return False
 
-            @wraps(endpoint_function)
-            def decorated(*args, **kwargs):
+        # process token to verify if user:token is valid
+        user_token = self.process_token(auth['token'])
+        if not user_token:
+            return False
 
-                # process http header
-                auth = self.process_auth_http_header()
-                if not auth:
-                    abort(401)
-
-                # process token to verify if user:token is valid
-                user_token = self.process_token(auth['token'])
-                if not user_token:
-                    abort(401)
-
-                # verify if user has permission roles to acess endpoint
-                has_permission = self.verify_permission(user_token['username'], allowed_roles)
-                if not has_permission:
-                    abort(401)
-
-                # else
-                return endpoint_function(*args, **kwargs)
-
-            return decorated
-
-        return actual_decorator
+        return user_token
 
     def process_auth_http_header(self):
         auth = None
@@ -82,7 +66,6 @@ class ChimasAuth:
                 auth = Authorization(auth_type, {'token': token})
             except ValueError:
                 auth = None
-                #pass
         else:
             auth = None
 
@@ -98,35 +81,4 @@ class ChimasAuth:
         # else
         return None
 
-    def verify_permission(self, username, allowed_roles):
-
-        if 'public' in allowed_roles:
-            return True
-
-        if 'admin' in allowed_roles and 'username' == 'admin':
-            # FIXME: use db groups/roles instead of static username
-            return True
-
-        if 'owner' in allowed_roles:
-            post_id = request.view_args['author_id']
-            author_id = request.view_args['author_id']
-            is_user_owner = Posts.query.filter_by(id=post_id,\
-                author_id=username).first()
-
-            if is_user_owner:
-                return True
-
-        if 'moderators' in allowed_roles:
-            board_id = request.view_args['board_id']
-            user_in_group = Groups.query.filter_by(role=moderators,\
-                username=username, arguments=board_id).first()
-            if user_in_group:
-                return True
-
-        import json
-        print(request.view_args) #ta-da!!
-        return True
-        #pass
-
-
-chimas_auth = ChimasAuth(scheme='Token')
+chimas_auth = ChimasAuthentication(scheme='Token')
