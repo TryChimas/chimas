@@ -16,7 +16,7 @@ from werkzeug.datastructures import Authorization
 
 from .users import Users
 from .boards import Boards
-from .groups import Groups
+from .roles import Roles
 
 
 class AuthTokens(CommonTable):

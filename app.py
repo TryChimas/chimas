@@ -6,4 +6,5 @@ from core import APP
 if __name__ == "__main__":
     #import pprint
     #pprint.pprint(app.config, width=1)
+
     APP.run();

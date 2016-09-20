@@ -9,7 +9,6 @@ ETC_PATH = ROOT_PATH + "etc/"
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 
-#from .config import ConfigParser
 
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -33,6 +32,8 @@ APP = Chimas(__name__)
 
 APP.config['DEBUG'] = True
 APP.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///{0}dummy.sqlite3-autocreate".format(ROOT_PATH)
+
+from . import config
 
 DB = SQLAlchemy(APP)
 
