@@ -14,6 +14,8 @@ from marshmallow import fields, Schema, post_load
 
 from flask import request, abort
 
+from .authorization import authorization
+
 class Posts(CommonTable):
     __tablename__ = 'posts'
 
@@ -97,6 +99,7 @@ def reply_to_post(post_id):
     DB.session.commit()
 
 # edit post
+@authorization.verify_authorization()
 @APP.route('/posts/<string:post_id>/edit', methods=['POST'])
 def edit_post(post_id):
     return "editing post '{0}'\n".format(post_id)

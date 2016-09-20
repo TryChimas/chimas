@@ -11,13 +11,10 @@ from sqlalchemy import (
 from marshmallow import fields, Schema, post_load
 
 from functools import wraps
-from flask import request, abort, make_response, session
+from flask import request, abort, make_response
 from werkzeug.datastructures import Authorization
 
 from .users import Users
-#from .boards import Boards
-#from .roles import Roles
-
 
 class AuthTokens(CommonTable):
     __tablename__ = 'authtokens'

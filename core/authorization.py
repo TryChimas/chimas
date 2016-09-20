@@ -8,10 +8,9 @@ from sqlalchemy import (
         DateTime,
         func )
 
-from marshmallow import fields, Schema, post_load
-
 from functools import wraps
-from flask import request, abort, make_response, session
+
+from flask import request, abort, make_response, g
 from werkzeug.datastructures import Authorization
 
 from .users import Users
@@ -25,7 +24,7 @@ class ChimasAuthorization:
     def __init__(self):
         self.function_map = {}
 
-    def verify_authorization(self, context):
+    def verify_authorization(self):
         def actual_decorator(endpoint_function):
             @wraps(endpoint_function)
             def actual_function(*args, **kwargs):
@@ -44,6 +43,13 @@ class ChimasAuthorization:
         return actual_decorator
 
     def parse_request_context_data(self):
+        # this function creates a uri for a endpoint's url rule.
+        # this uri has the format "METHOD:dir1.dir2." where the
+        # dots (.) mean variable, for example GET to /boards/1/topics/1000
+        # has the context boards.topics. and GET /boards/1/topics/ has the
+        # uri boards.topics. The context uri made by method+simplified_uri
+        # makes it simple and deductible what the context refers to.
+        #
         # we have 3 useful flask.request properties to use here:
         # request.endpoint, request.view_args and request.method
         # also we have g.is_authenticated and g.username
@@ -60,7 +66,7 @@ class ChimasAuthorization:
 
         return self.context
 
-    def declarate_context(self, context):
+    def context(self, context):
         def function_wrapper(f):
             self.function_map[context] = f
             return f
@@ -74,10 +80,17 @@ class ChimasAuthorization:
         else:
             return func()
 
-
-authorization = ChimasAuthorization()
+auth = ChimasAuthorization()
 
 # read topic item
-@authorization.declarate_context(context='GET:boards.topics.')
+@auth.context('GET:boards.topics.')
 def verify_boards_topics_item():
-    return False
+    return True
+
+@auth.context('POST:posts.edit')
+def edit_post():
+    post_id = request.view_args['post_id']
+    if Posts.query.filter_by( id=parent_id, author=g.username ).first():
+        return True
+    else:
+        return False
