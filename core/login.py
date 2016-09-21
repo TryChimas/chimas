@@ -37,15 +37,15 @@ def login_user():
             'expires': '66'
         }
 
-        newtoken = AuthTokensSchema(many=False).load(token_data).data
+        new_token = AuthTokensSchema(many=False).load(token_data).data
 
         try:
-            DB.session.add(newtoken)
+            DB.session.add(new_token)
             DB.session.commit()
         except:
             abort(500)
 
-        new_token_json = AuthTokensSchema(many=False).dumps(newtoken).data
+        new_token_json = AuthTokensSchema(many=False).dumps(new_token).data
         return new_token_json
 
     else:

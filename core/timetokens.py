@@ -10,6 +10,7 @@ from sqlalchemy import (
         func )
 
 from marshmallow import fields, Schema, post_load
+import time, datetime
 
 class TimeTokens(CommonTable):
     __tablename__ = 'timetokens'
@@ -26,10 +27,17 @@ class TimeTokens(CommonTable):
 # 'user_can_post_again' with 'value' == "username"
 # 'user_can_reply_again' with 'value' == "username"
 
+# may be of interest:
+# https://docs.python.org/3/library/datetime.html
+# https://docs.python.org/3/library/time.html
+
 def add_time_token(tokentype, value, expires):
+
+    expires_datetime = datetime.fromtimestamp(time.time()+expires)
     TimeTokens.tokentype = tokentype
     TimeTokens.value = value
-    TimeTokens.expires = espires
+    TimeTokens.expires = expires_datetime
     TimeToken.secret = urandom(32).hex() # FIXME
 
-    DB.session.add(timetoken).commit()
+    DB.session.add(timetoken)
+    DB.session.commit()

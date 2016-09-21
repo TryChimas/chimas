@@ -19,6 +19,8 @@ from sqlalchemy import (
     DateTime,
     func )
 
+import datetime
+
 from marshmallow import fields, Schema
 
 Base = declarative_base()
@@ -40,8 +42,8 @@ class CommonTable(DB.Model):
     __abstract__ =  True
 
     id = Column(Integer, primary_key=True, unique=True, autoincrement=True)
-    created = Column(DateTime, default = func.now())
-    updated = Column(DateTime, default = func.now(), onupdate = func.now())
+    created = Column(DateTime, default = datetime.datetime.now)
+    updated = Column(DateTime, default = datetime.datetime.now, onupdate = datetime.datetime.now)
     deleted = Column(Integer, default = 0)
 
 
