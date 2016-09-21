@@ -10,7 +10,7 @@ from .posts import Posts, PostsSchema
 
 from .authorization import auth
 
-from .utils import board_id_exists
+from .utils import board_id_exists, all_required_fields_dict
 
 class Topics(Posts):
     __tablename__ = 'posts'
@@ -70,12 +70,16 @@ def new_topic(board_id):
 
     required_fields = ['title', 'post_text']
 
-    post_data = {}
-    for field in required_fields:
-        if not request.form[field]:
-            abort(400)
-        else:
-            post_data.update( { field : request.form[field] })
+    post_data = all_required_fields_dict(required_fields, request.form)
+    if not post_data:
+        abort(400)
+
+    #post_data = {}
+    #for field in required_fields:
+    #    if not request.form[field]:
+    #        abort(400)
+    #    else:
+    #        post_data.update( { field : request.form[field] })
 
     post_data.update({
         'topic_id': '0',
@@ -85,8 +89,11 @@ def new_topic(board_id):
         'hash_id': 'dUmMyHash'
     })
 
-    newpost = PostsSchema(many=False).load(post_data).data
-    DB.session.add(newpost)
+    new_post = PostsSchema(many=False).load(post_data).data
+    DB.session.add(new_post)
+    DB.session.commit()
+    new_post.topic_id = new_post.id
+    DB.session.add(new_post)
     DB.session.commit()
 
     #return "Posting new topic to board '{0}'\n".format(board_id)

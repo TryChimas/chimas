@@ -16,7 +16,7 @@ def board_id_exists(board_id):
         return False
 
 def post_id_exists(post_id):
-    if Posts.query.filter_by( id=post_id ).first()
+    if Posts.query.filter_by( id=post_id ).first():
         return True
     else:
         return False

@@ -10,16 +10,15 @@ from .authentication import AuthTokens, AuthTokensSchema
 
 from os import urandom
 
+from .utils import all_required_fields_dict
+
 @APP.route('/users/login', methods=['POST'])
 def login_user():
     required_fields = ['username', 'password']
 
-    user_req = {}
-    for field in required_fields:
-        if not request.form[field]:
+    user_req = all_required_fields_dict(required_fields, request.form)
+    if not user_req:
             abort(400)
-        else:
-            user_req.update( { field : request.form[field] })
 
     user_logging_in = \
         Users.query.filter_by( username=user_req['username'] ).first()
@@ -57,12 +56,9 @@ def login_user():
 def unregister_user_token():
     required_fields = ['username', 'token']
 
-    user_req = {}
-    for field in required_fields:
-        if not request.form[field]:
+    user_req = all_required_fields_dict(required_fields, request.form)
+    if not user_req:
             abort(400)
-        else:
-            user_req.update( { field : request.form[field] })
 
     token_to_unregister = AuthTokens.query.filter_by( \
         username=user_req['username'], token=user_req['token'] ).\
@@ -78,16 +74,12 @@ def unregister_user_token():
 def unregister_all_user_tokens():
     required_fields = ['username'] # FIXME (maybe user:password instead)
 
-    user_req = {}
-    for field in required_fields:
-        if not request.form[field]:
+    user_req = all_required_fields_dict(required_fields, request.form)
+    if not user_req:
             abort(400)
-        else:
-            user_req.update( { field : request.form[field] })
 
     num_deleted = AuthTokens.query.\
         filter_by( username=user_req['username'] ).delete()
-
     DB.session.commit()
 
-    return "{0}".format(num_deleted) # FIXME
+    return "{0} tokens deleted.".format(num_deleted) # FIXME

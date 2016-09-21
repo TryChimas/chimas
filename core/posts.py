@@ -16,6 +16,8 @@ from flask import request, abort, g
 
 from .authorization import auth
 
+from .utils import all_required_fields_dict
+
 class Posts(CommonTable):
     __tablename__ = 'posts'
 
@@ -54,57 +56,87 @@ def reply_to_post(post_id):
     if not post_to_reply_to:
         abort(404)
 
-    post_dump = PostsSchema().dump(post_to_reply_to).data
+    parent_post_data = PostsSchema().dump(post_to_reply_to).data
 
     # let's see if we reached max threading deepness or we can reply to the post
     # FIXME: write a better algorithm for this recursion
 
     MAX_THREADING_LEVEL = 3
 
-    parent_id = post_dump['reply_to_id']
+    parent_id = parent_post_data['reply_to_id']
     count = 1
 
+    # FIXME: write threading routines like this in utils.py
     while parent_id != 0:
         parent_id = PostsSchema().dump( Posts.query.filter_by( id=parent_id ).first() ).data['reply_to_id']
         if count >= MAX_THREADING_LEVEL:
             abort(400)
         count += 1
 
-
     required_fields = ['post_text']
 
-    post_data = {}
-    for field in required_fields:
-        if not request.form[field]:
-            abort(400)
-        else:
-            post_data.update( { field : request.form[field] })
+    new_post_data = all_required_fields_dict(required_fields, request.form)
 
-    if post_dump['reply_to_id'] == 0:
-        this_topic_id = post_dump['id']
-    else:
-        this_topic_id = post_dump['topic_id']
+    if not new_post_data:
+        abort(400)
 
-    post_data.update({
-        'title': 're {0}'.format(post_dump['title']),
-        'topic_id': this_topic_id,
-        'reply_to_id': post_dump['id'],
-        'board_id': post_dump['board_id'],
+    new_post_data.update({
+        'title': 're {0}'.format(parent_post_data['title']),
+        'topic_id': parent_post_data['topic_id'],
+        'reply_to_id': parent_post_data['id'],
+        'board_id': parent_post_data['board_id'],
         'author_id': g.username,
         'hash_id': 'dUmMyHash'
     })
 
-    newpost = PostsSchema(many=False).load(post_data).data
-    DB.session.add(newpost)
+    new_reply_post = PostsSchema(many=False).load(new_post_data).data
+    DB.session.add(new_reply_post)
     DB.session.commit()
 
 # edit post
 @auth.verify_authorization()
 @APP.route('/posts/<string:post_id>/edit', methods=['POST'])
 def edit_post(post_id):
-    return "editing post '{0}'\n".format(post_id)
+    post_to_edit = Posts.query.filter_by( id=post_id ).first()
+    if not post_to_edit:
+        abort(404)
+
+    post_dump = PostsSchema().dump(post_to_edit).data
+
+    required_fields = ['post_text']
+
+    post_data = all_required_fields_dict(required_fields, request.form)
+
+    if not post_data:
+        abort(400)
+
+    #post_data.update({
+    #    'title': 're {0}'.format(post_dump['title']),
+    #    'topic_id': post_dump['topic_id'],
+    #    'reply_to_id': post_dump['id'],
+    #    'board_id': post_dump['board_id'],
+    #    'author_id': g.username,
+    #    'hash_id': 'dUmMyHash'
+    #})
+
+    edited_post = PostsSchema(many=False).load(post_data).data
+    DB.session.add(edited_post)
+    DB.session.commit()
+
+    #return "editing post '{0}'\n".format(post_id)
 
 # delete post
+# FIXME: MEYBE DELETE THREAD, OR ONLY OBSCURATES THE DELETED POST
+# (soft delete)
 @APP.route('/posts/<string:post_id>/delete', methods=['POST'])
 def delete_post(post_id):
+    post_to_be_deleted = Posts.query.filter_by( id=post_id ).first()
+    if not post_to_be_deleted:
+        abort(404)
+
+    post_to_be_deleted.post_text = ""
+    post_to_be_deleted.deleted = g.username
+
+    DB.session.add(post_to_be_deleted)
+    DB.session.commit()
     return "deleting post '{0}'\n".format(post_id)
