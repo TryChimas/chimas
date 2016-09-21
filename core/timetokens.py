@@ -30,6 +30,7 @@ class TimeTokens(CommonTable):
 # may be of interest:
 # https://docs.python.org/3/library/datetime.html
 # https://docs.python.org/3/library/time.html
+# http://stackoverflow.com/questions/13370317/sqlalchemy-default-datetime
 
 def add_time_token(tokentype, value, expires):
 
