@@ -110,15 +110,6 @@ def edit_post(post_id):
     if not post_data:
         abort(400)
 
-    #post_data.update({
-    #    'title': 're {0}'.format(post_dump['title']),
-    #    'topic_id': post_dump['topic_id'],
-    #    'reply_to_id': post_dump['id'],
-    #    'board_id': post_dump['board_id'],
-    #    'author_id': g.username,
-    #    'hash_id': 'dUmMyHash'
-    #})
-
     edited_post = PostsSchema(many=False).load(post_data).data
     DB.session.add(edited_post)
     DB.session.commit()
