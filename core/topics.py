@@ -10,6 +10,8 @@ from .posts import Posts, PostsSchema
 
 from .authorization import auth
 
+from .utils import board_id_exists
+
 class Topics(Posts):
     __tablename__ = 'posts'
 
@@ -19,8 +21,8 @@ class Topics(Posts):
 @APP.route('/boards/<string:board_id>/topics/', methods=['GET'])
 def list_board_topics(board_id):
 
-    board_exists = Boards.query.filter_by( id=board_id ).first()
-    if not board_exists:
+    #board_exists = Boards.query.filter_by( id=board_id ).first()
+    if not board_id_exists(board_id):
         abort(404)
 
     board_topics = Topics.query.\
@@ -39,8 +41,7 @@ def list_board_topics(board_id):
 @auth.verify_authorization()
 def show_topic(board_id, topic_id):
 
-    board_exists = Boards.query.filter_by( id=board_id ).first()
-    if not board_exists:
+    if not board_id_exists(board_id):
         abort(404)
 
     topic = Topics.query.\
@@ -57,12 +58,14 @@ def show_topic(board_id, topic_id):
     topic_dump_json = PostsSchema().dumps(topic).data
     return topic_dump_json
 
+# FIXME: maybe change this endpoint to /topics/<boardname>
+# as the board name is an abstraction into which topics (at least should)
+# fit perfectly ?
 # new topic
 @APP.route('/boards/<string:board_id>/topics/', methods=['POST'])
 def new_topic(board_id):
 
-    board_exists = Boards.query.filter_by( id=board_id ).first()
-    if not board_exists:
+    if not board_id_exists(board_id):
         abort(404)
 
     required_fields = ['title', 'post_text']

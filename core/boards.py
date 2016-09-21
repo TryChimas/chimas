@@ -32,12 +32,10 @@ class BoardsSchema(CommonSchema):
 def create_board():
     required_fields = ['title', 'description']
 
-    board_data = {}
-    for field in required_fields:
-        if not request.form[field]:
-            abort(400)
-        else:
-            board_data.update( { field : request.form[field] })
+    board_data = all_required_fields_dict(required_fields, request.form)
+
+    if not board_data:
+        abort(400)
 
     newboard = BoardsSchema(many=False).load(board_data).data
     DB.session.add(newboard)

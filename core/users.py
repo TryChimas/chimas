@@ -13,6 +13,8 @@ from marshmallow import fields, Schema, post_load
 
 from flask import request, abort
 
+from .utils import all_required_fields_dict
+
 class Users(CommonTable):
     __tablename__ = 'users'
 
@@ -33,12 +35,10 @@ class UsersSchema(CommonSchema):
 def register_user():
     required_fields = ['username', 'password']
 
-    user_data = {}
-    for field in required_fields:
-        if not request.form[field]:
+    user_data = all_required_fields_dict(required_fields, request.form)
+
+    if not user_data:
             abort(400)
-        else:
-            user_data.update( { field : request.form[field] })
 
     newuser = UsersSchema(many=False).load(user_data).data
     DB.session.add(newuser)

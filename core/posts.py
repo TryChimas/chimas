@@ -12,7 +12,7 @@ from sqlalchemy.orm import relationship
 
 from marshmallow import fields, Schema, post_load
 
-from flask import request, abort
+from flask import request, abort, g
 
 from .authorization import auth
 
@@ -90,7 +90,7 @@ def reply_to_post(post_id):
         'topic_id': this_topic_id,
         'reply_to_id': post_dump['id'],
         'board_id': post_dump['board_id'],
-        'author_id': 'admin',
+        'author_id': g.username,
         'hash_id': 'dUmMyHash'
     })
 
