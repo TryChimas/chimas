@@ -1,3 +1,9 @@
-# RESPONSE.
+# HTTP METHODS. SPECIFICATION. RESPONSE.
+
+Lets read about swagger.io
+
+Lets read about flasks Response and make_response.
+
+Lets read the rfc about HTTP METHODS.
 
 {'data':"this is the data"}

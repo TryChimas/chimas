@@ -9,7 +9,6 @@ ETC_PATH = ROOT_PATH + "etc/"
 from flask import Flask, request, g, abort
 from flask_sqlalchemy import SQLAlchemy
 
-
 from sqlalchemy.ext.declarative import declarative_base
 
 from sqlalchemy import (
@@ -44,6 +43,7 @@ class CommonTable(DB.Model):
     created = Column(DateTime, default = func.now())
     updated = Column(DateTime, default = func.now(), onupdate = func.now())
     deleted = Column(Integer, default = 0)
+
 
 class CommonSchema(Schema):
     class Meta:

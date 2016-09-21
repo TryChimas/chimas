@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='chimas',
     version='0.1',
-    py_modules=['chimas_server0'],
+    py_modules=['chimas_server'],
     #install_requires=[
     #    'Click',
     #],

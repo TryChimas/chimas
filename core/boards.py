@@ -37,6 +37,6 @@ def create_board():
     if not board_data:
         abort(400)
 
-    newboard = BoardsSchema(many=False).load(board_data).data
-    DB.session.add(newboard)
+    new_board = BoardsSchema(many=False).load(board_data).data
+    DB.session.add(new_board)
     DB.session.commit()
