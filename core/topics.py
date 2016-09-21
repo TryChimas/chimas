@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship, noload, joinedload
 from marshmallow import fields, Schema
 
 from flask import request, abort
+from flask import make_response as response
 
 from .boards import Boards, BoardsSchema
 from .posts import Posts, PostsSchema
@@ -33,7 +34,7 @@ def list_board_topics(board_id):
             all()
 
     topics_dump_json = PostsSchema(many=True).dumps(board_topics).data
-    return topics_dump_json
+    return response(topics_dump_json, 200)
 
 # show topic
 @APP.route('/boards/<string:board_id>/topics/<string:topic_id>', methods=['GET'])

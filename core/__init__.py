@@ -7,6 +7,10 @@ ROOT_PATH = sys.path[0] + "/"
 ETC_PATH = ROOT_PATH + "etc/"
 
 from flask import Flask, request, g, abort
+
+# https://github.com/pallets/flask/blob/master/flask/wrappers.py
+from werkzeug.wrappers import Request as RequestBase, Response as ResponseBase
+
 from flask_sqlalchemy import SQLAlchemy
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -29,12 +33,17 @@ class Chimas(Flask):
     def __init__(self, import_name=__package__, **kwargs):
         super(Chimas, self).__init__(import_name, **kwargs)
 
+class Response(ResponseBase):
+    default_mimetype = "application/json"
+
 APP = Chimas(__name__)
+APP.response_class = Response
 
 APP.config['DEBUG'] = True
 APP.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///{0}dummy.sqlite3-autocreate".format(ROOT_PATH)
 
 from . import config
+from . import errorhandling
 
 DB = SQLAlchemy(APP)
 
