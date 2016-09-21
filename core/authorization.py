@@ -90,7 +90,7 @@ def verify_boards_topics_item():
 @auth.context('POST:posts.edit')
 def edit_post():
     post_id = request.view_args['post_id']
-    if Posts.query.filter_by( id=parent_id, author=g.username ).first():
+    if Posts.query.filter_by( id=parent_id, author_id=g.username ).first():
         return True
     else:
         return False
