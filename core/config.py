@@ -1,6 +1,7 @@
 
 from core import APP, ROOT_PATH, ETC_PATH
 
+import flask
 import click
 import toml
 
@@ -14,31 +15,23 @@ def set_configuration_file(config):
 
 print("Opening default config file: {0}".format(DEFAULT_CONFIG_FILEPATH))
 with open(DEFAULT_CONFIG_FILEPATH) as default_config_file:
-    default_config_params = toml.loads(default_config_file.read())
+    config_params = toml.loads(default_config_file.read())
 
 print("Opening user config file: {0}".format(USER_CONFIG_FILEPATH))
 with open(USER_CONFIG_FILEPATH) as user_config_file:
     user_config_params = toml.loads(user_config_file.read())
 
-config_params = default_config_params.update(user_config_params)
-
+config_params.update(user_config_params)
+print(config_params)
 app_config = {}
 chimas_config = {}
 
 class ChimasConfig:
-    def __init__(self):
+    def __init__(self, config_params):
         self.function_map = {}
         self.context_map = {}
-        self.option_map = {}
 
-    def opt(self, option, short, descripton, default):
-        self.option_map[option].update({
-        option:{
-            'option' :option,
-            'short' : short,
-            'description': description,
-            'default': default
-        }})
+        self.config_params = config_params
 
     def parser(self, context, required_args):
         def function_wrapper(f):
@@ -48,16 +41,21 @@ class ChimasConfig:
             return f
         return function_wrapper
 
-    def parse_config(self, context):
-        func = self.function_map.get(context, None)
-        if not func:
-            pass
-        return func()
+    def parse_config(self):
+        # execute all registered parsing functions
+        for context in self.function_map:
 
-config_parser = ChimasConfig()
+            context_data = self.context_map[context]
+            required_args = {}
+            for argument in context_data['required_args']:
+                 required_args.update({argument : self.config_params[argument]})
 
-@config_parser.parser(context='servername', args=['listen','port'])
+            self.function_map[context](**required_args)
+
+config_parser = ChimasConfig(config_params)
+
+@config_parser.parser(context='servername', required_args=['listen','port'])
 def parse_server_name(listen=None, port=None):
-    app_config['SERVER_NAME'] = req['listen'] + ":" + str(req['port'])
+    app_config['SERVER_NAME'] = listen + ":" + str(port)
 
 config_parser.parse_config()

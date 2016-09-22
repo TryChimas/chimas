@@ -45,6 +45,8 @@ APP.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///{0}dummy.sqlite3-autocreate".
 from . import config
 from . import errorhandling
 
+APP.config.update(config.app_config)
+
 DB = SQLAlchemy(APP)
 
 class CommonTable(DB.Model):
@@ -86,8 +88,8 @@ def check_authentication():
         g.is_authenticated = False
         #abort(500)
 
-    import pprint
-    pprint.pprint(request.method)
+    #import pprint
+    #pprint.pprint(request.method)
 
 DB.create_all()
 
