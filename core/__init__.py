@@ -13,13 +13,7 @@ from werkzeug.wrappers import Request as RequestBase, Response as ResponseBase
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import (
-    Column,
-    String,
-    Integer,
-    ForeignKey,
-    DateTime,
-    func )
+from sqlalchemy import Column, String, Integer,ForeignKey, DateTime, func
 from marshmallow import fields, Schema
 
 import datetime # or use time.time to make timestamps
@@ -40,6 +34,9 @@ class Chimas(Flask):
 
         self.db = SQLAlchemy(self)
 
+        #self.db.init_app(self)
+        #self.db = SQLAlchemy()
+
         self.config['DEBUG'] = True
         self.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///{0}dummy.sqlite3-autocreate".format(ROOT_PATH)
 
@@ -47,8 +44,6 @@ class Chimas(Flask):
 
         self.config.update(config.app_config)
 
-        #def __call__(self):
-        #    self.db.init_app(self)
         class CommonTable(self.db.Model):
             __abstract__ =  True
 
