@@ -49,3 +49,4 @@ WHEN STARTED, IT CREATES THE DB IF INEXISTET, LOADS THE CONFIG FILE AND RUNS NOR
 # https://docs.python.org/3/library/importlib.html#importlib.machinery.ModuleSpec
 # http://stackoverflow.com/questions/2632199/how-do-i-get-the-path-of-the-current-executed-file-in-python
 # http://stackoverflow.com/questions/1296501/python-find-path-to-file-being-run
+# https://docs.python.org/3/library/inspect.html
