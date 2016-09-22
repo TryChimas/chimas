@@ -1,4 +1,4 @@
-from . import app, db, CommonTable, CommonSchema
+#from . import app, db, CommonTable, CommonSchema
 from . import validators
 
 from sqlalchemy import (
@@ -12,16 +12,17 @@ from sqlalchemy import (
 from marshmallow import fields, Schema, post_load
 
 from flask import request, abort
+from flask import current_app as app
 
 from .utils import all_required_fields_dict
 
-class Users(CommonTable):
+class Users(app.CommonTable):
     __tablename__ = 'users'
 
     username = Column(String, unique=True)
     password = Column(String)
 
-class UsersSchema(CommonSchema):
+class UsersSchema(app.CommonSchema):
     #id = None
     username = fields.Str(validate=validators.validate_username)
     #password = fields.Str(load_only=True) # write-only field

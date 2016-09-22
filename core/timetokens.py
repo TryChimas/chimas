@@ -1,4 +1,6 @@
-from . import app, db, CommonTable, CommonSchema
+from flask import current_app as app
+
+#from . import CommonTable, CommonSchema
 from . import validators
 
 from sqlalchemy import (
@@ -12,7 +14,7 @@ from sqlalchemy import (
 from marshmallow import fields, Schema, post_load
 import time, datetime
 
-class TimeTokens(CommonTable):
+class TimeTokens(app.CommonTable):
     __tablename__ = 'timetokens'
 
     tokentype = Column(String)

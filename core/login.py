@@ -1,4 +1,5 @@
-from . import app, db, CommonTable
+#from . import, CommonTable
+from flask import current_app as app
 
 from sqlalchemy.orm import relationship, noload, joinedload
 from marshmallow import fields, Schema

@@ -1,4 +1,4 @@
-from . import app, db, CommonTable
+#from . import, CommonTable
 
 from sqlalchemy import (
         Column,
@@ -11,8 +11,9 @@ from sqlalchemy import (
 from marshmallow import fields, Schema
 
 from flask import request
+from flask import current_app as app
 
-class Roles(CommonTable):
+class Roles(app.CommonTable):
     __tablename__ = 'roles'
 
     #id = None

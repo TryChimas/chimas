@@ -1,4 +1,4 @@
-from . import app, db, CommonTable, CommonSchema
+#from . import CommonTable, CommonSchema
 from . import validators
 
 from sqlalchemy import (
@@ -12,15 +12,16 @@ from sqlalchemy import (
 from marshmallow import fields, Schema, post_load
 
 from flask import request, abort
+from flask import current_app as app
 
-class Boards(CommonTable):
+class Boards(app.CommonTable):
     __tablename__ = 'boards'
 
     #id = None
     title = Column(String, unique=True)
     description = Column(String)
 
-class BoardsSchema(CommonSchema):
+class BoardsSchema(app.CommonSchema):
     title = fields.Str(validate=validators.board_title)
     description = fields.Str(validate=validators.board_description)
 

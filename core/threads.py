@@ -1,9 +1,10 @@
-from . import app, db, CommonTable, CommonSchema
+#from . import, CommonTable, CommonSchema
 
 from sqlalchemy.orm import relationship
 from marshmallow import fields, Schema
 
 from flask import request, abort
+from flask import current_app as app
 
 from .posts import Posts, PostsSchema
 

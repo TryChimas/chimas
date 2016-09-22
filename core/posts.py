@@ -1,4 +1,4 @@
-from . import app, db, CommonTable, CommonSchema
+#from . import CommonTable, CommonSchema
 from . import validators
 
 from sqlalchemy import (
@@ -13,12 +13,13 @@ from sqlalchemy.orm import relationship
 from marshmallow import fields, Schema, post_load
 
 from flask import request, abort, g
+from flask import current_app as app
 
 from .authorization import auth
 
 from .utils import all_required_fields_dict
 
-class Posts(CommonTable):
+class Posts(app.CommonTable):
     __tablename__ = 'posts'
 
     topic_id = Column(String)
@@ -32,7 +33,7 @@ class Posts(CommonTable):
 
     #children = relationship("Posts", lazy='noload')
 
-class PostsSchema(CommonSchema):
+class PostsSchema(app.CommonSchema):
     topic_id = fields.Int()
     reply_to_id = fields.Int()
 

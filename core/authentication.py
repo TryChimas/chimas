@@ -1,4 +1,4 @@
-from . import app, db, CommonTable, CommonSchema
+#from . import app, db, CommonTable, CommonSchema
 
 from sqlalchemy import (
         Column,
@@ -12,11 +12,12 @@ from marshmallow import fields, Schema, post_load
 
 from functools import wraps
 from flask import request, abort, make_response
+from flask import current_app as app
 from werkzeug.datastructures import Authorization
 
 from .users import Users
 
-class AuthTokens(CommonTable):
+class AuthTokens(app.CommonTable):
     __tablename__ = 'authtokens'
 
     id = None
@@ -24,7 +25,7 @@ class AuthTokens(CommonTable):
     token = Column(String, primary_key=True, unique=True, autoincrement=True)
     expires = Column(String)
 
-class AuthTokensSchema(CommonSchema):
+class AuthTokensSchema(app.CommonSchema):
     id = None
     username = fields.Str()
     token = fields.Str()

@@ -1,4 +1,4 @@
-from . import app, db, CommonTable, CommonSchema
+#from . import CommonTable, CommonSchema
 
 from sqlalchemy import (
         Column,
@@ -11,6 +11,7 @@ from sqlalchemy import (
 from functools import wraps
 
 from flask import request, abort, make_response, g
+from flask import current_app as app
 from werkzeug.datastructures import Authorization
 
 from .users import Users
