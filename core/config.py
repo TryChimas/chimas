@@ -28,29 +28,30 @@ chimas_config = {}
 
 class ChimasConfig:
     def __init__(self, config_params):
-        self.function_map = {}
-        self.context_map = {}
+        self.parser_function_map = {}
+        self.context_data_map = {}
 
         self.config_params = config_params
 
-    def parser(self, context, required_args):
-        def function_wrapper(f):
-            self.function_map[context] = f
-            self.context_map[context] = { 'required_args': required_args }
+    def parser(self, context, required_args=[]):
+        """Decorator which registers a parser to be run by self.parse_config()."""
 
+        def function_wrapper(f):
+            self.parser_function_map[context] = f
+            self.context_data_map[context] = { 'required_args': required_args }
             return f
         return function_wrapper
 
     def parse_config(self):
-        # execute all registered parsing functions
-        for context in self.function_map:
+        """Executes all registered parsing functions."""
 
-            context_data = self.context_map[context]
+        for context in self.parser_function_map:
+
             required_args = {}
-            for argument in context_data['required_args']:
+            for argument in self.context_data_map[context]['required_args']:
                  required_args.update({argument : self.config_params[argument]})
 
-            self.function_map[context](**required_args)
+            self.parser_function_map[context](**required_args)
 
 config_parser = ChimasConfig(config_params)
 
