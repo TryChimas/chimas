@@ -42,15 +42,11 @@ def parse_args(required_args=[], optional_args=[], config_dict=chimas_config, ap
                 if optional_arg in config_dict:
                     optional.update({optional_arg : config_dict[optional_arg]})
 
-            #kwargs.update( {'required':required});
-            #kwargs['optional'] = optional
-
             return configuration_parser_function(required, optional, *args, **kwargs)
         return actual_function
     return actual_decorator
 
 @parse_args(required_args=['listen','port'], config_dict=chimas_config)
-#def parse_server_name( listen=config_dict['listen'], port=config_dict['port'],app_config=app_config):
 def parse_server_name( req, opt, *args, **kwargs):
     APP.config['SERVER_NAME'] = req['listen'] + ":" + str(req['port'])
 

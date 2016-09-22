@@ -1,0 +1,4 @@
+http://jsonapi.org/format/#crud
+http://stackoverflow.com/questions/12806386/standard-json-api-response-format
+http://json-schema.org/
+http://swagger.io/specification/

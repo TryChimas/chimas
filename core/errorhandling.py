@@ -9,56 +9,36 @@ from flask import make_response, json
 # http://jsonapi.org/format/#errors
 # http://flask.pocoo.org/docs/0.11/api/#flask.Flask.errorhandler
 
+def json_error_response(code, title):
+    errors_json = json.dumps({
+    'errors': {
+        'status': code,
+        'title': title
+        }
+    })
+
+    return (errors_json, code, None)
+
 @APP.errorhandler(400)
 def bad_request(error):
-    errors_obj = { 'errors': {
-        'status': '400',
-        'title': 'BadRequest'
-        }
-    }
-    return json.dumps(errors_obj), 400
+    return json_error_response(400, 'BadRequest')
 
 @APP.errorhandler(401)
 def unauthorized(error):
-    errors_obj = { 'errors': {
-        'status': '401',
-        'title': 'Unauthorized'
-        }
-    }
-    return json.dumps(errors_obj), 401
+    return json_error_response(401, 'Unauthorized')
 
 @APP.errorhandler(403)
 def unauthorized(error):
-    errors_obj = { 'errors': {
-        'status': '403',
-        'title': 'Unauthorized'
-        }
-    }
-    return json.dumps(errors_obj), 403
+    return json_error_response(403, 'Forbidden')
 
 @APP.errorhandler(404)
 def not_found(error):
-    errors_obj = { 'errors': {
-        'status': '404',
-        'title': 'NotFound'
-        }
-    }
-    return json.dumps(errors_obj), 404
+    return json_error_response(404, 'NotFound')
 
 @APP.errorhandler(405)
 def method_not_allowed(error):
-    errors_obj = { 'errors': {
-        'status': '405',
-        'title': 'MethodNotAllowed'
-        }
-    }
-    return json.dumps(errors_obj), 405
+    return json_error_response(405, 'MethodNotAllowed')
 
 @APP.errorhandler(500)
 def internal_server_error(error):
-    errors_obj = { 'errors': {
-        'status': '404',
-        'title': 'InternalServerError'
-        }
-    }
-    return json.dumps(errors_obj), 500
+    return json_error_response(500, 'InternalServerError')
