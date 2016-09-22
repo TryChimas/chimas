@@ -12,9 +12,7 @@ from flask import Flask, request, g, abort
 from werkzeug.wrappers import Request as RequestBase, Response as ResponseBase
 
 from flask_sqlalchemy import SQLAlchemy
-
 from sqlalchemy.ext.declarative import declarative_base
-
 from sqlalchemy import (
     Column,
     String,
@@ -22,12 +20,9 @@ from sqlalchemy import (
     ForeignKey,
     DateTime,
     func )
-
-import datetime
-
 from marshmallow import fields, Schema
 
-Base = declarative_base()
+import datetime # or use time.time to make timestamps
 
 class Chimas(Flask):
     def __init__(self, import_name=__package__, **kwargs):
