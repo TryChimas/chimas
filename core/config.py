@@ -1,5 +1,5 @@
 
-from core import APP, ROOT_PATH, ETC_PATH
+from core import app, ROOT_PATH, ETC_PATH
 
 import flask
 import click

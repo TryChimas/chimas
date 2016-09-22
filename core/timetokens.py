@@ -1,4 +1,4 @@
-from . import APP, DB, CommonTable, CommonSchema
+from . import app, db, CommonTable, CommonSchema
 from . import validators
 
 from sqlalchemy import (
@@ -40,5 +40,5 @@ def add_time_token(tokentype, value, expires):
     TimeTokens.expires = expires_datetime
     TimeToken.secret = urandom(32).hex() # FIXME
 
-    DB.session.add(timetoken)
-    DB.session.commit()
+    db.session.add(timetoken)
+    db.session.commit()

@@ -1,4 +1,4 @@
-from . import APP, DB, CommonTable, CommonSchema
+from . import app, db, CommonTable, CommonSchema
 from . import validators
 
 from sqlalchemy import (
@@ -31,7 +31,7 @@ class UsersSchema(CommonSchema):
     def make_user(self, data):
         return Users(**data)
 
-@APP.route('/users/new', methods=['POST'])
+@app.route('/users/new', methods=['POST'])
 def register_user():
     required_fields = ['username', 'password']
 
@@ -41,5 +41,5 @@ def register_user():
             abort(400)
 
     newuser = UsersSchema(many=False).load(user_data).data
-    DB.session.add(newuser)
-    DB.session.commit()
+    db.session.add(newuser)
+    db.session.commit()

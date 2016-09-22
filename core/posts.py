@@ -1,4 +1,4 @@
-from . import APP, DB, CommonTable, CommonSchema
+from . import app, db, CommonTable, CommonSchema
 from . import validators
 
 from sqlalchemy import (
@@ -49,7 +49,7 @@ class PostsSchema(CommonSchema):
         return Posts(**data)
 
 # get post
-@APP.route('/posts/<string:post_id>', methods=['GET'])
+@app.route('/posts/<string:post_id>', methods=['GET'])
 def fetch_post_only(post_id):
 
     post = Posts.query.filter_by( id=post_id ).first()
@@ -61,7 +61,7 @@ def fetch_post_only(post_id):
     return post_data_json
 
 # reply to post
-@APP.route('/posts/<string:post_id>/reply', methods=['POST'])
+@app.route('/posts/<string:post_id>/reply', methods=['POST'])
 def reply_to_post(post_id):
 
     post_to_reply_to = Posts.query.filter_by( id=post_id ).first()
@@ -102,12 +102,12 @@ def reply_to_post(post_id):
     })
 
     new_reply_post = PostsSchema(many=False).load(new_post_data).data
-    DB.session.add(new_reply_post)
-    DB.session.commit()
+    db.session.add(new_reply_post)
+    db.session.commit()
 
 # edit post
 @auth.verify_authorization()
-@APP.route('/posts/<string:post_id>/edit', methods=['POST'])
+@app.route('/posts/<string:post_id>/edit', methods=['POST'])
 def edit_post(post_id):
     post_to_edit = Posts.query.filter_by( id=post_id ).first()
     if not post_to_edit:
@@ -123,15 +123,15 @@ def edit_post(post_id):
         abort(400)
 
     edited_post = PostsSchema(many=False).load(post_data).data
-    DB.session.add(edited_post)
-    DB.session.commit()
+    db.session.add(edited_post)
+    db.session.commit()
 
     #return "editing post '{0}'\n".format(post_id)
 
 # delete post
 # FIXME: MEYBE DELETE THREAD, OR ONLY OBSCURATES THE DELETED POST
 # (soft delete)
-@APP.route('/posts/<string:post_id>/delete', methods=['POST'])
+@app.route('/posts/<string:post_id>/delete', methods=['POST'])
 def delete_post(post_id):
     post_to_be_deleted = Posts.query.filter_by( id=post_id ).first()
     if not post_to_be_deleted:
@@ -140,6 +140,6 @@ def delete_post(post_id):
     post_to_be_deleted.post_text = ""
     post_to_be_deleted.deleted = g.username
 
-    DB.session.add(post_to_be_deleted)
-    DB.session.commit()
+    db.session.add(post_to_be_deleted)
+    db.session.commit()
     return "deleting post '{0}'\n".format(post_id)

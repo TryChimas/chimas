@@ -1,4 +1,4 @@
-from . import APP, DB, CommonTable, CommonSchema
+from . import app, db, CommonTable, CommonSchema
 
 from sqlalchemy.orm import relationship
 from marshmallow import fields, Schema
@@ -13,7 +13,7 @@ class Threads(Posts):
 class ThreadsSchema(PostsSchema):
     children = fields.Nested('ThreadsSchema', many=True)
 
-@APP.route('/threads/<string:post_id>', methods=['GET'])
+@app.route('/threads/<string:post_id>', methods=['GET'])
 def get_thread(post_id):
     parent_post = Threads.query.filter_by( id=post_id ).first()
     if not parent_post:
@@ -23,6 +23,6 @@ def get_thread(post_id):
 
     return post_dump_json
 
-@APP.route('/threads/<string:post_id>/tree', methods=['GET'])
+@app.route('/threads/<string:post_id>/tree', methods=['GET'])
 def get_thread_tree(post_id):
     return "getting thread tree for post id '{0}'\n".format(post_id)

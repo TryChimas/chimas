@@ -1,4 +1,4 @@
-from . import APP, DB, CommonTable
+from . import app, db, CommonTable
 
 from sqlalchemy.orm import relationship, noload, joinedload
 from marshmallow import fields, Schema
@@ -12,7 +12,7 @@ from os import urandom
 
 from .utils import all_required_fields_dict
 
-@APP.route('/users/login', methods=['POST'])
+@app.route('/users/login', methods=['POST'])
 def login_user():
     required_fields = ['username', 'password']
 
@@ -40,8 +40,8 @@ def login_user():
         new_token = AuthTokensSchema(many=False).load(token_data).data
 
         try:
-            DB.session.add(new_token)
-            DB.session.commit()
+            db.session.add(new_token)
+            db.session.commit()
         except:
             abort(500)
 
@@ -52,7 +52,7 @@ def login_user():
         # password sent by doesn't match the username.
         abort(401)
 
-@APP.route('/users/logout', methods=['POST'])
+@app.route('/users/logout', methods=['POST'])
 def unregister_user_token():
     required_fields = ['username', 'token']
 
@@ -67,10 +67,10 @@ def unregister_user_token():
     if not token_to_unregister:
         abort(404)
 
-    DB.session.delete(token_to_unregister)
-    DB.session.commit()
+    db.session.delete(token_to_unregister)
+    db.session.commit()
 
-@APP.route('/users/logoutall', methods=['POST'])
+@app.route('/users/logoutall', methods=['POST'])
 def unregister_all_user_tokens():
     required_fields = ['username'] # FIXME (maybe user:password instead)
 
@@ -80,6 +80,6 @@ def unregister_all_user_tokens():
 
     num_deleted = AuthTokens.query.\
         filter_by( username=user_req['username'] ).delete()
-    DB.session.commit()
+    db.session.commit()
 
     return "{0} tokens deleted.".format(num_deleted) # FIXME

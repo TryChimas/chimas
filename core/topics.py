@@ -1,4 +1,4 @@
-from . import APP, DB, CommonTable
+from . import app, db, CommonTable
 
 from sqlalchemy.orm import relationship, noload, joinedload
 from marshmallow import fields, Schema
@@ -19,7 +19,7 @@ class Topics(Posts):
     children = relationship("Topics", lazy='joined', join_depth=5)
 
 # list topics
-@APP.route('/boards/<string:board_id>/topics/', methods=['GET'])
+@app.route('/boards/<string:board_id>/topics/', methods=['GET'])
 def list_board_topics(board_id):
 
     #board_exists = Boards.query.filter_by( id=board_id ).first()
@@ -37,7 +37,7 @@ def list_board_topics(board_id):
     return response(topics_dump_json, 200)
 
 # show topic
-@APP.route('/boards/<string:board_id>/topics/<string:topic_id>', methods=['GET'])
+@app.route('/boards/<string:board_id>/topics/<string:topic_id>', methods=['GET'])
 #@authorization.verify_authorization(context="GET:boards.topics")
 @auth.verify_authorization()
 def show_topic(board_id, topic_id):
@@ -63,7 +63,7 @@ def show_topic(board_id, topic_id):
 # as the board name is an abstraction into which topics (at least should)
 # fit perfectly ?
 # new topic
-@APP.route('/boards/<string:board_id>/topics/', methods=['POST'])
+@app.route('/boards/<string:board_id>/topics/', methods=['POST'])
 def new_topic(board_id):
 
     if not board_id_exists(board_id):
@@ -91,10 +91,10 @@ def new_topic(board_id):
     })
 
     new_post = PostsSchema(many=False).load(post_data).data
-    DB.session.add(new_post)
-    DB.session.commit()
+    db.session.add(new_post)
+    db.session.commit()
     new_post.topic_id = new_post.id
-    DB.session.add(new_post)
-    DB.session.commit()
+    db.session.add(new_post)
+    db.session.commit()
 
     #return "Posting new topic to board '{0}'\n".format(board_id)

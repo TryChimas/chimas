@@ -1,4 +1,4 @@
-from . import APP
+from . import app
 from flask import make_response, json
 
 #from werkzeug.exceptions import HTTPException
@@ -19,26 +19,26 @@ def json_error_response(code, title):
 
     return (errors_json, code, None)
 
-@APP.errorhandler(400)
+@app.errorhandler(400)
 def bad_request(error):
     return json_error_response(400, 'BadRequest')
 
-@APP.errorhandler(401)
+@app.errorhandler(401)
 def unauthorized(error):
     return json_error_response(401, 'Unauthorized')
 
-@APP.errorhandler(403)
+@app.errorhandler(403)
 def unauthorized(error):
     return json_error_response(403, 'Forbidden')
 
-@APP.errorhandler(404)
+@app.errorhandler(404)
 def not_found(error):
     return json_error_response(404, 'NotFound')
 
-@APP.errorhandler(405)
+@app.errorhandler(405)
 def method_not_allowed(error):
     return json_error_response(405, 'MethodNotAllowed')
 
-@APP.errorhandler(500)
+@app.errorhandler(500)
 def internal_server_error(error):
     return json_error_response(500, 'InternalServerError')

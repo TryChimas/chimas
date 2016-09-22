@@ -1,4 +1,4 @@
-from . import APP, DB, CommonTable, CommonSchema
+from . import app, db, CommonTable, CommonSchema
 from . import validators
 
 from sqlalchemy import (
@@ -28,7 +28,7 @@ class BoardsSchema(CommonSchema):
     def make_board(self, data):
         return Boards(**data)
 
-@APP.route('/boards/new', methods=['POST'])
+@app.route('/boards/new', methods=['POST'])
 def create_board():
     required_fields = ['title', 'description']
 
@@ -38,5 +38,5 @@ def create_board():
         abort(400)
 
     new_board = BoardsSchema(many=False).load(board_data).data
-    DB.session.add(new_board)
-    DB.session.commit()
+    db.session.add(new_board)
+    db.session.commit()

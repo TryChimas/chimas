@@ -31,66 +31,63 @@ class Chimas(Flask):
 class Response(ResponseBase):
     default_mimetype = "application/json"
 
-APP = Chimas(__name__)
-APP.response_class = Response
+def create_app(config_filename, url_path, instance_path):
 
-APP.config['DEBUG'] = True
-APP.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///{0}dummy.sqlite3-autocreate".format(ROOT_PATH)
+    app = Chimas(__name__)
+    app.response_class = Response
 
-from . import config
-from . import errorhandling
+    app.config['DEBUG'] = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///{0}dummy.sqlite3-autocreate".format(ROOT_PATH)
 
-APP.config.update(config.app_config)
+    from . import config
+    from . import errorhandling
 
-DB = SQLAlchemy(APP)
+    app.config.update(config.app_config)
 
-class CommonTable(DB.Model):
-    __abstract__ =  True
+    db = SQLAlchemy(app)
 
-    id = Column(Integer, primary_key=True, unique=True, autoincrement=True)
-    created = Column(DateTime, default = datetime.datetime.now)
-    updated = Column(DateTime, default = datetime.datetime.now, onupdate = datetime.datetime.now)
-    deleted = Column(String, default = 0)
+    class CommonTable(db.Model):
+        __abstract__ =  True
 
+        id = Column(Integer, primary_key=True, unique=True, autoincrement=True)
+        created = Column(DateTime, default = datetime.datetime.now)
+        updated = Column(DateTime, default = datetime.datetime.now, onupdate = datetime.datetime.now)
+        deleted = Column(String, default = 0)
 
-class CommonSchema(Schema):
-    class Meta:
-        strict = True
-        #dump_only = ['id', 'created', 'updated', 'deleted']
+    class CommonSchema(Schema):
+        class Meta:
+            strict = True
+            #dump_only = ['id', 'created', 'updated', 'deleted']
 
-    id = fields.Integer(dump_only=True)
-    created = fields.DateTime(dump_only=True) # read-only fields
-    updated = fields.DateTime(dump_only=True)
-    deleted = fields.String(dump_only=True)
+        id = fields.Integer(dump_only=True)
+        created = fields.DateTime(dump_only=True) # read-only fields
+        updated = fields.DateTime(dump_only=True)
+        deleted = fields.String(dump_only=True)
 
-from . import users
-from . import boards
-from . import topics
-from . import posts
-from . import threads
-from . import authentication
-from . import login
-from . import timetokens
+    from . import users
+    from . import boards
+    from . import topics
+    from . import posts
+    from . import threads
+    from . import authentication
+    from . import login
+    from . import timetokens
 
-@APP.before_request
-def check_authentication():
-    has_authentication = authentication.authentication.verify_authentication()
+    @app.before_request
+    def check_authentication():
+        has_authentication = authentication.authentication.verify_authentication()
 
-    if has_authentication:
-        g.is_authenticated = True
-        g.username = has_authentication['username']
-    else:
-        g.is_authenticated = False
-        #abort(500)
+        if has_authentication:
+            g.is_authenticated = True
+            g.username = has_authentication['username']
+        else:
+            g.is_authenticated = False
 
-    #import pprint
-    #pprint.pprint(request.method)
-
-DB.create_all()
+#    db.create_all()
 
 try:
     dummyuser = users.Users(username='admin', password='p4ssw0rd')
-    DB.session.add(dummyuser)
-    DB.session.commit()
+    db.session.add(dummyuser)
+    db.session.commit()
 except:
     pass
