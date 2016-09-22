@@ -30,7 +30,7 @@ class Posts(CommonTable):
     post_text = Column(String)
     hash_id = Column(String)
 
-    children = relationship("Posts", lazy='noload')
+    #children = relationship("Posts", lazy='noload')
 
 class PostsSchema(CommonSchema):
     topic_id = fields.Int()
@@ -47,6 +47,18 @@ class PostsSchema(CommonSchema):
     @post_load
     def make_post(self, data):
         return Posts(**data)
+
+# get post
+@APP.route('/posts/<string:post_id>', methods=['GET'])
+def fetch_post_only(post_id):
+
+    post = Posts.query.filter_by( id=post_id ).first()
+    if not post:
+        abort(404)
+
+    post_data_json = PostsSchema().dumps(post).data
+
+    return post_data_json
 
 # reply to post
 @APP.route('/posts/<string:post_id>/reply', methods=['POST'])

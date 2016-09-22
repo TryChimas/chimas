@@ -53,7 +53,7 @@ class CommonTable(DB.Model):
     id = Column(Integer, primary_key=True, unique=True, autoincrement=True)
     created = Column(DateTime, default = datetime.datetime.now)
     updated = Column(DateTime, default = datetime.datetime.now, onupdate = datetime.datetime.now)
-    deleted = Column(Integer, default = 0)
+    deleted = Column(String, default = 0)
 
 
 class CommonSchema(Schema):
@@ -64,7 +64,7 @@ class CommonSchema(Schema):
     id = fields.Integer(dump_only=True)
     created = fields.DateTime(dump_only=True) # read-only fields
     updated = fields.DateTime(dump_only=True)
-    deleted = fields.Integer(dump_only=True)
+    deleted = fields.String(dump_only=True)
 
 from . import users
 from . import boards
