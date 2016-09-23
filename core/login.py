@@ -41,8 +41,8 @@ def login_user():
         new_token = AuthTokensSchema(many=False).load(token_data).data
 
         try:
-            db.session.add(new_token)
-            db.session.commit()
+            app.db.session.add(new_token)
+            app.db.session.commit()
         except:
             abort(500)
 
@@ -68,8 +68,8 @@ def unregister_user_token():
     if not token_to_unregister:
         abort(404)
 
-    db.session.delete(token_to_unregister)
-    db.session.commit()
+    app.db.session.delete(token_to_unregister)
+    app.db.session.commit()
 
 @app.route('/users/logoutall', methods=['POST'])
 def unregister_all_user_tokens():
@@ -81,6 +81,6 @@ def unregister_all_user_tokens():
 
     num_deleted = AuthTokens.query.\
         filter_by( username=user_req['username'] ).delete()
-    db.session.commit()
+    app.db.session.commit()
 
     return "{0} tokens deleted.".format(num_deleted) # FIXME

@@ -103,8 +103,8 @@ def reply_to_post(post_id):
     })
 
     new_reply_post = PostsSchema(many=False).load(new_post_data).data
-    db.session.add(new_reply_post)
-    db.session.commit()
+    app.db.session.add(new_reply_post)
+    app.db.session.commit()
 
 # edit post
 @auth.verify_authorization()
@@ -124,8 +124,8 @@ def edit_post(post_id):
         abort(400)
 
     edited_post = PostsSchema(many=False).load(post_data).data
-    db.session.add(edited_post)
-    db.session.commit()
+    app.db.session.add(edited_post)
+    app.db.session.commit()
 
     #return "editing post '{0}'\n".format(post_id)
 
@@ -141,6 +141,6 @@ def delete_post(post_id):
     post_to_be_deleted.post_text = ""
     post_to_be_deleted.deleted = g.username
 
-    db.session.add(post_to_be_deleted)
-    db.session.commit()
+    app.db.session.add(post_to_be_deleted)
+    app.db.session.commit()
     return "deleting post '{0}'\n".format(post_id)

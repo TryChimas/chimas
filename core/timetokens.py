@@ -42,5 +42,5 @@ def add_time_token(tokentype, value, expires):
     TimeTokens.expires = expires_datetime
     TimeToken.secret = urandom(32).hex() # FIXME
 
-    db.session.add(timetoken)
-    db.session.commit()
+    app.db.session.add(timetoken)
+    app.db.session.commit()

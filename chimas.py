@@ -1,16 +1,28 @@
+#!/usr/bin/env python
+
 import sys
+from os import path
 #sys.path.insert(1, sys.path[0]+'/inc/')
 
-from core import Chimas
+from core import ROOT_PATH, Chimas
+
 from werkzeug.wsgi import DispatcherMiddleware
 
+# run by script
 if __name__ == "__main__":
-    #import pprint
-    #pprint.pprint(app.config, width=1)
     from werkzeug.serving import run_simple
 
-    import copy
-    app = Chimas()
+    #if os.path(ROOT_PATH)
+    app1 = Chimas(instance='bbs1')
+    app2 = Chimas(instance='bbs2')
+
     #app.run()
-    dmid = DispatcherMiddleware( None, {'/iagoo' : app} );
-    run_simple('127.0.0.1', 41345, dmid)
+    bbs_dispatcher =\
+        DispatcherMiddleware(
+            None,
+            {
+                '/um' : app1,
+                '/two' : app2
+            })
+
+    run_simple('127.0.0.1', 41345, bbs_dispatcher)

@@ -1,24 +1,21 @@
-import sys
 
-# all our _PATH globals should end with '/', our _FILEPATH(s) should not
-#print(sys.path[0])
-ROOT_PATH = sys.path[0] + "/"
-#INCLUDE_PATH = ROOT_PATH + "inc/"
-ETC_PATH = ROOT_PATH + "etc/"
-
-from flask import Flask, request, g, abort
+from flask import Flask, request, g, abort, ctx
 
 # https://github.com/pallets/flask/blob/master/flask/wrappers.py
 from werkzeug.wrappers import Request as RequestBase, Response as ResponseBase
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, Integer,ForeignKey, DateTime, func
+from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
 from marshmallow import fields, Schema
 
 import datetime # or use time.time to make timestamps
 
-from flask import current_app as app
+# from flask import current_app as app
+
+import sys
+
+ROOT_PATH = sys.path[0] + "/"
+ETC_PATH = ROOT_PATH + "etc/"
 
 class Response(ResponseBase):
     default_mimetype = "application/json"
@@ -26,23 +23,25 @@ class Response(ResponseBase):
 # http://flask-sqlalchemy.pocoo.org/2.1/contexts/
 
 class Chimas(Flask):
-    def __init__(self, import_name=__package__, **kwargs):
-
+    def __init__(self, instance=None, import_name=__package__, **kwargs):
         super(Chimas, self).__init__(import_name, **kwargs)
 
         self.response_class = Response
+        self.instance = instance
 
+        #with self.app_context():
         self.db = SQLAlchemy(self)
-
         #self.db.init_app(self)
-        #self.db = SQLAlchemy()
+        #self.db = SQLAlchemy(self)
 
         self.config['DEBUG'] = True
-        self.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///{0}dummy.sqlite3-autocreate".format(ROOT_PATH)
 
-        from . import config
-
-        self.config.update(config.app_config)
+        if instance:
+            self.config['SQLALCHEMY_DATABASE_URI'] = "".\
+                join(["sqlite:///", ROOT_PATH, "dummy-", instance, ".sqlite3-autocreate"])
+        else:
+            self.config['SQLALCHEMY_DATABASE_URI'] = "".\
+                join(["sqlite:///", ROOT_PATH, "dummy.sqlite3NHA-autocreate"])
 
         class CommonTable(self.db.Model):
             __abstract__ =  True
@@ -65,35 +64,45 @@ class Chimas(Flask):
         self.CommonSchema = CommonSchema
 
         with self.app_context():
-            from . import errorhandling
-            from . import users, boards, topics, posts, threads,\
-                            authentication, login, timetokens
-
-            @app.before_request
-            def check_authentication():
-                has_authentication = authentication.authentication.verify_authentication()
-
-                if has_authentication:
-                    g.is_authenticated = True
-                    g.username = has_authentication['username']
-                else:
-                    g.is_authenticated = False
-
-    def create_app(self):
-        return self
+            #self.do_registrations()
+            self.before_first_request(self.do_registrations)
+        #    self.do_registrations
+        #    self.do_registrations()
+        #self.app_context(self.do_registrations)
 
 
-#db = SQLAlchemy()
-#app = Chimas()
-#def create_app():
-#
-#    app = Chimas(__name__)
-#    return app
-#    db.create_all()
+    #__init__()
+    def do_registrations(self):
+        #self.teardown_appcontext(self.teardown)
+        #with self.app.app_context():
+        from . import config
 
-try:
-    dummyuser = users.Users(username='admin', password='p4ssw0rd')
-    db.session.add(dummyuser)
-    db.session.commit()
-except:
-    pass
+        self.config.update(config.app_config)
+
+        #self.db.init_app(self)
+
+        from . import errorhandling
+        from . import users, boards, topics, posts, threads,\
+                        authentication, login, timetokens
+
+        @self.before_request
+        def check_authentication():
+            #print(instance)
+            has_authentication = authentication.authentication.verify_authentication()
+
+            if has_authentication:
+                g.is_authenticated = True
+                g.username = has_authentication['username']
+            else:
+                g.is_authenticated = False
+
+        self.db.create_all()
+
+        try:
+            dummyuser = users.Users(username='admin', password='p4ssw0rd')
+            self.db.session.add(dummyuser)
+            self.db.session.commit()
+        except:
+            pass
+
+        #return self.wsgi_app(environ, start_response)

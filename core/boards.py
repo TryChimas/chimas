@@ -39,5 +39,5 @@ def create_board():
         abort(400)
 
     new_board = BoardsSchema(many=False).load(board_data).data
-    db.session.add(new_board)
-    db.session.commit()
+    app.db.session.add(new_board)
+    app.db.session.commit()

@@ -92,10 +92,10 @@ def new_topic(board_id):
     })
 
     new_post = PostsSchema(many=False).load(post_data).data
-    db.session.add(new_post)
-    db.session.commit()
+    app.db.session.add(new_post)
+    app.db.session.commit()
     new_post.topic_id = new_post.id
-    db.session.add(new_post)
-    db.session.commit()
+    app.db.session.add(new_post)
+    app.db.session.commit()
 
     #return "Posting new topic to board '{0}'\n".format(board_id)

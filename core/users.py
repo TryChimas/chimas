@@ -42,5 +42,5 @@ def register_user():
             abort(400)
 
     newuser = UsersSchema(many=False).load(user_data).data
-    db.session.add(newuser)
-    db.session.commit()
+    app.db.session.add(newuser)
+    app.db.session.commit()
