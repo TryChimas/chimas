@@ -1,12 +1,10 @@
 
-from flask import Flask, request, g, abort, ctx
+from flask import Flask, request, g, abort
 
 # https://github.com/pallets/flask/blob/master/flask/wrappers.py
 from werkzeug.wrappers import Request as RequestBase, Response as ResponseBase
 
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
-from marshmallow import fields, Schema
+
 
 import datetime # or use time.time to make timestamps
 
@@ -26,13 +24,25 @@ class Chimas(Flask):
     def __init__(self, instance=None, import_name=__package__, **kwargs):
         super(Chimas, self).__init__(import_name, **kwargs)
 
+        from flask_sqlalchemy import SQLAlchemy
+        from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
+        from marshmallow import fields, Schema
+
         self.response_class = Response
+
         self.instance = instance
 
-        #with self.app_context():
-        self.db = SQLAlchemy(self)
+        self.app = self.app_context()
+        self.db = SQLAlchemy()
         #self.db.init_app(self)
-        #self.db = SQLAlchemy(self)
+
+        #with self.app_context():
+        #    self.g = g
+
+        #    self.g.db = self.db
+            #with self.app_context():
+            #self.db.init_app(self)
+            #self.db = SQLAlchemy(self)
 
         self.config['DEBUG'] = True
 
@@ -63,46 +73,99 @@ class Chimas(Flask):
         self.CommonTable = CommonTable
         self.CommonSchema = CommonSchema
 
-        with self.app_context():
+        #from . import errorhandling
+        #from . import users, boards, topics, posts, threads,\
+        #                authentication, login, timetokens
+
+        #with self.app_context():
             #self.do_registrations()
-            self.before_first_request(self.do_registrations)
+        #self.before_first_request(self.do_registrations)
+        #    self.do_registrations()
         #    self.do_registrations
         #    self.do_registrations()
         #self.app_context(self.do_registrations)
 
-
-    #__init__()
-    def do_registrations(self):
+    def __call__(self, environ, start_response):
+        """Shortcut for :attr:`wsgi_app`."""
         #self.teardown_appcontext(self.teardown)
-        #with self.app.app_context():
-        from . import config
+        with self.app:
+            #from flask import current_app
+            from . import config
 
-        self.config.update(config.app_config)
+            self.config.update(config.app_config)
+            self.db.init_app(self)
 
-        #self.db.init_app(self)
+            self.g = g
 
-        from . import errorhandling
-        from . import users, boards, topics, posts, threads,\
-                        authentication, login, timetokens
+            #self.db.init_app(self)
+            from . import errorhandling
+            from . import users, boards, topics, posts, threads,\
+                            authentication, login, timetokens
+            endpoint_submodules = ['errorhandling', 'login']
 
-        @self.before_request
-        def check_authentication():
-            #print(instance)
-            has_authentication = authentication.authentication.verify_authentication()
 
-            if has_authentication:
-                g.is_authenticated = True
-                g.username = has_authentication['username']
-            else:
-                g.is_authenticated = False
+            #import sys
+            #print(sys.modules.keys())
+            #import importlib
+            #for modulee in endpoint_submodules:
+            #importlib.reload(core.login)
 
-        self.db.create_all()
+            @self.before_request
+            def check_authentication():
+                #print(instance)
+                has_authentication = authentication.authentication.verify_authentication()
 
-        try:
-            dummyuser = users.Users(username='admin', password='p4ssw0rd')
-            self.db.session.add(dummyuser)
-            self.db.session.commit()
-        except:
-            pass
+                if has_authentication:
+                    g.is_authenticated = True
+                    g.username = has_authentication['username']
+                else:
+                    g.is_authenticated = False
+
+            self.db.create_all()
+
+            try:
+                dummyuser = users.Users(username='admin', password='p4ssw0rd')
+                self.db.session.add(dummyuser)
+                self.db.session.commit()
+            except:
+                pass
+
+        return self.wsgi_app(environ, start_response)
+
+    # def do_registrations(self):
+    #     #self.teardown_appcontext(self.teardown)
+    #     #with self.app.app_context():
+    #     from . import config
+    #
+    #     self.config.update(config.app_config)
+    #
+    #     self.g = g
+    #
+    #     self.db = self.db
+    #     #self.db.init_app(self)
+    #
+    #     from . import errorhandling
+    #     from . import users, boards, topics, posts, threads,\
+    #                     authentication, login, timetokens
+    #
+    #     @self.before_request
+    #     def check_authentication():
+    #         #print(instance)
+    #         has_authentication = authentication.authentication.verify_authentication()
+    #
+    #         if has_authentication:
+    #             g.is_authenticated = True
+    #             g.username = has_authentication['username']
+    #         else:
+    #             g.is_authenticated = False
+    #
+    #     self.db.create_all()
+    #
+    #     try:
+    #         dummyuser = users.Users(username='admin', password='p4ssw0rd')
+    #         self.db.session.add(dummyuser)
+    #         self.db.session.commit()
+    #     except:
+    #         pass
 
         #return self.wsgi_app(environ, start_response)
