@@ -7,7 +7,7 @@ from marshmallow import fields, Schema
 from flask import request, abort
 
 #from .users import Users, UsersSchema
-from .authentication import AuthTokens, AuthTokensSchema
+#from .authentication import AuthTokens, AuthTokensSchema
 
 from os import urandom
 

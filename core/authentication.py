@@ -16,67 +16,76 @@ from flask import request, abort, make_response
 from werkzeug.datastructures import Authorization
 
 #from .users import Users
+class AuthenticationAPI:
+    def __init__(self, app):
+        self.app = app
 
-class AuthTokens(app.CommonTable):
-    __tablename__ = 'authtokens'
 
-    id = None
-    username = Column(String)
-    token = Column(String, primary_key=True, unique=True, autoincrement=True)
-    expires = Column(String)
 
-class AuthTokensSchema(app.CommonSchema):
-    id = None
-    username = fields.Str()
-    token = fields.Str()
-    expires = fields.Str()
+        class AuthTokens(app.CommonTable):
+            __tablename__ = 'authtokens'
 
-    @post_load
-    def make_authtoken(self, data):
-        return AuthTokens(**data)
+            id = None
+            username = Column(String)
+            token = Column(String, primary_key=True, unique=True, autoincrement=True)
+            expires = Column(String)
 
-class ChimasAuthentication:
-    def __init__(self, scheme='Token', realm=None):
-        self.scheme = scheme
-        self.realm = realm
+        class AuthTokensSchema(app.CommonSchema):
+            id = None
+            username = fields.Str()
+            token = fields.Str()
+            expires = fields.Str()
 
-    def verify_authentication(self):
-        # process http header
-        auth = self.process_auth_http_header()
-        if not auth:
-            return False
+            @post_load
+            def make_authtoken(self, data):
+                return AuthTokens(**data)
 
-        # process token to verify if user:token is valid
-        user_token = self.process_token(auth['token'])
-        if not user_token:
-            return False
+        class ChimasAuthentication:
+            def __init__(self, scheme='Token', realm=None):
+                self.scheme = scheme
+                self.realm = realm
 
-        return user_token
+            def verify_authentication(self):
+                # process http header
+                auth = self.process_auth_http_header()
+                if not auth:
+                    return False
 
-    def process_auth_http_header(self):
-        auth = None
+                # process token to verify if user:token is valid
+                user_token = self.process_token(auth['token'])
+                if not user_token:
+                    return False
 
-        if 'Authorization' in request.headers:
-            try:
-                # https://docs.python.org/3.5/library/stdtypes.html#str.split
-                auth_type, token = request.headers['Authorization'].\
-                    split(sep=None, maxsplit=1)
-                auth = Authorization(auth_type, {'token': token})
-            except ValueError:
+                return user_token
+
+            def process_auth_http_header(self):
                 auth = None
-        else:
-            auth = None
 
-        return auth
+                if 'Authorization' in request.headers:
+                    try:
+                        # https://docs.python.org/3.5/library/stdtypes.html#str.split
+                        auth_type, token = request.headers['Authorization'].\
+                            split(sep=None, maxsplit=1)
+                        auth = Authorization(auth_type, {'token': token})
+                    except ValueError:
+                        auth = None
+                else:
+                    auth = None
 
-    def process_token(self, token):
-        username, auth_token = token.split(sep=':', maxsplit=1)
+                return auth
 
-        if AuthTokens.query.filter_by(username=username,\
-            token=auth_token).first():
+            def process_token(self, token):
+                username, auth_token = token.split(sep=':', maxsplit=1)
 
-            return { 'username':username, 'auth_token':auth_token }
-        # else
-        return None
+                if AuthTokens.query.filter_by(username=username,\
+                    token=auth_token).first():
 
-authentication = ChimasAuthentication(scheme='Token')
+                    return { 'username':username, 'auth_token':auth_token }
+                # else
+                return None
+
+        self.ChimasAuthentication = ChimasAuthentication
+
+        #return ChimasAuthentication(scheme='Token')
+
+#authentication = ChimasAuthentication(scheme='Token')

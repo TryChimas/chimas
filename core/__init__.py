@@ -49,8 +49,8 @@ class Chimas(Flask):
         self.instance = instance
 
         self.app = self.app_context()
-        self.db = SQLAlchemy()
-        self.db.init_app(self)
+        self.db = SQLAlchemy(self)
+        #self.db.init_app(self)
 
         self.config['DEBUG'] = True
 
@@ -102,7 +102,9 @@ class Chimas(Flask):
                          login, timetokens
 
         from . import authentication
-        self.authentication = authentication.ChimasAuthentication(scheme='Token')
+
+        auth_api = authentication.AuthenticationAPI(app=self)
+        self.authentication = auth_api.ChimasAuthentication()
 
         self.users = users.UsersAPI(self)
         self.boards = boards.BoardsAPI(self)
@@ -132,43 +134,3 @@ class Chimas(Flask):
             self.db.session.commit()
         except:
             pass
-
-        #return self.wsgi_app(environ, start_response)
-
-    # def do_registrations(self):
-    #     #self.teardown_appcontext(self.teardown)
-    #     #with self.app.app_context():
-    #     from . import config
-    #
-    #     self.config.update(config.app_config)
-    #
-    #     self.g = g
-    #
-    #     self.db = self.db
-    #     #self.db.init_app(self)
-    #
-    #     from . import errorhandling
-    #     from . import users, boards, topics, posts, threads,\
-    #                     authentication, login, timetokens
-    #
-    #     @self.before_request
-    #     def check_authentication():
-    #         #print(instance)
-    #         has_authentication = authentication.authentication.verify_authentication()
-    #
-    #         if has_authentication:
-    #             g.is_authenticated = True
-    #             g.username = has_authentication['username']
-    #         else:
-    #             g.is_authenticated = False
-    #
-    #     self.db.create_all()
-    #
-    #     try:
-    #         dummyuser = users.Users(username='admin', password='p4ssw0rd')
-    #         self.db.session.add(dummyuser)
-    #         self.db.session.commit()
-    #     except:
-    #         pass
-
-        #return self.wsgi_app(environ, start_response)
