@@ -12,35 +12,50 @@ from sqlalchemy import (
 from marshmallow import fields, Schema, post_load
 
 from flask import request, abort
-from flask import current_app as app
+#from flask import current_app as app
 
+from . import CommonAPI
 from .utils import all_required_fields_dict
 
-class Users(app.CommonTable):
-    __tablename__ = 'users'
 
-    username = Column(String, unique=True)
-    password = Column(String)
+def register_endpoint(app, rule, function, **options):
+    app.add_url_rule(rule, endpoint=function.__name__, view_func=function, **options)
 
-class UsersSchema(app.CommonSchema):
-    #id = None
-    username = fields.Str(validate=validators.validate_username)
-    #password = fields.Str(load_only=True) # write-only field
-    password = fields.Str() # write-only field
 
-    @post_load
-    def make_user(self, data):
-        return Users(**data)
+class UsersAPI(CommonAPI):
+    def __init__(self, app):
+        self.app = app
 
-@app.route('/users/new', methods=['POST'])
-def register_user():
-    required_fields = ['username', 'password']
+        register_endpoint(app, '/users/new', self.register_user, methods=['POST'])
 
-    user_data = all_required_fields_dict(required_fields, request.form)
+        class Users(self.app.CommonTable):
+            __tablename__ = 'users'
 
-    if not user_data:
-            abort(400)
+            username = Column(String, unique=True)
+            password = Column(String)
 
-    newuser = UsersSchema(many=False).load(user_data).data
-    app.db.session.add(newuser)
-    app.db.session.commit()
+        class UsersSchema(self.app.CommonSchema):
+            #id = None
+            username = fields.Str(validate=validators.validate_username)
+            #password = fields.Str(load_only=True) # write-only field
+            password = fields.Str() # write-only field
+
+            @post_load
+            def make_user(self, data):
+                return Users(**data)
+
+        self.app.Users = Users
+        self.app.UsersSchema = UsersSchema
+
+    #@app.route('/users/new', methods=['POST'])
+    def register_user():
+        required_fields = ['username', 'password']
+
+        user_data = all_required_fields_dict(required_fields, request.form)
+
+        if not user_data:
+                abort(400)
+
+        newuser = UsersSchema(many=False).load(user_data).data
+        app.db.session.add(newuser)
+        app.db.session.commit()

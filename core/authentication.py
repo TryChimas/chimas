@@ -15,7 +15,7 @@ from flask import request, abort, make_response
 from flask import current_app as app
 from werkzeug.datastructures import Authorization
 
-from .users import Users
+#from .users import Users
 
 class AuthTokens(app.CommonTable):
     __tablename__ = 'authtokens'

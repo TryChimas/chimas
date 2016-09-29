@@ -1,86 +1,106 @@
 #from . import, CommonTable
-from flask import current_app as app
+#from flask import current_app as app
 
 from sqlalchemy.orm import relationship, noload, joinedload
 from marshmallow import fields, Schema
 
 from flask import request, abort
 
-from .users import Users, UsersSchema
+#from .users import Users, UsersSchema
 from .authentication import AuthTokens, AuthTokensSchema
 
 from os import urandom
 
+from . import CommonAPI
+
 from .utils import all_required_fields_dict
 
-@app.route('/users/login', methods=['POST'])
-def login_user():
-    required_fields = ['username', 'password']
+from functools import wraps
 
-    user_req = all_required_fields_dict(required_fields, request.form)
-    if not user_req:
-            abort(400)
+def register_endpoint(app, rule, function, **options):
+    app.add_url_rule(rule, endpoint=function.__name__, view_func=function, **options)
 
-    user_logging_in = \
-        Users.query.filter_by( username=user_req['username'] ).first()
+class LoginAPI(CommonAPI):
+    def __init__(self, app):
+        self.app = app
 
-    if not user_logging_in:
-        abort(401)
-    else:
-         user_dump = UsersSchema(many=False).dump(user_logging_in).data
+        register_endpoint(app, '/users/login', self.login_user, methods=['POST'])
 
-    if user_dump['password'] == user_req['password']: # FIXME
+    #def route(self, rule, **options):
+    #    def decorator(f):
+    #        endpoint = options.pop('endpoint', None)
+    #        self.add_url_rule(rule, endpoint, f, **options)
+    #        return f
+    #    return decorator
+    #@__class__.app.route('/users/login', methods=['POST'])
 
-        the_token = urandom(32).hex() # FIXME
-        token_data = {
-            'username' : user_dump['username'],
-            'token' : the_token,
-            'expires': '66'
-        }
+    def login_user(self):
+        required_fields = ['username', 'password']
 
-        new_token = AuthTokensSchema(many=False).load(token_data).data
+        user_req = all_required_fields_dict(required_fields, request.form)
+        if not user_req:
+                abort(400)
 
-        try:
-            app.db.session.add(new_token)
-            app.db.session.commit()
-        except:
-            abort(500)
+        user_logging_in = \
+            self.app.Users.query.filter_by( username=user_req['username'] ).first()
 
-        new_token_json = AuthTokensSchema(many=False).dumps(new_token).data
-        return new_token_json
+        if not user_logging_in:
+            abort(401)
+        else:
+             user_dump = self.app.UsersSchema(many=False).dump(user_logging_in).data
 
-    else:
-        # password sent by doesn't match the username.
-        abort(401)
+        if user_dump['password'] == user_req['password']: # FIXME
 
-@app.route('/users/logout', methods=['POST'])
-def unregister_user_token():
-    required_fields = ['username', 'token']
+            the_token = urandom(32).hex() # FIXME
+            token_data = {
+                'username' : user_dump['username'],
+                'token' : the_token,
+                'expires': '66'
+            }
 
-    user_req = all_required_fields_dict(required_fields, request.form)
-    if not user_req:
-            abort(400)
+            new_token = AuthTokensSchema(many=False).load(token_data).data
 
-    token_to_unregister = AuthTokens.query.filter_by( \
-        username=user_req['username'], token=user_req['token'] ).\
-        first()
+            try:
+                app.db.session.add(new_token)
+                app.db.session.commit()
+            except:
+                abort(500)
 
-    if not token_to_unregister:
-        abort(404)
+            new_token_json = AuthTokensSchema(many=False).dumps(new_token).data
+            return new_token_json
 
-    app.db.session.delete(token_to_unregister)
-    app.db.session.commit()
+        else:
+            # password sent by doesn't match the username.
+            abort(401)
 
-@app.route('/users/logoutall', methods=['POST'])
-def unregister_all_user_tokens():
-    required_fields = ['username'] # FIXME (maybe user:password instead)
+    #@__self__.app.route('/users/logout', methods=['POST'])
+    def unregister_user_token(self):
+        required_fields = ['username', 'token']
 
-    user_req = all_required_fields_dict(required_fields, request.form)
-    if not user_req:
-            abort(400)
+        user_req = all_required_fields_dict(required_fields, request.form)
+        if not user_req:
+                abort(400)
 
-    num_deleted = AuthTokens.query.\
-        filter_by( username=user_req['username'] ).delete()
-    app.db.session.commit()
+        token_to_unregister = AuthTokens.query.filter_by( \
+            username=user_req['username'], token=user_req['token'] ).\
+            first()
 
-    return "{0} tokens deleted.".format(num_deleted) # FIXME
+        if not token_to_unregister:
+            abort(404)
+
+        app.db.session.delete(token_to_unregister)
+        app.db.session.commit()
+
+    #@__self__.app.route('/users/logoutall', methods=['POST'])
+    def unregister_all_user_tokens(self):
+        required_fields = ['username'] # FIXME (maybe user:password instead)
+
+        user_req = all_required_fields_dict(required_fields, request.form)
+        if not user_req:
+                abort(400)
+
+        num_deleted = AuthTokens.query.\
+            filter_by( username=user_req['username'] ).delete()
+        app.db.session.commit()
+
+        return "{0} tokens deleted.".format(num_deleted) # FIXME
