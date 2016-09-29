@@ -25,7 +25,7 @@ class TopicsAPI(CommonAPI):
         self.register_endpoint('/boards/<string:board_id>/topics/<string:topic_id>', self.show_topic, methods=['GET'])
         self.register_endpoint('/boards/<string:board_id>/topics/', self.new_topic, methods=['POST'])
 
-        class Topics(Posts):
+        class Topics(self.app.Posts):
             __tablename__ = 'posts'
 
             children = relationship("Topics", lazy='joined', join_depth=5)

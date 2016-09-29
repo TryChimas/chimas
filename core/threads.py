@@ -18,14 +18,14 @@ class ThreadsAPI(CommonAPI):
         self.register_endpoint('/threads/<string:post_id>', self.get_thread, methods=['GET'])
         self.register_endpoint('/threads/<string:post_id>/tree', self.get_thread_tree, methods=['GET'])
 
-        class Threads(Posts):
+        class Threads(self.app.Posts):
             children = relationship("Threads", lazy='joined', join_depth=2)
 
-        class ThreadsSchema(PostsSchema):
+        class ThreadsSchema(self.app.PostsSchema):
             children = fields.Nested('ThreadsSchema', many=True)
 
-        self.Threads = Threads
-        self.ThreadsSchema = ThreadsSchema
+        self.app.Threads = Threads
+        self.app.ThreadsSchema = ThreadsSchema
 
     #@app.route('/threads/<string:post_id>', methods=['GET'])
     def get_thread(post_id):

@@ -13,7 +13,7 @@ from sqlalchemy.orm import relationship
 from marshmallow import fields, Schema, post_load
 
 from flask import request, abort, g
-from flask import current_app as app
+#from flask import current_app as app
 
 from .authorization import auth
 
@@ -63,11 +63,11 @@ class PostsAPI(CommonAPI):
             def make_post(self, data):
                 return Posts(**data)
 
-        self.Posts = Posts
-        self.PostsSchema = PostsSchema
+        self.app.Posts = Posts
+        self.app.PostsSchema = PostsSchema
 
     # get post
-    @app.route('/posts/<string:post_id>', methods=['GET'])
+    #@app.route('/posts/<string:post_id>', methods=['GET'])
     def fetch_post_only(post_id):
 
         post = Posts.query.filter_by( id=post_id ).first()

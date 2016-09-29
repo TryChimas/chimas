@@ -29,13 +29,6 @@ class CommonAPI:
     def register_endpoint(self, rule, function, **options):
         self.app.add_url_rule(rule, endpoint=function.__name__, view_func=function, **options)
 
-    # def route(self, rule, **options):
-    #     def decorator(f):
-    #         endpoint = options.pop('endpoint', None)
-    #         self.add_url_rule(rule, endpoint, f, **options)
-    #         return f
-    #     return decorator
-
 class Chimas(Flask):
     def __init__(self, instance=None, import_name=__package__, **kwargs):
         super(Chimas, self).__init__(import_name, **kwargs)
@@ -84,17 +77,6 @@ class Chimas(Flask):
         self.CommonTable = CommonTable
         self.CommonSchema = CommonSchema
 
-        #from . import errorhandling
-        #from . import users, boards, topics, posts, threads,\
-        #                authentication, login, timetokens
-
-        #with self.app_context():
-            #self.do_registrations()
-        #self.before_first_request(self.do_registrations)
-        #    self.do_registrations()
-        #    self.do_registrations
-        #    self.do_registrations()
-        #self.app_context(self.do_registrations)
 
     def __call__(self, environ, start_response):
         """Shortcut for :attr:`wsgi_app`."""
@@ -111,13 +93,12 @@ class Chimas(Flask):
             from . import errorhandling
             from . import users, boards, topics, posts, threads,\
                             authentication, login, timetokens
-            endpoint_submodules = ['errorhandling', 'login']
 
             self.g.users = users.UsersAPI(self)
-            #self.g.boards = boards.BoardsAPI(self)
-            #self.g.topics = topics.TopicsAPI(self)
-            #self.g.posts = posts.PostsAPI(self)
-            #self.g.threads = threads.ThreadsAPI(self)
+            self.g.boards = boards.BoardsAPI(self)
+            self.g.posts = posts.PostsAPI(self)
+            self.g.topics = topics.TopicsAPI(self)
+            self.g.threads = threads.ThreadsAPI(self)
             self.g.login = login.LoginAPI(self)
             #self.g.timetokens = timetokens.TimeTokensAPI(self)
 

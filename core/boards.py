@@ -12,11 +12,8 @@ from sqlalchemy import (
 from marshmallow import fields, Schema, post_load
 
 from flask import request, abort
-#from flask import current_app as app
 from . import CommonAPI
 
-#def register_endpoint(app, rule, function, **options):
-#    app.add_url_rule(rule, endpoint=function.__name__, view_func=function, **options)
 
 class BoardsAPI(CommonAPI):
     def __init__(self, app):
