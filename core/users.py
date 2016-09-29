@@ -27,8 +27,10 @@ class UsersAPI(CommonAPI):
         super(UsersAPI, self).__init__(app)
 
         #self.app = app
+        api_endpoints = [
+            ('/users/new', self.register_user, {'methods':['POST']}) ]
 
-        self.register_endpoint('/users/new', self.register_user, methods=['POST'])
+        self.register_endpoints(api_endpoints)
 
         class Users(self.app.CommonTable):
             __tablename__ = 'users'

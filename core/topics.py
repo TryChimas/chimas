@@ -21,9 +21,12 @@ class TopicsAPI(CommonAPI):
         super(TopicsAPI, self).__init__(app)
 
 
-        self.register_endpoint('/boards/<string:board_id>/topics/', self.list_board_topics, methods=['GET'])
-        self.register_endpoint('/boards/<string:board_id>/topics/<string:topic_id>', self.show_topic, methods=['GET'])
-        self.register_endpoint('/boards/<string:board_id>/topics/', self.new_topic, methods=['POST'])
+        api_endpoints = [
+            ('/boards/<string:board_id>/topics/', self.list_board_topics, {'methods':['GET']}),
+            ('/boards/<string:board_id>/topics/<string:topic_id>', self.show_topic, {'methods':['GET']}),
+            ('/boards/<string:board_id>/topics/', self.new_topic, {'methods':['POST']}) ]
+
+        self.register_endpoints(api_endpoints)
 
         class Topics(self.app.Posts):
             __tablename__ = 'posts'

@@ -25,6 +25,13 @@ class CommonAPI:
         self.app = app
         #pass
 
+    def register_endpoints(self, api_endpoints):
+        for endpoint in api_endpoints:
+            rule, function, options = endpoint
+            #self.app.add_url_rule(endpoint['rule'], endpoint=endpoint['endpoint'].__name__, view_func=endpoint['endpoint'], **endpoint['options'])
+            #self.register_endpoint(endpoint['rule'], endpoint=endpoint['endpoint'], **endpoint['options'])
+            #self.register_endpoint(**endpoint)
+            self.register_endpoint(rule, function, **options)
 
     def register_endpoint(self, rule, function, **options):
         self.app.add_url_rule(rule, endpoint=function.__name__, view_func=function, **options)
@@ -54,9 +61,6 @@ class Chimas(Flask):
             self.config['SQLALCHEMY_DATABASE_URI'] = "".\
                 join(["sqlite:///", ROOT_PATH, "dummy.sqlite3NHA-autocreate"])
 
-
-
-
         class CommonTable(self.db.Model):
             __abstract__ =  True
 
@@ -77,52 +81,59 @@ class Chimas(Flask):
         self.CommonTable = CommonTable
         self.CommonSchema = CommonSchema
 
+        #self.before_first_request(self.pre_start)
+        self.pre_start()
 
-    def __call__(self, environ, start_response):
+
+    def pre_start(self):
         """Shortcut for :attr:`wsgi_app`."""
         #self.teardown_appcontext(self.teardown)
-        with self.app:
-            from . import config
+        #with self.app:
+        from . import config
 
-            self.config.update(config.app_config)
-            #self.db.init_app(self)
+        self.config.update(config.app_config)
+        #self.db.init_app(self)
 
-            self.g = g
+        #self.g = g
 
-            #self.db.init_app(self)
-            from . import errorhandling
-            from . import users, boards, topics, posts, threads,\
-                            authentication, login, timetokens
+        #self.db.init_app(self)
+        #from . import errorhandling
+        from . import users, boards, topics, posts, threads,\
+                         login, timetokens
 
-            self.g.users = users.UsersAPI(self)
-            self.g.boards = boards.BoardsAPI(self)
-            self.g.posts = posts.PostsAPI(self)
-            self.g.topics = topics.TopicsAPI(self)
-            self.g.threads = threads.ThreadsAPI(self)
-            self.g.login = login.LoginAPI(self)
-            #self.g.timetokens = timetokens.TimeTokensAPI(self)
+        from . import authentication
+        self.authentication = authentication.ChimasAuthentication(scheme='Token')
 
-            @self.before_request
-            def check_authentication():
-                #print(instance)
-                has_authentication = authentication.authentication.verify_authentication()
+        self.users = users.UsersAPI(self)
+        self.boards = boards.BoardsAPI(self)
+        self.posts = posts.PostsAPI(self)
+        self.topics = topics.TopicsAPI(self)
+        self.threads = threads.ThreadsAPI(self)
+        self.login = login.LoginAPI(self)
+        #self.g.timetokens = timetokens.TimeTokensAPI(self)
 
-                if has_authentication:
-                    g.is_authenticated = True
-                    g.username = has_authentication['username']
-                else:
-                    g.is_authenticated = False
+        print(self.url_map)
+        @self.before_request
+        def check_authentication():
+            #print(instance)
+            has_authentication = self.authentication.verify_authentication()
 
-            self.db.create_all()
+            if has_authentication:
+                g.is_authenticated = True
+                g.username = has_authentication['username']
+            else:
+                g.is_authenticated = False
 
-            try:
-                dummyuser = users.Users(username='admin', password='p4ssw0rd')
-                self.db.session.add(dummyuser)
-                self.db.session.commit()
-            except:
-                pass
+        self.db.create_all()
 
-        return self.wsgi_app(environ, start_response)
+        try:
+            dummyuser = users.Users(username='admin', password='p4ssw0rd')
+            self.db.session.add(dummyuser)
+            self.db.session.commit()
+        except:
+            pass
+
+        #return self.wsgi_app(environ, start_response)
 
     # def do_registrations(self):
     #     #self.teardown_appcontext(self.teardown)

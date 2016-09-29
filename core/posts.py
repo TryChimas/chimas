@@ -28,10 +28,13 @@ class PostsAPI(CommonAPI):
 
         #self.app = app
 
-        self.register_endpoint('/posts/<string:post_id>', self.fetch_post_only, methods=['GET'])
-        self.register_endpoint('/posts/<string:post_id>/reply', self.reply_to_post, methods=['POST'])
-        self.register_endpoint('/posts/<string:post_id>/edit', self.edit_post, methods=['POST'])
-        self.register_endpoint('/posts/<string:post_id>/delete', self.delete_post, methods=['POST'])
+        api_endpoints = [
+            ('/posts/<string:post_id>', self.fetch_post_only, {'methods':['GET']}),
+            ('/posts/<string:post_id>/reply', self.reply_to_post, {'methods':['POST']}),
+            ('/posts/<string:post_id>/edit', self.edit_post, {'methods':['POST']}),
+            ('/posts/<string:post_id>/delete', self.delete_post, {'methods':['POST']}) ]
+
+        self.register_endpoints(api_endpoints)
 
         class Posts(app.CommonTable):
             __tablename__ = 'posts'

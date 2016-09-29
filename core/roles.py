@@ -20,9 +20,12 @@ class RolesAPI(CommonAPI):
         super(RolesAPI, self).__init__(app)
 
         #self.app = app
-        self.register_endpoint('/roles', self.list_roles, methods=['GET'])
-        self.register_endpoint('/roles/<string:role>/<string:arguments>', self.fetch_role_info, methods=['GET'])
-        self.register_endpoint('/roles/by_username/<string:username>', self.list_user_roles, methods=['GET'])
+        api_endpoints = [
+            ('/roles', self.list_roles, {'methods':['GET']}),
+            ('/roles/<string:role>/<string:arguments>', self.fetch_role_info, {'methods':['GET']}),
+            ('/roles/by_username/<string:username>', self.list_user_roles, {'methods':['GET']}) ]
+
+        self.register_endpoints(api_endpoints)
 
         class Roles(app.CommonTable):
             __tablename__ = 'roles'

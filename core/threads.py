@@ -15,8 +15,11 @@ class ThreadsAPI(CommonAPI):
         super(ThreadsAPI, self).__init__(app)
 
         #self.app = app
-        self.register_endpoint('/threads/<string:post_id>', self.get_thread, methods=['GET'])
-        self.register_endpoint('/threads/<string:post_id>/tree', self.get_thread_tree, methods=['GET'])
+        api_endpoints = [
+        ('/threads/<string:post_id>', self.get_thread, {'methods':['GET']}),
+        ('/threads/<string:post_id>/tree', self.get_thread_tree, {'methods':['GET']}) ]
+
+        self.register_endpoints(api_endpoints)
 
         class Threads(self.app.Posts):
             children = relationship("Threads", lazy='joined', join_depth=2)

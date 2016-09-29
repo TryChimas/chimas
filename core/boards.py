@@ -21,7 +21,10 @@ class BoardsAPI(CommonAPI):
 
         #self.app = app
 
-        self.register_endpoint('/boards/new', self.create_board, methods=['POST'])
+        api_endpoints = [
+            ('/boards/new', self.create_board, {'methods':['POST']}) ]
+
+        self.register_endpoints(api_endpoints)
 
         class Boards(app.CommonTable):
             __tablename__ = 'boards'

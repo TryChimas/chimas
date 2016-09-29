@@ -25,7 +25,12 @@ class LoginAPI(CommonAPI):
         super(LoginAPI, self).__init__(app)
         #self.app = app
 
-        self.register_endpoint('/users/login', self.login_user, methods=['POST'])
+        api_endpoints = [
+            ('/users/login', self.login_user, {'methods':['POST']})
+        ]
+
+        self.register_endpoints(api_endpoints)
+        #self.register_endpoint('/users/login', self.login_user, methods=['POST'])
 
     def login_user(self):
         required_fields = ['username', 'password']

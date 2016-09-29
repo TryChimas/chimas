@@ -12,7 +12,7 @@ from marshmallow import fields, Schema, post_load
 
 from functools import wraps
 from flask import request, abort, make_response
-from flask import current_app as app
+#from flask import current_app as app
 from werkzeug.datastructures import Authorization
 
 #from .users import Users
