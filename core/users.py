@@ -18,15 +18,17 @@ from . import CommonAPI
 from .utils import all_required_fields_dict
 
 
-def register_endpoint(app, rule, function, **options):
-    app.add_url_rule(rule, endpoint=function.__name__, view_func=function, **options)
+#def register_endpoint(app, rule, function, **options):
+#    app.add_url_rule(rule, endpoint=function.__name__, view_func=function, **options)
 
 
 class UsersAPI(CommonAPI):
     def __init__(self, app):
-        self.app = app
+        super(UsersAPI, self).__init__(app)
 
-        register_endpoint(app, '/users/new', self.register_user, methods=['POST'])
+        #self.app = app
+
+        self.register_endpoint('/users/new', self.register_user, methods=['POST'])
 
         class Users(self.app.CommonTable):
             __tablename__ = 'users'

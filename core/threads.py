@@ -4,26 +4,39 @@ from sqlalchemy.orm import relationship
 from marshmallow import fields, Schema
 
 from flask import request, abort
-from flask import current_app as app
+#from flask import current_app as app
 
-from .posts import Posts, PostsSchema
+#from .posts import Posts, PostsSchema
 
-class Threads(Posts):
-    children = relationship("Threads", lazy='joined', join_depth=2)
+from . import CommonAPI
 
-class ThreadsSchema(PostsSchema):
-    children = fields.Nested('ThreadsSchema', many=True)
+class ThreadsAPI(CommonAPI):
+    def __init__(self, app):
+        super(ThreadsAPI, self).__init__(app)
 
-@app.route('/threads/<string:post_id>', methods=['GET'])
-def get_thread(post_id):
-    parent_post = Threads.query.filter_by( id=post_id ).first()
-    if not parent_post:
-        abort(404)
+        #self.app = app
+        self.register_endpoint('/threads/<string:post_id>', self.get_thread, methods=['GET'])
+        self.register_endpoint('/threads/<string:post_id>/tree', self.get_thread_tree, methods=['GET'])
 
-    post_dump_json = ThreadsSchema().dumps(parent_post).data
+        class Threads(Posts):
+            children = relationship("Threads", lazy='joined', join_depth=2)
 
-    return post_dump_json
+        class ThreadsSchema(PostsSchema):
+            children = fields.Nested('ThreadsSchema', many=True)
 
-@app.route('/threads/<string:post_id>/tree', methods=['GET'])
-def get_thread_tree(post_id):
-    return "getting thread tree for post id '{0}'\n".format(post_id)
+        self.Threads = Threads
+        self.ThreadsSchema = ThreadsSchema
+
+    #@app.route('/threads/<string:post_id>', methods=['GET'])
+    def get_thread(post_id):
+        parent_post = Threads.query.filter_by( id=post_id ).first()
+        if not parent_post:
+            abort(404)
+
+        post_dump_json = ThreadsSchema().dumps(parent_post).data
+
+        return post_dump_json
+
+    #@app.route('/threads/<string:post_id>/tree', methods=['GET'])
+    def get_thread_tree(post_id):
+        return "getting thread tree for post id '{0}'\n".format(post_id)

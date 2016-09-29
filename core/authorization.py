@@ -15,8 +15,8 @@ from flask import current_app as app
 from werkzeug.datastructures import Authorization
 
 #from .users import Users
-from .boards import Boards
-from .roles import Roles
+#from .boards import Boards
+#from .roles import Roles
 
 import re
 

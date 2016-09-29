@@ -21,15 +21,20 @@ class Response(ResponseBase):
 # http://flask-sqlalchemy.pocoo.org/2.1/contexts/
 
 class CommonAPI:
-    def __init__(self):
-        pass
+    def __init__(self, app):
+        self.app = app
+        #pass
 
-    def route(self, rule, **options):
-        def decorator(f):
-            endpoint = options.pop('endpoint', None)
-            self.add_url_rule(rule, endpoint, f, **options)
-            return f
-        return decorator
+
+    def register_endpoint(self, rule, function, **options):
+        self.app.add_url_rule(rule, endpoint=function.__name__, view_func=function, **options)
+
+    # def route(self, rule, **options):
+    #     def decorator(f):
+    #         endpoint = options.pop('endpoint', None)
+    #         self.add_url_rule(rule, endpoint, f, **options)
+    #         return f
+    #     return decorator
 
 class Chimas(Flask):
     def __init__(self, instance=None, import_name=__package__, **kwargs):
@@ -95,7 +100,6 @@ class Chimas(Flask):
         """Shortcut for :attr:`wsgi_app`."""
         #self.teardown_appcontext(self.teardown)
         with self.app:
-            #from flask import current_app
             from . import config
 
             self.config.update(config.app_config)
@@ -110,18 +114,12 @@ class Chimas(Flask):
             endpoint_submodules = ['errorhandling', 'login']
 
             self.g.users = users.UsersAPI(self)
-            #self.g.users = users.BoardsAPI(self)
-            #self.g.users = users.TopicsAPI(self)
-            #self.g.users = users.PostsAPI(self)
-            #self.g.users = users.ThreadsAPI(self)
+            #self.g.boards = boards.BoardsAPI(self)
+            #self.g.topics = topics.TopicsAPI(self)
+            #self.g.posts = posts.PostsAPI(self)
+            #self.g.threads = threads.ThreadsAPI(self)
             self.g.login = login.LoginAPI(self)
-            #self.g.users = users.TimeTokensAPI(self)
-
-            #import sys
-            #print(sys.modules.keys())
-            #import importlib
-            #for modulee in endpoint_submodules:
-            #importlib.reload(core.login)
+            #self.g.timetokens = timetokens.TimeTokensAPI(self)
 
             @self.before_request
             def check_authentication():

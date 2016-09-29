@@ -7,95 +7,108 @@ from flask import request, abort
 from flask import make_response as response
 from flask import current_app as app
 
-from .boards import Boards, BoardsSchema
-from .posts import Posts, PostsSchema
+#from .boards import Boards, BoardsSchema
+#from .posts import Posts, PostsSchema
 
 from .authorization import auth
 
 from .utils import board_id_exists, all_required_fields_dict
 
-class Topics(Posts):
-    __tablename__ = 'posts'
+from . import CommonAPI
 
-    children = relationship("Topics", lazy='joined', join_depth=5)
+class TopicsAPI(CommonAPI):
+    def __init__(self, app):
+        super(TopicsAPI, self).__init__(app)
 
-# list topics
-@app.route('/boards/<string:board_id>/topics/', methods=['GET'])
-def list_board_topics(board_id):
 
-    #board_exists = Boards.query.filter_by( id=board_id ).first()
-    if not board_id_exists(board_id):
-        abort(404)
+        self.register_endpoint('/boards/<string:board_id>/topics/', self.list_board_topics, methods=['GET'])
+        self.register_endpoint('/boards/<string:board_id>/topics/<string:topic_id>', self.show_topic, methods=['GET'])
+        self.register_endpoint('/boards/<string:board_id>/topics/', self.new_topic, methods=['POST'])
 
-    board_topics = Topics.query.\
-            filter_by( board_id=board_id, reply_to_id='0' ).\
-            order_by(Topics.created.desc()).\
-            options(noload('children')).\
-            limit(3).\
-            all()
+        class Topics(Posts):
+            __tablename__ = 'posts'
 
-    topics_dump_json = PostsSchema(many=True).dumps(board_topics).data
-    return response(topics_dump_json, 200)
+            children = relationship("Topics", lazy='joined', join_depth=5)
 
-# show topic
-@app.route('/boards/<string:board_id>/topics/<string:topic_id>', methods=['GET'])
-#@authorization.verify_authorization(context="GET:boards.topics")
-@auth.verify_authorization()
-def show_topic(board_id, topic_id):
+        self.Topics = Topics
 
-    if not board_id_exists(board_id):
-        abort(404)
+    # list topics
+    #@app.route('/boards/<string:board_id>/topics/', methods=['GET'])
+    def list_board_topics(board_id):
 
-    topic = Topics.query.\
-        filter_by( board_id=board_id, id=topic_id, reply_to_id='0' ).\
-        order_by(Topics.created).\
-        options(joinedload('children')).\
-        enable_eagerloads(True).\
-        first()
-        #enable_eagerloads(True).\
+        #board_exists = Boards.query.filter_by( id=board_id ).first()
+        if not board_id_exists(board_id):
+            abort(404)
 
-    if not topic:
-        abort(404)
+        board_topics = Topics.query.\
+                filter_by( board_id=board_id, reply_to_id='0' ).\
+                order_by(Topics.created.desc()).\
+                options(noload('children')).\
+                limit(3).\
+                all()
 
-    topic_dump_json = PostsSchema().dumps(topic).data
-    return topic_dump_json
+        topics_dump_json = PostsSchema(many=True).dumps(board_topics).data
+        return response(topics_dump_json, 200)
 
-# FIXME: maybe change this endpoint to /topics/<boardname>
-# as the board name is an abstraction into which topics (at least should)
-# fit perfectly ?
-# new topic
-@app.route('/boards/<string:board_id>/topics/', methods=['POST'])
-def new_topic(board_id):
+    # show topic
+    #@app.route('/boards/<string:board_id>/topics/<string:topic_id>', methods=['GET'])
+    #@authorization.verify_authorization(context="GET:boards.topics")
+    @auth.verify_authorization()
+    def show_topic(board_id, topic_id):
 
-    if not board_id_exists(board_id):
-        abort(404)
+        if not board_id_exists(board_id):
+            abort(404)
 
-    required_fields = ['title', 'post_text']
+        topic = Topics.query.\
+            filter_by( board_id=board_id, id=topic_id, reply_to_id='0' ).\
+            order_by(Topics.created).\
+            options(joinedload('children')).\
+            enable_eagerloads(True).\
+            first()
+            #enable_eagerloads(True).\
 
-    post_data = all_required_fields_dict(required_fields, request.form)
-    if not post_data:
-        abort(400)
+        if not topic:
+            abort(404)
 
-    #post_data = {}
-    #for field in required_fields:
-    #    if not request.form[field]:
-    #        abort(400)
-    #    else:
-    #        post_data.update( { field : request.form[field] })
+        topic_dump_json = PostsSchema().dumps(topic).data
+        return topic_dump_json
 
-    post_data.update({
-        'topic_id': '0',
-        'reply_to_id': '0',
-        'board_id': board_id,
-        'author_id': 'admin',
-        'hash_id': 'dUmMyHash'
-    })
+    # FIXME: maybe change this endpoint to /topics/<boardname>
+    # as the board name is an abstraction into which topics (at least should)
+    # fit perfectly ?
+    # new topic
+    #@app.route('/boards/<string:board_id>/topics/', methods=['POST'])
+    def new_topic(board_id):
 
-    new_post = PostsSchema(many=False).load(post_data).data
-    app.db.session.add(new_post)
-    app.db.session.commit()
-    new_post.topic_id = new_post.id
-    app.db.session.add(new_post)
-    app.db.session.commit()
+        if not board_id_exists(board_id):
+            abort(404)
 
-    #return "Posting new topic to board '{0}'\n".format(board_id)
+        required_fields = ['title', 'post_text']
+
+        post_data = all_required_fields_dict(required_fields, request.form)
+        if not post_data:
+            abort(400)
+
+        #post_data = {}
+        #for field in required_fields:
+        #    if not request.form[field]:
+        #        abort(400)
+        #    else:
+        #        post_data.update( { field : request.form[field] })
+
+        post_data.update({
+            'topic_id': '0',
+            'reply_to_id': '0',
+            'board_id': board_id,
+            'author_id': 'admin',
+            'hash_id': 'dUmMyHash'
+        })
+
+        new_post = PostsSchema(many=False).load(post_data).data
+        app.db.session.add(new_post)
+        app.db.session.commit()
+        new_post.topic_id = new_post.id
+        app.db.session.add(new_post)
+        app.db.session.commit()
+
+        #return "Posting new topic to board '{0}'\n".format(board_id)

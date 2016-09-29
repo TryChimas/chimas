@@ -19,128 +19,145 @@ from .authorization import auth
 
 from .utils import all_required_fields_dict
 
-class Posts(app.CommonTable):
-    __tablename__ = 'posts'
+from . import CommonAPI
 
-    topic_id = Column(String)
-    reply_to_id = Column(String, ForeignKey('posts.id'), default='0')
+class PostsAPI(CommonAPI):
 
-    board_id = Column(String)
-    author_id = Column(String)
-    title = Column(String)
-    post_text = Column(String)
-    hash_id = Column(String)
+    def __init__(self, app):
+        super(PostsAPI, self).__init__(app)
 
-    #children = relationship("Posts", lazy='noload')
+        #self.app = app
 
-class PostsSchema(app.CommonSchema):
-    topic_id = fields.Int()
-    reply_to_id = fields.Int()
+        self.register_endpoint('/posts/<string:post_id>', self.fetch_post_only, methods=['GET'])
+        self.register_endpoint('/posts/<string:post_id>/reply', self.reply_to_post, methods=['POST'])
+        self.register_endpoint('/posts/<string:post_id>/edit', self.edit_post, methods=['POST'])
+        self.register_endpoint('/posts/<string:post_id>/delete', self.delete_post, methods=['POST'])
 
-    board_id = fields.Str()
-    author_id = fields.Str()
-    title = fields.Str(validate=validators.post_title)
-    post_text = fields.Str(validate=validators.post_text)
-    hash_id = fields.Str()
+        class Posts(app.CommonTable):
+            __tablename__ = 'posts'
 
-    children = fields.Nested('PostsSchema', many=True)
+            topic_id = Column(String)
+            reply_to_id = Column(String, ForeignKey('posts.id'), default='0')
 
-    @post_load
-    def make_post(self, data):
-        return Posts(**data)
+            board_id = Column(String)
+            author_id = Column(String)
+            title = Column(String)
+            post_text = Column(String)
+            hash_id = Column(String)
 
-# get post
-@app.route('/posts/<string:post_id>', methods=['GET'])
-def fetch_post_only(post_id):
+            #children = relationship("Posts", lazy='noload')
 
-    post = Posts.query.filter_by( id=post_id ).first()
-    if not post:
-        abort(404)
+        class PostsSchema(app.CommonSchema):
+            topic_id = fields.Int()
+            reply_to_id = fields.Int()
 
-    post_data_json = PostsSchema().dumps(post).data
+            board_id = fields.Str()
+            author_id = fields.Str()
+            title = fields.Str(validate=validators.post_title)
+            post_text = fields.Str(validate=validators.post_text)
+            hash_id = fields.Str()
 
-    return post_data_json
+            children = fields.Nested('PostsSchema', many=True)
 
-# reply to post
-@app.route('/posts/<string:post_id>/reply', methods=['POST'])
-def reply_to_post(post_id):
+            @post_load
+            def make_post(self, data):
+                return Posts(**data)
 
-    post_to_reply_to = Posts.query.filter_by( id=post_id ).first()
-    if not post_to_reply_to:
-        abort(404)
+        self.Posts = Posts
+        self.PostsSchema = PostsSchema
 
-    parent_post_data = PostsSchema().dump(post_to_reply_to).data
+    # get post
+    @app.route('/posts/<string:post_id>', methods=['GET'])
+    def fetch_post_only(post_id):
 
-    # let's see if we reached max threading deepness or we can reply to the post
-    # FIXME: write a better algorithm for this recursion
+        post = Posts.query.filter_by( id=post_id ).first()
+        if not post:
+            abort(404)
 
-    MAX_THREADING_LEVEL = 3
+        post_data_json = PostsSchema().dumps(post).data
 
-    parent_id = parent_post_data['reply_to_id']
-    count = 1
+        return post_data_json
 
-    # FIXME: write threading routines like this in utils.py
-    while parent_id != 0:
-        parent_id = PostsSchema().dump( Posts.query.filter_by( id=parent_id ).first() ).data['reply_to_id']
-        if count >= MAX_THREADING_LEVEL:
+    # reply to post
+    #@app.route('/posts/<string:post_id>/reply', methods=['POST'])
+    def reply_to_post(post_id):
+
+        post_to_reply_to = Posts.query.filter_by( id=post_id ).first()
+        if not post_to_reply_to:
+            abort(404)
+
+        parent_post_data = PostsSchema().dump(post_to_reply_to).data
+
+        # let's see if we reached max threading deepness or we can reply to the post
+        # FIXME: write a better algorithm for this recursion
+
+        MAX_THREADING_LEVEL = 3
+
+        parent_id = parent_post_data['reply_to_id']
+        count = 1
+
+        # FIXME: write threading routines like this in utils.py
+        while parent_id != 0:
+            parent_id = PostsSchema().dump( Posts.query.filter_by( id=parent_id ).first() ).data['reply_to_id']
+            if count >= MAX_THREADING_LEVEL:
+                abort(400)
+            count += 1
+
+        required_fields = ['post_text']
+
+        new_post_data = all_required_fields_dict(required_fields, request.form)
+
+        if not new_post_data:
             abort(400)
-        count += 1
 
-    required_fields = ['post_text']
+        new_post_data.update({
+            'title': 're {0}'.format(parent_post_data['title']),
+            'topic_id': parent_post_data['topic_id'],
+            'reply_to_id': parent_post_data['id'],
+            'board_id': parent_post_data['board_id'],
+            'author_id': g.username,
+            'hash_id': 'dUmMyHash'
+        })
 
-    new_post_data = all_required_fields_dict(required_fields, request.form)
+        new_reply_post = PostsSchema(many=False).load(new_post_data).data
+        app.db.session.add(new_reply_post)
+        app.db.session.commit()
 
-    if not new_post_data:
-        abort(400)
+    # edit post
+    @auth.verify_authorization()
+    #@app.route('/posts/<string:post_id>/edit', methods=['POST'])
+    def edit_post(post_id):
+        post_to_edit = Posts.query.filter_by( id=post_id ).first()
+        if not post_to_edit:
+            abort(404)
 
-    new_post_data.update({
-        'title': 're {0}'.format(parent_post_data['title']),
-        'topic_id': parent_post_data['topic_id'],
-        'reply_to_id': parent_post_data['id'],
-        'board_id': parent_post_data['board_id'],
-        'author_id': g.username,
-        'hash_id': 'dUmMyHash'
-    })
+        post_dump = PostsSchema().dump(post_to_edit).data
 
-    new_reply_post = PostsSchema(many=False).load(new_post_data).data
-    app.db.session.add(new_reply_post)
-    app.db.session.commit()
+        required_fields = ['post_text']
 
-# edit post
-@auth.verify_authorization()
-@app.route('/posts/<string:post_id>/edit', methods=['POST'])
-def edit_post(post_id):
-    post_to_edit = Posts.query.filter_by( id=post_id ).first()
-    if not post_to_edit:
-        abort(404)
+        post_data = all_required_fields_dict(required_fields, request.form)
 
-    post_dump = PostsSchema().dump(post_to_edit).data
+        if not post_data:
+            abort(400)
 
-    required_fields = ['post_text']
+        edited_post = PostsSchema(many=False).load(post_data).data
+        app.db.session.add(edited_post)
+        app.db.session.commit()
 
-    post_data = all_required_fields_dict(required_fields, request.form)
+        #return "editing post '{0}'\n".format(post_id)
 
-    if not post_data:
-        abort(400)
+    # delete post
+    # FIXME: MEYBE DELETE THREAD, OR ONLY OBSCURATES THE DELETED POST
+    # (soft delete)
+    #@app.route('/posts/<string:post_id>/delete', methods=['POST'])
+    def delete_post(post_id):
+        post_to_be_deleted = Posts.query.filter_by( id=post_id ).first()
+        if not post_to_be_deleted:
+            abort(404)
 
-    edited_post = PostsSchema(many=False).load(post_data).data
-    app.db.session.add(edited_post)
-    app.db.session.commit()
+        post_to_be_deleted.post_text = ""
+        post_to_be_deleted.deleted = g.username
 
-    #return "editing post '{0}'\n".format(post_id)
-
-# delete post
-# FIXME: MEYBE DELETE THREAD, OR ONLY OBSCURATES THE DELETED POST
-# (soft delete)
-@app.route('/posts/<string:post_id>/delete', methods=['POST'])
-def delete_post(post_id):
-    post_to_be_deleted = Posts.query.filter_by( id=post_id ).first()
-    if not post_to_be_deleted:
-        abort(404)
-
-    post_to_be_deleted.post_text = ""
-    post_to_be_deleted.deleted = g.username
-
-    app.db.session.add(post_to_be_deleted)
-    app.db.session.commit()
-    return "deleting post '{0}'\n".format(post_id)
+        app.db.session.add(post_to_be_deleted)
+        app.db.session.commit()
+        return "deleting post '{0}'\n".format(post_id)

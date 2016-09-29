@@ -17,22 +17,15 @@ from .utils import all_required_fields_dict
 
 from functools import wraps
 
-def register_endpoint(app, rule, function, **options):
-    app.add_url_rule(rule, endpoint=function.__name__, view_func=function, **options)
+#def register_endpoint(app, rule, function, **options):
+#    app.add_url_rule(rule, endpoint=function.__name__, view_func=function, **options)
 
 class LoginAPI(CommonAPI):
     def __init__(self, app):
-        self.app = app
+        super(LoginAPI, self).__init__(app)
+        #self.app = app
 
-        register_endpoint(app, '/users/login', self.login_user, methods=['POST'])
-
-    #def route(self, rule, **options):
-    #    def decorator(f):
-    #        endpoint = options.pop('endpoint', None)
-    #        self.add_url_rule(rule, endpoint, f, **options)
-    #        return f
-    #    return decorator
-    #@__class__.app.route('/users/login', methods=['POST'])
+        self.register_endpoint('/users/login', self.login_user, methods=['POST'])
 
     def login_user(self):
         required_fields = ['username', 'password']
