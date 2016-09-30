@@ -48,8 +48,8 @@ class UsersAPI(CommonAPI):
             def make_user(self, data):
                 return Users(**data)
 
-        self.app.Users = Users
-        self.app.UsersSchema = UsersSchema
+        self.Users = Users
+        self.UsersSchema = UsersSchema
 
     #@app.route('/users/new', methods=['POST'])
     def register_user():
@@ -60,6 +60,6 @@ class UsersAPI(CommonAPI):
         if not user_data:
                 abort(400)
 
-        newuser = self.app.UsersSchema(many=False).load(user_data).data
-        self.app.db.session.add(newuser)
-        self.app.db.session.commit()
+        newuser = self.UsersSchema(many=False).load(user_data).data
+        self.db.session.add(newuser)
+        self.db.session.commit()

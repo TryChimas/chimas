@@ -23,14 +23,12 @@ from functools import wraps
 class LoginAPI(CommonAPI):
     def __init__(self, app):
         super(LoginAPI, self).__init__(app)
-        #self.app = app
 
         api_endpoints = [
             ('/users/login', self.login_user, {'methods':['POST']})
         ]
 
         self.register_endpoints(api_endpoints)
-        #self.register_endpoint('/users/login', self.login_user, methods=['POST'])
 
     def login_user(self):
         required_fields = ['username', 'password']
@@ -42,12 +40,12 @@ class LoginAPI(CommonAPI):
         print(user_req)
 
         user_logging_in = \
-            self.app.Users.query.filter_by( username=user_req['username'] ).first()
+            self.app.users.Users.query.filter_by( username=user_req['username'] ).first()
 
         if not user_logging_in:
             abort(401)
         else:
-             user_dump = self.app.UsersSchema(many=False).dump(user_logging_in).data
+             user_dump = self.app.users.UsersSchema(many=False).dump(user_logging_in).data
 
         if user_dump['password'] == user_req['password']: # FIXME
 
@@ -58,7 +56,7 @@ class LoginAPI(CommonAPI):
                 'expires': '66'
             }
 
-            new_token = self.app.AuthTokensSchema(many=False).load(token_data).data
+            new_token = self.app.authentication.AuthTokensSchema(many=False).load(token_data).data
 
             try:
                 self.app.db.session.add(new_token)
@@ -66,7 +64,7 @@ class LoginAPI(CommonAPI):
             except:
                 abort(500)
 
-            new_token_json = self.app.AuthTokensSchema(many=False).dumps(new_token).data
+            new_token_json = self.app.authentication.AuthTokensSchema(many=False).dumps(new_token).data
             return new_token_json
 
         else:
@@ -81,7 +79,7 @@ class LoginAPI(CommonAPI):
         if not user_req:
                 abort(400)
 
-        token_to_unregister = self.app.AuthTokens.query.filter_by( \
+        token_to_unregister = self.app.authentication.AuthTokens.query.filter_by( \
             username=user_req['username'], token=user_req['token'] ).\
             first()
 
@@ -99,7 +97,7 @@ class LoginAPI(CommonAPI):
         if not user_req:
                 abort(400)
 
-        num_deleted = self.app.AuthTokens.query.\
+        num_deleted = self.app.authentication.AuthTokens.query.\
             filter_by( username=user_req['username'] ).delete()
         self.app.db.session.commit()
 

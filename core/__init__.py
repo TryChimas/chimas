@@ -23,6 +23,15 @@ class Response(ResponseBase):
 class CommonAPI:
     def __init__(self, app):
         self.app = app
+        self.db = app.db
+
+        # self.authentication_api = app.authentication
+        # self.users_api = app.users
+        # self.boards_api = app.boards
+        # self.posts_api = app.posts
+        # self.topics_api = app.topics
+        # self.threads_api = app.threads
+        # self.login_api = app.login
         #pass
 
     def register_endpoints(self, api_endpoints):
@@ -103,8 +112,8 @@ class Chimas(Flask):
 
         from . import authentication
 
-        auth_api = authentication.AuthenticationAPI(app=self)
-        self.authentication = auth_api.ChimasAuthentication()
+        self.authentication = authentication.AuthenticationAPI(app=self)
+        self.chimas_authentication = self.authentication.chimas_authentication
 
         self.users = users.UsersAPI(self)
         self.boards = boards.BoardsAPI(self)
@@ -115,10 +124,11 @@ class Chimas(Flask):
         #self.g.timetokens = timetokens.TimeTokensAPI(self)
 
         print(self.url_map)
+
         @self.before_request
         def check_authentication():
             #print(instance)
-            has_authentication = self.authentication.verify_authentication()
+            has_authentication = self.chimas_authentication.verify_authentication()
 
             if has_authentication:
                 g.is_authenticated = True
@@ -129,7 +139,7 @@ class Chimas(Flask):
         self.db.create_all()
 
         try:
-            dummyuser = self.Users(username='admin', password='p4ssw0rd')
+            dummyuser = self.users.Users(username='admin', password='p4ssw0rd')
             self.db.session.add(dummyuser)
             self.db.session.commit()
         except:

@@ -66,18 +66,18 @@ class PostsAPI(CommonAPI):
             def make_post(self, data):
                 return Posts(**data)
 
-        self.app.Posts = Posts
-        self.app.PostsSchema = PostsSchema
+        self.Posts = Posts
+        self.PostsSchema = PostsSchema
 
     # get post
     #@app.route('/posts/<string:post_id>', methods=['GET'])
     def fetch_post_only(post_id):
 
-        post = self.app.Posts.query.filter_by( id=post_id ).first()
+        post = self.Posts.query.filter_by( id=post_id ).first()
         if not post:
             abort(404)
 
-        post_data_json = self.app.PostsSchema().dumps(post).data
+        post_data_json = self.PostsSchema().dumps(post).data
 
         return post_data_json
 
@@ -85,11 +85,11 @@ class PostsAPI(CommonAPI):
     #@app.route('/posts/<string:post_id>/reply', methods=['POST'])
     def reply_to_post(post_id):
 
-        post_to_reply_to = self.app.Posts.query.filter_by( id=post_id ).first()
+        post_to_reply_to = self.Posts.query.filter_by( id=post_id ).first()
         if not post_to_reply_to:
             abort(404)
 
-        parent_post_data = self.app.PostsSchema().dump(post_to_reply_to).data
+        parent_post_data = self.PostsSchema().dump(post_to_reply_to).data
 
         # let's see if we reached max threading deepness or we can reply to the post
         # FIXME: write a better algorithm for this recursion
@@ -101,7 +101,7 @@ class PostsAPI(CommonAPI):
 
         # FIXME: write threading routines like this in utils.py
         while parent_id != 0:
-            parent_id = PostsSchema().dump( self.app.Posts.query.filter_by( id=parent_id ).first() ).data['reply_to_id']
+            parent_id = self.PostsSchema().dump( self.Posts.query.filter_by( id=parent_id ).first() ).data['reply_to_id']
             if count >= MAX_THREADING_LEVEL:
                 abort(400)
             count += 1
@@ -122,19 +122,19 @@ class PostsAPI(CommonAPI):
             'hash_id': 'dUmMyHash'
         })
 
-        new_reply_post = self.app.PostsSchema(many=False).load(new_post_data).data
-        self.app.db.session.add(new_reply_post)
-        self.app.db.session.commit()
+        new_reply_post = self.PostsSchema(many=False).load(new_post_data).data
+        self.db.session.add(new_reply_post)
+        self.db.session.commit()
 
     # edit post
     @auth.verify_authorization()
     #@app.route('/posts/<string:post_id>/edit', methods=['POST'])
     def edit_post(post_id):
-        post_to_edit = self.app.Posts.query.filter_by( id=post_id ).first()
+        post_to_edit = self.Posts.query.filter_by( id=post_id ).first()
         if not post_to_edit:
             abort(404)
 
-        post_dump = self.app.PostsSchema().dump(post_to_edit).data
+        post_dump = self.PostsSchema().dump(post_to_edit).data
 
         required_fields = ['post_text']
 
@@ -143,9 +143,9 @@ class PostsAPI(CommonAPI):
         if not post_data:
             abort(400)
 
-        edited_post = self.app.PostsSchema(many=False).load(post_data).data
-        self.app.db.session.add(edited_post)
-        self.app.db.session.commit()
+        edited_post = self.PostsSchema(many=False).load(post_data).data
+        self.db.session.add(edited_post)
+        self.db.session.commit()
 
         #return "editing post '{0}'\n".format(post_id)
 
@@ -154,13 +154,13 @@ class PostsAPI(CommonAPI):
     # (soft delete)
     #@app.route('/posts/<string:post_id>/delete', methods=['POST'])
     def delete_post(post_id):
-        post_to_be_deleted = self.app.Posts.query.filter_by( id=post_id ).first()
+        post_to_be_deleted = self.Posts.query.filter_by( id=post_id ).first()
         if not post_to_be_deleted:
             abort(404)
 
         post_to_be_deleted.post_text = ""
         post_to_be_deleted.deleted = g.username
 
-        self.app.db.session.add(post_to_be_deleted)
-        self.app.db.session.commit()
+        self.db.session.add(post_to_be_deleted)
+        self.db.session.commit()
         return "deleting post '{0}'\n".format(post_id)

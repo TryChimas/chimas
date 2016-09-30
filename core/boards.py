@@ -41,8 +41,8 @@ class BoardsAPI(CommonAPI):
             def make_board(self, data):
                 return Boards(**data)
 
-        self.app.Boards = Boards
-        self.app.BoardsSchema = BoardsSchema
+        self.Boards = Boards
+        self.BoardsSchema = BoardsSchema
 
     #@app.route('/boards/new', methods=['POST'])
     def create_board():
@@ -53,6 +53,6 @@ class BoardsAPI(CommonAPI):
         if not board_data:
             abort(400)
 
-        new_board = self.app.BoardsSchema(many=False).load(board_data).data
-        self.app.db.session.add(new_board)
-        self.app.db.session.commit()
+        new_board = self.BoardsSchema(many=False).load(board_data).data
+        self.db.session.add(new_board)
+        self.db.session.commit()

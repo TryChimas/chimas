@@ -28,12 +28,12 @@ class TopicsAPI(CommonAPI):
 
         self.register_endpoints(api_endpoints)
 
-        class Topics(self.app.Posts):
+        class Topics(self.app.posts.Posts):
             __tablename__ = 'posts'
 
             children = relationship("Topics", lazy='joined', join_depth=5)
 
-        self.app.Topics = Topics
+        self.Topics = Topics
 
     # list topics
     #@app.route('/boards/<string:board_id>/topics/', methods=['GET'])
@@ -43,14 +43,14 @@ class TopicsAPI(CommonAPI):
         if not board_id_exists(board_id):
             abort(404)
 
-        board_topics = Topics.query.\
+        board_topics = self.Topics.query.\
                 filter_by( board_id=board_id, reply_to_id='0' ).\
                 order_by(Topics.created.desc()).\
                 options(noload('children')).\
                 limit(3).\
                 all()
 
-        topics_dump_json = self.app.PostsSchema(many=True).dumps(board_topics).data
+        topics_dump_json = self.PostsSchema(many=True).dumps(board_topics).data
         return response(topics_dump_json, 200)
 
     # show topic
@@ -62,9 +62,9 @@ class TopicsAPI(CommonAPI):
         if not board_id_exists(board_id):
             abort(404)
 
-        topic = self.app.Topics.query.\
+        topic = self.Topics.query.\
             filter_by( board_id=board_id, id=topic_id, reply_to_id='0' ).\
-            order_by(Topics.created).\
+            order_by(self.Topics.created).\
             options(joinedload('children')).\
             enable_eagerloads(True).\
             first()
@@ -73,7 +73,7 @@ class TopicsAPI(CommonAPI):
         if not topic:
             abort(404)
 
-        topic_dump_json = self.app.PostsSchema().dumps(topic).data
+        topic_dump_json = self.PostsSchema().dumps(topic).data
         return topic_dump_json
 
     # FIXME: maybe change this endpoint to /topics/<boardname>
@@ -107,11 +107,11 @@ class TopicsAPI(CommonAPI):
             'hash_id': 'dUmMyHash'
         })
 
-        new_post = self.app.PostsSchema(many=False).load(post_data).data
-        self.app.db.session.add(new_post)
-        self.app.db.session.commit()
+        new_post = self.PostsSchema(many=False).load(post_data).data
+        self.db.session.add(new_post)
+        self.db.session.commit()
         new_post.topic_id = new_post.id
-        self.app.db.session.add(new_post)
-        self.app.db.session.commit()
+        self.db.session.add(new_post)
+        self.db.session.commit()
 
         #return "Posting new topic to board '{0}'\n".format(board_id)

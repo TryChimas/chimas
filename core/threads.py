@@ -16,27 +16,27 @@ class ThreadsAPI(CommonAPI):
 
         #self.app = app
         api_endpoints = [
-        ('/threads/<string:post_id>', self.get_thread, {'methods':['GET']}),
-        ('/threads/<string:post_id>/tree', self.get_thread_tree, {'methods':['GET']}) ]
+            ('/threads/<string:post_id>', self.get_thread, {'methods':['GET']}),
+            ('/threads/<string:post_id>/tree', self.get_thread_tree, {'methods':['GET']}) ]
 
         self.register_endpoints(api_endpoints)
 
-        class Threads(self.app.Posts):
+        class Threads(self.app.posts.Posts):
             children = relationship("Threads", lazy='joined', join_depth=2)
 
-        class ThreadsSchema(self.app.PostsSchema):
+        class ThreadsSchema(self.app.posts.PostsSchema):
             children = fields.Nested('ThreadsSchema', many=True)
 
-        self.app.Threads = Threads
-        self.app.ThreadsSchema = ThreadsSchema
+        self.Threads = Threads
+        self.ThreadsSchema = ThreadsSchema
 
     #@app.route('/threads/<string:post_id>', methods=['GET'])
     def get_thread(post_id):
-        parent_post = self.app.Threads.query.filter_by( id=post_id ).first()
+        parent_post = self.Threads.query.filter_by( id=post_id ).first()
         if not parent_post:
             abort(404)
 
-        post_dump_json = ThreadsSchema().dumps(parent_post).data
+        post_dump_json = self.ThreadsSchema().dumps(parent_post).data
 
         return post_dump_json
 
