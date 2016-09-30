@@ -40,6 +40,9 @@ class AuthenticationAPI:
             def make_authtoken(self, data):
                 return AuthTokens(**data)
 
+        self.app.AuthTokens = AuthTokens
+        self.app.AuthTokensSchema = AuthTokensSchema
+        
         class ChimasAuthentication:
             def __init__(self, scheme='Token', realm=None):
                 self.scheme = scheme

@@ -33,7 +33,7 @@ class TopicsAPI(CommonAPI):
 
             children = relationship("Topics", lazy='joined', join_depth=5)
 
-        self.Topics = Topics
+        self.app.Topics = Topics
 
     # list topics
     #@app.route('/boards/<string:board_id>/topics/', methods=['GET'])
@@ -50,7 +50,7 @@ class TopicsAPI(CommonAPI):
                 limit(3).\
                 all()
 
-        topics_dump_json = PostsSchema(many=True).dumps(board_topics).data
+        topics_dump_json = self.app.PostsSchema(many=True).dumps(board_topics).data
         return response(topics_dump_json, 200)
 
     # show topic
@@ -62,7 +62,7 @@ class TopicsAPI(CommonAPI):
         if not board_id_exists(board_id):
             abort(404)
 
-        topic = Topics.query.\
+        topic = self.app.Topics.query.\
             filter_by( board_id=board_id, id=topic_id, reply_to_id='0' ).\
             order_by(Topics.created).\
             options(joinedload('children')).\
@@ -73,7 +73,7 @@ class TopicsAPI(CommonAPI):
         if not topic:
             abort(404)
 
-        topic_dump_json = PostsSchema().dumps(topic).data
+        topic_dump_json = self.app.PostsSchema().dumps(topic).data
         return topic_dump_json
 
     # FIXME: maybe change this endpoint to /topics/<boardname>
@@ -107,11 +107,11 @@ class TopicsAPI(CommonAPI):
             'hash_id': 'dUmMyHash'
         })
 
-        new_post = PostsSchema(many=False).load(post_data).data
-        app.db.session.add(new_post)
-        app.db.session.commit()
+        new_post = self.app.PostsSchema(many=False).load(post_data).data
+        self.app.db.session.add(new_post)
+        self.app.db.session.commit()
         new_post.topic_id = new_post.id
-        app.db.session.add(new_post)
-        app.db.session.commit()
+        self.app.db.session.add(new_post)
+        self.app.db.session.commit()
 
         #return "Posting new topic to board '{0}'\n".format(board_id)

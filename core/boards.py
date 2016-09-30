@@ -26,22 +26,23 @@ class BoardsAPI(CommonAPI):
 
         self.register_endpoints(api_endpoints)
 
-        class Boards(app.CommonTable):
+        class Boards(self.app.CommonTable):
             __tablename__ = 'boards'
 
             #id = None
             title = Column(String, unique=True)
             description = Column(String)
 
-        class BoardsSchema(app.CommonSchema):
+        class BoardsSchema(self.app.CommonSchema):
             title = fields.Str(validate=validators.board_title)
             description = fields.Str(validate=validators.board_description)
 
             @post_load
             def make_board(self, data):
                 return Boards(**data)
-        self.Boards = Boards
-        self.BoardsSchema = BoardsSchema
+
+        self.app.Boards = Boards
+        self.app.BoardsSchema = BoardsSchema
 
     #@app.route('/boards/new', methods=['POST'])
     def create_board():
@@ -52,6 +53,6 @@ class BoardsAPI(CommonAPI):
         if not board_data:
             abort(400)
 
-        new_board = BoardsSchema(many=False).load(board_data).data
-        app.db.session.add(new_board)
-        app.db.session.commit()
+        new_board = self.app.BoardsSchema(many=False).load(board_data).data
+        self.app.db.session.add(new_board)
+        self.app.db.session.commit()

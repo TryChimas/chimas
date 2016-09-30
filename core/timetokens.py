@@ -18,7 +18,7 @@ class TimeTokensAPI:
     def __init__(self, app):
 
         self.app = app
-        
+
         class TimeTokens(app.CommonTable):
             __tablename__ = 'timetokens'
 
@@ -26,6 +26,8 @@ class TimeTokensAPI:
             value = Column(String)
             expires = Column(String) # seconds
             secret = Column(String)
+
+        self.app.TimeTokens = TimeTokens
 
         # tokentypes can be:
         # 'validate_email_address', with 'value' == {'username':'myus3rname', 'mail':'mymail@host.fqdn'}

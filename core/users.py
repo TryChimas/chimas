@@ -60,6 +60,6 @@ class UsersAPI(CommonAPI):
         if not user_data:
                 abort(400)
 
-        newuser = UsersSchema(many=False).load(user_data).data
-        app.db.session.add(newuser)
-        app.db.session.commit()
+        newuser = self.app.UsersSchema(many=False).load(user_data).data
+        self.app.db.session.add(newuser)
+        self.app.db.session.commit()

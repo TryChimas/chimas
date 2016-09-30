@@ -35,7 +35,7 @@ class RolesAPI(CommonAPI):
             arguments = Column(String) # FIXME: arguments is best if a json/dict,eg. {'board_id':'41'}
             username = Column(String)
 
-        self.Roles = Roles
+        self.app.Roles = Roles
 
     #@app.route('/roles', methods=['GET'])
     def list_roles():

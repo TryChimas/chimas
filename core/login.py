@@ -39,6 +39,8 @@ class LoginAPI(CommonAPI):
         if not user_req:
                 abort(400)
 
+        print(user_req)
+
         user_logging_in = \
             self.app.Users.query.filter_by( username=user_req['username'] ).first()
 
@@ -56,15 +58,15 @@ class LoginAPI(CommonAPI):
                 'expires': '66'
             }
 
-            new_token = AuthTokensSchema(many=False).load(token_data).data
+            new_token = self.app.AuthTokensSchema(many=False).load(token_data).data
 
             try:
-                app.db.session.add(new_token)
-                app.db.session.commit()
+                self.app.db.session.add(new_token)
+                self.app.db.session.commit()
             except:
                 abort(500)
 
-            new_token_json = AuthTokensSchema(many=False).dumps(new_token).data
+            new_token_json = self.app.AuthTokensSchema(many=False).dumps(new_token).data
             return new_token_json
 
         else:
@@ -79,15 +81,15 @@ class LoginAPI(CommonAPI):
         if not user_req:
                 abort(400)
 
-        token_to_unregister = AuthTokens.query.filter_by( \
+        token_to_unregister = self.app.AuthTokens.query.filter_by( \
             username=user_req['username'], token=user_req['token'] ).\
             first()
 
         if not token_to_unregister:
             abort(404)
 
-        app.db.session.delete(token_to_unregister)
-        app.db.session.commit()
+        self.app.db.session.delete(token_to_unregister)
+        self.app.db.session.commit()
 
     #@__self__.app.route('/users/logoutall', methods=['POST'])
     def unregister_all_user_tokens(self):
@@ -97,8 +99,8 @@ class LoginAPI(CommonAPI):
         if not user_req:
                 abort(400)
 
-        num_deleted = AuthTokens.query.\
+        num_deleted = self.app.AuthTokens.query.\
             filter_by( username=user_req['username'] ).delete()
-        app.db.session.commit()
+        self.app.db.session.commit()
 
         return "{0} tokens deleted.".format(num_deleted) # FIXME

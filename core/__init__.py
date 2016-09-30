@@ -129,7 +129,7 @@ class Chimas(Flask):
         self.db.create_all()
 
         try:
-            dummyuser = users.Users(username='admin', password='p4ssw0rd')
+            dummyuser = self.Users(username='admin', password='p4ssw0rd')
             self.db.session.add(dummyuser)
             self.db.session.commit()
         except:

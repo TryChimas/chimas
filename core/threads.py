@@ -32,7 +32,7 @@ class ThreadsAPI(CommonAPI):
 
     #@app.route('/threads/<string:post_id>', methods=['GET'])
     def get_thread(post_id):
-        parent_post = Threads.query.filter_by( id=post_id ).first()
+        parent_post = self.app.Threads.query.filter_by( id=post_id ).first()
         if not parent_post:
             abort(404)
 
