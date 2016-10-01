@@ -59,8 +59,8 @@ class LoginAPI(CommonAPI):
             new_token = self.app.authentication.AuthTokensSchema(many=False).load(token_data).data
 
             try:
-                self.app.db.session.add(new_token)
-                self.app.db.session.commit()
+                self.db.session.add(new_token)
+                self.db.session.commit()
             except:
                 abort(500)
 
@@ -86,8 +86,8 @@ class LoginAPI(CommonAPI):
         if not token_to_unregister:
             abort(404)
 
-        self.app.db.session.delete(token_to_unregister)
-        self.app.db.session.commit()
+        self.db.session.delete(token_to_unregister)
+        self.db.session.commit()
 
     #@__self__.app.route('/users/logoutall', methods=['POST'])
     def unregister_all_user_tokens(self):
@@ -99,6 +99,6 @@ class LoginAPI(CommonAPI):
 
         num_deleted = self.app.authentication.AuthTokens.query.\
             filter_by( username=user_req['username'] ).delete()
-        self.app.db.session.commit()
+        self.db.session.commit()
 
         return "{0} tokens deleted.".format(num_deleted) # FIXME

@@ -20,26 +20,41 @@ def json_error_response(code, title):
 
     return (errors_json, code, None)
 
-@app.errorhandler(400)
-def bad_request(error):
-    return json_error_response(400, 'BadRequest')
+class ErrorHandlingAPI:
+    def __init__(self, app):
+        self.app = app
 
-@app.errorhandler(401)
-def unauthorized(error):
-    return json_error_response(401, 'Unauthorized')
+        error_handlers = [
+            (400, self.bad_request),
+            (401, self.unauthorized),
+            (403, self.forbidden),
+            (404, self.not_found),
+            (405, self.method_not_allowed),
+            (500, self.internal_server_error) ]
 
-@app.errorhandler(403)
-def unauthorized(error):
-    return json_error_response(403, 'Forbidden')
+        for error_code, error_function in error_handlers:
+            app.register_error_handler(error_code, error_function)
 
-@app.errorhandler(404)
-def not_found(error):
-    return json_error_response(404, 'NotFound')
+    #@app.errorhandler(400)
+    def bad_request(self, error):
+        return json_error_response(400, 'BadRequest')
 
-@app.errorhandler(405)
-def method_not_allowed(error):
-    return json_error_response(405, 'MethodNotAllowed')
+    #@app.errorhandler(401)
+    def unauthorized(self, error):
+        return json_error_response(401, 'Unauthorized')
 
-@app.errorhandler(500)
-def internal_server_error(error):
-    return json_error_response(500, 'InternalServerError')
+    #@app.errorhandler(403)
+    def forbidden(self, error):
+        return json_error_response(403, 'Forbidden')
+
+    #@app.errorhandler(404)
+    def not_found(self, error):
+        return json_error_response(404, 'NotFound')
+
+    #@app.errorhandler(405)
+    def method_not_allowed(self, error):
+        return json_error_response(405, 'MethodNotAllowed')
+
+    #@app.errorhandler(500)
+    def internal_server_error(self, error):
+        return json_error_response(500, 'InternalServerError')

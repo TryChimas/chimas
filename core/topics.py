@@ -50,7 +50,7 @@ class TopicsAPI(CommonAPI):
                 limit(3).\
                 all()
 
-        topics_dump_json = self.PostsSchema(many=True).dumps(board_topics).data
+        topics_dump_json = self.app.posts.PostsSchema(many=True).dumps(board_topics).data
         return response(topics_dump_json, 200)
 
     # show topic
@@ -107,7 +107,7 @@ class TopicsAPI(CommonAPI):
             'hash_id': 'dUmMyHash'
         })
 
-        new_post = self.PostsSchema(many=False).load(post_data).data
+        new_post = self.app.posts.PostsSchema(many=False).load(post_data).data
         self.db.session.add(new_post)
         self.db.session.commit()
         new_post.topic_id = new_post.id

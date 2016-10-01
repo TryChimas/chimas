@@ -25,21 +25,10 @@ class CommonAPI:
         self.app = app
         self.db = app.db
 
-        # self.authentication_api = app.authentication
-        # self.users_api = app.users
-        # self.boards_api = app.boards
-        # self.posts_api = app.posts
-        # self.topics_api = app.topics
-        # self.threads_api = app.threads
-        # self.login_api = app.login
-        #pass
 
     def register_endpoints(self, api_endpoints):
         for endpoint in api_endpoints:
             rule, function, options = endpoint
-            #self.app.add_url_rule(endpoint['rule'], endpoint=endpoint['endpoint'].__name__, view_func=endpoint['endpoint'], **endpoint['options'])
-            #self.register_endpoint(endpoint['rule'], endpoint=endpoint['endpoint'], **endpoint['options'])
-            #self.register_endpoint(**endpoint)
             self.register_endpoint(rule, function, **options)
 
     def register_endpoint(self, rule, function, **options):
@@ -57,7 +46,7 @@ class Chimas(Flask):
 
         self.instance = instance
 
-        self.app = self.app_context()
+        #self.app = self.app_context()
         self.db = SQLAlchemy(self)
         #self.db.init_app(self)
 
@@ -95,9 +84,6 @@ class Chimas(Flask):
 
 
     def pre_start(self):
-        """Shortcut for :attr:`wsgi_app`."""
-        #self.teardown_appcontext(self.teardown)
-        #with self.app:
         from . import config
 
         self.config.update(config.app_config)
@@ -106,11 +92,13 @@ class Chimas(Flask):
         #self.g = g
 
         #self.db.init_app(self)
-        #from . import errorhandling
+        from . import errorhandling
         from . import users, boards, topics, posts, threads,\
                          login, timetokens
 
         from . import authentication
+
+        self.errorhandling = errorhandling.ErrorHandlingAPI(self)
 
         self.authentication = authentication.AuthenticationAPI(app=self)
         self.chimas_authentication = self.authentication.chimas_authentication
