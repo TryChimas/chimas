@@ -1,12 +1,6 @@
 #from . import app, db, CommonTable, CommonSchema
 
-from sqlalchemy import (
-        Column,
-        String,
-        Integer,
-        ForeignKey,
-        DateTime,
-        func )
+from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
 
 from marshmallow import fields, Schema, post_load
 
@@ -14,8 +8,6 @@ from functools import wraps
 from flask import request, abort, make_response
 #from flask import current_app as app
 from werkzeug.datastructures import Authorization
-
-#from .users import Users
 
 class ChimasAuthentication:
 #    def __init__(self, scheme='Token', realm=None):

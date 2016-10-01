@@ -38,17 +38,17 @@ class RolesAPI(CommonAPI):
         self.Roles = Roles
 
     #@app.route('/roles', methods=['GET'])
-    def list_roles():
+    def list_roles(self):
         pass
 
     #@app.route('/roles/<string:role>/<string:arguments>', methods=['GET'])
-    def fetch_role_info():
+    def fetch_role_info(self):
         pass
 
     #@app.route('/roles/by_username/<string:username>', methods=['GET'])
     def list_user_roles():
         pass
 
-    @app.route('/groups/addrole', methods=['POST'])
-    def add_role():
+    #@app.route('/groups/addrole', methods=['POST']) # FIXME: PORTME!
+    def add_role(self):
         pass

@@ -1,6 +1,4 @@
-#from . import app
-from flask import make_response, json
-from flask import current_app as app
+from flask import json
 
 #from werkzeug.exceptions import HTTPException
 
@@ -35,26 +33,20 @@ class ErrorHandlingAPI:
         for error_code, error_function in error_handlers:
             app.register_error_handler(error_code, error_function)
 
-    #@app.errorhandler(400)
     def bad_request(self, error):
         return json_error_response(400, 'BadRequest')
 
-    #@app.errorhandler(401)
     def unauthorized(self, error):
         return json_error_response(401, 'Unauthorized')
 
-    #@app.errorhandler(403)
     def forbidden(self, error):
         return json_error_response(403, 'Forbidden')
 
-    #@app.errorhandler(404)
     def not_found(self, error):
         return json_error_response(404, 'NotFound')
 
-    #@app.errorhandler(405)
     def method_not_allowed(self, error):
         return json_error_response(405, 'MethodNotAllowed')
 
-    #@app.errorhandler(500)
     def internal_server_error(self, error):
         return json_error_response(500, 'InternalServerError')

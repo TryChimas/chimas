@@ -3,13 +3,7 @@
 #from . import CommonTable, CommonSchema
 from . import validators
 
-from sqlalchemy import (
-        Column,
-        String,
-        Integer,
-        ForeignKey,
-        DateTime,
-        func )
+from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
 
 from marshmallow import fields, Schema, post_load
 import time, datetime
@@ -44,10 +38,10 @@ class TimeTokensAPI:
     def add_time_token(tokentype, value, expires):
 
             expires_datetime = datetime.fromtimestamp(time.time()+expires)
-            TimeTokens.tokentype = tokentype
-            TimeTokens.value = value
-            TimeTokens.expires = expires_datetime
-            TimeToken.secret = urandom(32).hex() # FIXME
+            self.TimeTokens.tokentype = tokentype
+            self.TimeTokens.value = value
+            self.TimeTokens.expires = expires_datetime
+            self.TimeToken.secret = urandom(32).hex() # FIXME
 
-            app.db.session.add(timetoken)
-            app.db.session.commit()
+            self.app.db.session.add(timetoken)
+            self.app.db.session.commit()

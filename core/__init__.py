@@ -4,12 +4,7 @@ from flask import Flask, request, g, abort
 # https://github.com/pallets/flask/blob/master/flask/wrappers.py
 from werkzeug.wrappers import Request as RequestBase, Response as ResponseBase
 
-
-
 import datetime # or use time.time to make timestamps
-
-# from flask import current_app as app
-
 import sys
 
 ROOT_PATH = sys.path[0] + "/"
@@ -25,7 +20,6 @@ class CommonAPI:
         self.app = app
         self.db = app.db
 
-
     def register_endpoints(self, api_endpoints):
         for endpoint in api_endpoints:
             rule, function, options = endpoint
@@ -33,6 +27,13 @@ class CommonAPI:
 
     def register_endpoint(self, rule, function, **options):
         self.app.add_url_rule(rule, endpoint=function.__name__, view_func=function, **options)
+
+from . import config
+
+from . import errorhandling
+from . import users, boards, topics, posts, threads, login, timetokens
+
+from . import roles, authentication
 
 class Chimas(Flask):
     def __init__(self, instance=None, import_name=__package__, **kwargs):
@@ -84,19 +85,7 @@ class Chimas(Flask):
 
 
     def pre_start(self):
-        from . import config
-
         self.config.update(config.app_config)
-        #self.db.init_app(self)
-
-        #self.g = g
-
-        #self.db.init_app(self)
-        from . import errorhandling
-        from . import users, boards, topics, posts, threads,\
-                         login, timetokens
-
-        from . import authentication
 
         self.errorhandling = errorhandling.ErrorHandlingAPI(self)
 
@@ -109,7 +98,8 @@ class Chimas(Flask):
         self.topics = topics.TopicsAPI(self)
         self.threads = threads.ThreadsAPI(self)
         self.login = login.LoginAPI(self)
-        #self.g.timetokens = timetokens.TimeTokensAPI(self)
+        self.timetokens = timetokens.TimeTokensAPI(self)
+        self.roles = roles.RolesAPI(self)
 
         print(self.url_map)
 
