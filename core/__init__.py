@@ -1,6 +1,10 @@
 
 from flask import Flask, request, g, abort
 
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
+from marshmallow import fields, Schema
+
 # https://github.com/pallets/flask/blob/master/flask/wrappers.py
 from werkzeug.wrappers import Request as RequestBase, Response as ResponseBase
 
@@ -29,27 +33,23 @@ class CommonAPI:
         self.app.add_url_rule(rule, endpoint=function.__name__, view_func=function, **options)
 
 from . import config
-
 from . import errorhandling
 from . import users, boards, topics, posts, threads, login, timetokens
-
 from . import roles, authentication
 
 class Chimas(Flask):
     def __init__(self, instance=None, import_name=__package__, **kwargs):
         super(Chimas, self).__init__(import_name, **kwargs)
 
-        from flask_sqlalchemy import SQLAlchemy
-        from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
-        from marshmallow import fields, Schema
+        # from flask_sqlalchemy import SQLAlchemy
+        # from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
+        # from marshmallow import fields, Schema
 
         self.response_class = Response
 
         self.instance = instance
 
-        #self.app = self.app_context()
         self.db = SQLAlchemy(self)
-        #self.db.init_app(self)
 
         self.config['DEBUG'] = True
 

@@ -10,7 +10,7 @@ from flask import request, abort, make_response
 from werkzeug.datastructures import Authorization
 
 class ChimasAuthentication:
-#    def __init__(self, scheme='Token', realm=None):
+    # def __init__(self, scheme='Token', realm=None):
     def __init__(self, authentication_api):
         self.scheme = 'Token'
         self.realm = None
