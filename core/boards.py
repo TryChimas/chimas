@@ -14,7 +14,7 @@ from marshmallow import fields, Schema, post_load
 from flask import request, abort
 from . import CommonAPI
 
-
+from .utils import all_required_fields_dict
 class BoardsAPI(CommonAPI):
     def __init__(self, app):
         super(BoardsAPI, self).__init__(app)
@@ -45,7 +45,7 @@ class BoardsAPI(CommonAPI):
         self.BoardsSchema = BoardsSchema
 
     #@app.route('/boards/new', methods=['POST'])
-    def create_board():
+    def create_board(self):
         required_fields = ['title', 'description']
 
         board_data = all_required_fields_dict(required_fields, request.form)

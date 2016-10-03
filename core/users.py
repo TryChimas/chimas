@@ -52,7 +52,7 @@ class UsersAPI(CommonAPI):
         self.UsersSchema = UsersSchema
 
     #@app.route('/users/new', methods=['POST'])
-    def register_user():
+    def register_user(self):
         required_fields = ['username', 'password']
 
         user_data = all_required_fields_dict(required_fields, request.form)

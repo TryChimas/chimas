@@ -15,7 +15,7 @@ from marshmallow import fields, Schema, post_load
 from flask import request, abort, g
 #from flask import current_app as app
 
-from .authorization import auth
+#from .authorization import auth
 
 from .utils import all_required_fields_dict
 
@@ -71,7 +71,7 @@ class PostsAPI(CommonAPI):
 
     # get post
     #@app.route('/posts/<string:post_id>', methods=['GET'])
-    def fetch_post_only(post_id):
+    def fetch_post_only(self, post_id):
 
         post = self.Posts.query.filter_by( id=post_id ).first()
         if not post:
@@ -83,7 +83,7 @@ class PostsAPI(CommonAPI):
 
     # reply to post
     #@app.route('/posts/<string:post_id>/reply', methods=['POST'])
-    def reply_to_post(post_id):
+    def reply_to_post(self, post_id):
 
         post_to_reply_to = self.Posts.query.filter_by( id=post_id ).first()
         if not post_to_reply_to:
@@ -126,16 +126,16 @@ class PostsAPI(CommonAPI):
         self.db.session.add(new_reply_post)
         self.db.session.commit()
 
-    # edit post
-    @auth.verify_authorization()
+    # edit post #FIXME its not working
+    #@auth.verify_authorization()
     #@app.route('/posts/<string:post_id>/edit', methods=['POST'])
-    def edit_post(post_id):
+    def edit_post(self, post_id):
         post_to_edit = self.Posts.query.filter_by( id=post_id ).first()
         if not post_to_edit:
             abort(404)
 
         post_dump = self.PostsSchema().dump(post_to_edit).data
-
+        print(post_dump)
         required_fields = ['post_text']
 
         post_data = all_required_fields_dict(required_fields, request.form)
@@ -143,8 +143,11 @@ class PostsAPI(CommonAPI):
         if not post_data:
             abort(400)
 
-        edited_post = self.PostsSchema(many=False).load(post_data).data
-        self.db.session.add(edited_post)
+        post_dump.update(post_data)
+        print(post_dump)
+
+        edited_post_obj = self.PostsSchema(many=False).load(post_dump).data
+        self.db.session.add(edited_post_obj)
         self.db.session.commit()
 
         #return "editing post '{0}'\n".format(post_id)
@@ -153,7 +156,7 @@ class PostsAPI(CommonAPI):
     # FIXME: MEYBE DELETE THREAD, OR ONLY OBSCURATES THE DELETED POST
     # (soft delete)
     #@app.route('/posts/<string:post_id>/delete', methods=['POST'])
-    def delete_post(post_id):
+    def delete_post(self, post_id):
         post_to_be_deleted = self.Posts.query.filter_by( id=post_id ).first()
         if not post_to_be_deleted:
             abort(404)

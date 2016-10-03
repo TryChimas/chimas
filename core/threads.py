@@ -31,7 +31,7 @@ class ThreadsAPI(CommonAPI):
         self.ThreadsSchema = ThreadsSchema
 
     #@app.route('/threads/<string:post_id>', methods=['GET'])
-    def get_thread(post_id):
+    def get_thread(self, post_id):
         parent_post = self.Threads.query.filter_by( id=post_id ).first()
         if not parent_post:
             abort(404)
@@ -41,5 +41,5 @@ class ThreadsAPI(CommonAPI):
         return post_dump_json
 
     #@app.route('/threads/<string:post_id>/tree', methods=['GET'])
-    def get_thread_tree(post_id):
+    def get_thread_tree(self, post_id):
         return "getting thread tree for post id '{0}'\n".format(post_id)

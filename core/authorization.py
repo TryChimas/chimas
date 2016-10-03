@@ -20,9 +20,10 @@ from werkzeug.datastructures import Authorization
 
 import re
 
-class ChimasAuthorization:
+#class ChimasAuthorization:
+class AuthorizationAPI:
 
-    def __init__(self):
+    def __init__(self, app):
         self.function_map = {}
 
     def verify_authorization(self):
@@ -81,17 +82,17 @@ class ChimasAuthorization:
         else:
             return func()
 
-auth = ChimasAuthorization()
+#auth = ChimasAuthorization()
 
-# read topic item
-@auth.context('GET:boards.topics.')
-def verify_boards_topics_item():
-    return True
-
-@auth.context('POST:posts.edit')
-def edit_post():
-    post_id = request.view_args['post_id']
-    if Posts.query.filter_by( id=parent_id, author_id=g.username ).first():
-        return True
-    else:
-        return False
+# # read topic item
+# @auth.context('GET:boards.topics.')
+# def verify_boards_topics_item():
+#     return True
+#
+# @auth.context('POST:posts.edit')
+# def edit_post():
+#     post_id = request.view_args['post_id']
+#     if Posts.query.filter_by( id=parent_id, author_id=g.username ).first():
+#         return True
+#     else:
+#         return False

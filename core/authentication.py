@@ -15,6 +15,41 @@ class ChimasAuthentication:
         self.scheme = 'Token'
         self.realm = None
 
+        self.authentication_api = authentication_api
+
+
+class AuthenticationAPI:
+    def __init__(self, app):
+        self.scheme = 'Token'
+        self.realm = None
+        
+        self.app = app
+
+        class AuthTokens(app.CommonTable):
+            __tablename__ = 'authtokens'
+
+            id = None
+            username = Column(String)
+            token = Column(String, primary_key=True, unique=True, autoincrement=True)
+            expires = Column(String)
+
+        class AuthTokensSchema(app.CommonSchema):
+            id = None
+            username = fields.Str()
+            token = fields.Str()
+            expires = fields.Str()
+
+            @post_load
+            def make_authtoken(self, data):
+                return AuthTokens(**data)
+
+        self.AuthTokens = AuthTokens
+        self.AuthTokensSchema = AuthTokensSchema
+
+        #self.authentication = ChimasAuthentication(self)
+
+        #return ChimasAuthentication(scheme='Token')
+
     def verify_authentication(self):
         # process http header
         auth = self.process_auth_http_header()
@@ -47,40 +82,11 @@ class ChimasAuthentication:
     def process_token(self, token):
         username, auth_token = token.split(sep=':', maxsplit=1)
 
-        if authentication_api.AuthTokens.query.filter_by(username=username,\
+        if self.AuthTokens.query.filter_by(username=username,\
             token=auth_token).first():
 
             return { 'username':username, 'auth_token':auth_token }
         # else
         return None
-
-class AuthenticationAPI:
-    def __init__(self, app):
-        self.app = app
-
-        class AuthTokens(app.CommonTable):
-            __tablename__ = 'authtokens'
-
-            id = None
-            username = Column(String)
-            token = Column(String, primary_key=True, unique=True, autoincrement=True)
-            expires = Column(String)
-
-        class AuthTokensSchema(app.CommonSchema):
-            id = None
-            username = fields.Str()
-            token = fields.Str()
-            expires = fields.Str()
-
-            @post_load
-            def make_authtoken(self, data):
-                return AuthTokens(**data)
-
-        self.AuthTokens = AuthTokens
-        self.AuthTokensSchema = AuthTokensSchema
-
-        self.chimas_authentication = ChimasAuthentication(self)
-
-        #return ChimasAuthentication(scheme='Token')
 
 #authentication = ChimasAuthentication(scheme='Token')

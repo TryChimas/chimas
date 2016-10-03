@@ -10,7 +10,7 @@ from flask import current_app as app
 #from .boards import Boards, BoardsSchema
 #from .posts import Posts, PostsSchema
 
-from .authorization import auth
+#from .authorization import auth
 
 from .utils import board_id_exists, all_required_fields_dict
 
@@ -37,15 +37,15 @@ class TopicsAPI(CommonAPI):
 
     # list topics
     #@app.route('/boards/<string:board_id>/topics/', methods=['GET'])
-    def list_board_topics(board_id):
+    def list_board_topics(self, board_id):
 
         #board_exists = Boards.query.filter_by( id=board_id ).first()
-        if not board_id_exists(board_id):
+        if not board_id_exists(self.app.boards, board_id):
             abort(404)
 
         board_topics = self.Topics.query.\
                 filter_by( board_id=board_id, reply_to_id='0' ).\
-                order_by(Topics.created.desc()).\
+                order_by(self.Topics.created.desc()).\
                 options(noload('children')).\
                 limit(3).\
                 all()
@@ -56,15 +56,15 @@ class TopicsAPI(CommonAPI):
     # show topic
     #@app.route('/boards/<string:board_id>/topics/<string:topic_id>', methods=['GET'])
     #@authorization.verify_authorization(context="GET:boards.topics")
-    @auth.verify_authorization()
-    def show_topic(board_id, topic_id):
+    #@auth.verify_authorization()
+    def show_topic(self, board_id, topic_id):
 
-        if not board_id_exists(board_id):
+        if not board_id_exists(self.app.boards, board_id):
             abort(404)
 
         topic = self.Topics.query.\
             filter_by( board_id=board_id, id=topic_id, reply_to_id='0' ).\
-            order_by(self.Topics.created).\
+            order_by(self.app.Posts.created).\
             options(joinedload('children')).\
             enable_eagerloads(True).\
             first()
@@ -73,7 +73,7 @@ class TopicsAPI(CommonAPI):
         if not topic:
             abort(404)
 
-        topic_dump_json = self.PostsSchema().dumps(topic).data
+        topic_dump_json = self.app.posts.PostsSchema().dumps(topic).data
         return topic_dump_json
 
     # FIXME: maybe change this endpoint to /topics/<boardname>
@@ -81,9 +81,10 @@ class TopicsAPI(CommonAPI):
     # fit perfectly ?
     # new topic
     #@app.route('/boards/<string:board_id>/topics/', methods=['POST'])
-    def new_topic(board_id):
+    #def new_topic(self, board_id):
+    def new_topic(self, board_id):
 
-        if not board_id_exists(board_id):
+        if not board_id_exists(self.app.boards, board_id):
             abort(404)
 
         required_fields = ['title', 'post_text']
@@ -103,7 +104,7 @@ class TopicsAPI(CommonAPI):
             'topic_id': '0',
             'reply_to_id': '0',
             'board_id': board_id,
-            'author_id': 'admin',
+            'author_id': g.username,
             'hash_id': 'dUmMyHash'
         })
 

@@ -32,10 +32,10 @@ class CommonAPI:
     def register_endpoint(self, rule, function, **options):
         self.app.add_url_rule(rule, endpoint=function.__name__, view_func=function, **options)
 
-from . import config
 from . import errorhandling
+from . import config
+from . import roles, authentication, authorization
 from . import users, boards, topics, posts, threads, login, timetokens
-from . import roles, authentication
 
 class Chimas(Flask):
     def __init__(self, instance=None, import_name=__package__, **kwargs):
@@ -89,8 +89,8 @@ class Chimas(Flask):
 
         self.errorhandling = errorhandling.ErrorHandlingAPI(self)
 
-        self.authentication = authentication.AuthenticationAPI(app=self)
-        self.chimas_authentication = self.authentication.chimas_authentication
+        self.authentication = authentication.AuthenticationAPI(self)
+        self.authorization = authorization.AuthorizationAPI(self)
 
         self.users = users.UsersAPI(self)
         self.boards = boards.BoardsAPI(self)
@@ -106,7 +106,7 @@ class Chimas(Flask):
         @self.before_request
         def check_authentication():
             #print(instance)
-            has_authentication = self.chimas_authentication.verify_authentication()
+            has_authentication = self.authentication.verify_authentication()
 
             if has_authentication:
                 g.is_authenticated = True
