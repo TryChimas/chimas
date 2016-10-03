@@ -1,22 +1,13 @@
 #from . import CommonTable, CommonSchema
 
-from sqlalchemy import (
-        Column,
-        String,
-        Integer,
-        ForeignKey,
-        DateTime,
-        func )
+from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
 
 from functools import wraps
 
-from flask import request, abort, make_response, g
-from flask import current_app as app
+#from flask import request, abort, make_response, g
+from flask import request, abort
+#from flask import current_app as app
 from werkzeug.datastructures import Authorization
-
-#from .users import Users
-#from .boards import Boards
-#from .roles import Roles
 
 import re
 

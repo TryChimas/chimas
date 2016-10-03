@@ -9,20 +9,20 @@ from flask import request, abort, make_response
 #from flask import current_app as app
 from werkzeug.datastructures import Authorization
 
-class ChimasAuthentication:
-    # def __init__(self, scheme='Token', realm=None):
-    def __init__(self, authentication_api):
-        self.scheme = 'Token'
-        self.realm = None
-
-        self.authentication_api = authentication_api
+# class ChimasAuthentication:
+#     # def __init__(self, scheme='Token', realm=None):
+#     def __init__(self, authentication_api):
+#         self.scheme = 'Token'
+#         self.realm = None
+#
+#         self.authentication_api = authentication_api
 
 
 class AuthenticationAPI:
     def __init__(self, app):
         self.scheme = 'Token'
         self.realm = None
-        
+
         self.app = app
 
         class AuthTokens(app.CommonTable):
@@ -45,10 +45,6 @@ class AuthenticationAPI:
 
         self.AuthTokens = AuthTokens
         self.AuthTokensSchema = AuthTokensSchema
-
-        #self.authentication = ChimasAuthentication(self)
-
-        #return ChimasAuthentication(scheme='Token')
 
     def verify_authentication(self):
         # process http header
@@ -88,5 +84,3 @@ class AuthenticationAPI:
             return { 'username':username, 'auth_token':auth_token }
         # else
         return None
-
-#authentication = ChimasAuthentication(scheme='Token')

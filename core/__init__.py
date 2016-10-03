@@ -6,7 +6,7 @@ from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
 from marshmallow import fields, Schema
 
 # https://github.com/pallets/flask/blob/master/flask/wrappers.py
-from werkzeug.wrappers import Request as RequestBase, Response as ResponseBase
+from werkzeug.wrappers import Response as ResponseBase
 
 import datetime # or use time.time to make timestamps
 import sys
@@ -16,8 +16,6 @@ ETC_PATH = ROOT_PATH + "etc/"
 
 class Response(ResponseBase):
     default_mimetype = "application/json"
-
-# http://flask-sqlalchemy.pocoo.org/2.1/contexts/
 
 class CommonAPI:
     def __init__(self, app):
@@ -40,10 +38,6 @@ from . import users, boards, topics, posts, threads, login, timetokens
 class Chimas(Flask):
     def __init__(self, instance=None, import_name=__package__, **kwargs):
         super(Chimas, self).__init__(import_name, **kwargs)
-
-        # from flask_sqlalchemy import SQLAlchemy
-        # from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
-        # from marshmallow import fields, Schema
 
         self.response_class = Response
 

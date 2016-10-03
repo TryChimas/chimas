@@ -1,12 +1,6 @@
 #from . import, CommonTable
 
-from sqlalchemy import (
-        Column,
-        String,
-        Integer,
-        ForeignKey,
-        DateTime,
-        func )
+from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
 
 from marshmallow import fields, Schema
 
