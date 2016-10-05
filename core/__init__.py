@@ -1,11 +1,10 @@
 
-from flask import Flask, request, g, abort
+from flask import Flask
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
+import sqlalchemy as sqla
 from marshmallow import fields, Schema
 
-# https://github.com/pallets/flask/blob/master/flask/wrappers.py
 from werkzeug.wrappers import Response as ResponseBase
 
 import datetime # or use time.time to make timestamps
@@ -57,10 +56,10 @@ class Chimas(Flask):
         class CommonTable(self.db.Model):
             __abstract__ =  True
 
-            id = Column(Integer, primary_key=True, unique=True, autoincrement=True)
-            created = Column(DateTime, default = datetime.datetime.now)
-            updated = Column(DateTime, default = datetime.datetime.now, onupdate = datetime.datetime.now)
-            deleted = Column(String, default = 0)
+            id = sqla.Column(sqla.Integer, primary_key=True, unique=True, autoincrement=True)
+            created = sqla.Column(sqla.DateTime, default = datetime.datetime.now)
+            updated = sqla.Column(sqla.DateTime, default = datetime.datetime.now, onupdate = datetime.datetime.now)
+            deleted = sqla.Column(sqla.String, default = 0)
 
         class CommonSchema(Schema):
             class Meta:

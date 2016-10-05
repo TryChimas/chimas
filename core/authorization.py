@@ -1,17 +1,10 @@
-#from . import CommonTable, CommonSchema
-
-from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
-
 from functools import wraps
 
-#from flask import request, abort, make_response, g
 from flask import request, abort
-#from flask import current_app as app
 from werkzeug.datastructures import Authorization
 
 import re
 
-#class ChimasAuthorization:
 class AuthorizationAPI:
 
     def __init__(self, app):

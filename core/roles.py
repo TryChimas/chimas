@@ -1,6 +1,7 @@
 #from . import, CommonTable
 
-from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
+#from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
+import sqlalchemy as sqla
 
 from marshmallow import fields, Schema
 
@@ -25,9 +26,9 @@ class RolesAPI(CommonAPI):
             __tablename__ = 'roles'
 
             #id = None
-            role = Column(String)
-            arguments = Column(String) # FIXME: arguments is best if a json/dict,eg. {'board_id':'41'}
-            username = Column(String)
+            role = sqla.Column(sqla.String)
+            arguments = sqla.Column(sqla.String) # FIXME: arguments is best if a json/dict,eg. {'board_id':'41'}
+            username = sqla.Column(sqla.String)
 
         self.Roles = Roles
 

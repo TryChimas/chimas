@@ -3,7 +3,8 @@
 #from . import CommonTable, CommonSchema
 from . import validators
 
-from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
+#from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
+import sqlalchemy as sqla
 
 from marshmallow import fields, Schema, post_load
 import time, datetime
@@ -16,10 +17,10 @@ class TimeTokensAPI:
         class TimeTokens(app.CommonTable):
             __tablename__ = 'timetokens'
 
-            tokentype = Column(String)
-            value = Column(String)
-            expires = Column(String) # seconds
-            secret = Column(String)
+            tokentype = sqla.Column(sqla.String)
+            value = sqla.Column(sqla.String)
+            expires = sqla.Column(sqla.String) # seconds
+            secret = sqla.Column(sqla.String)
 
         self.app.TimeTokens = TimeTokens
 

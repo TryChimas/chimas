@@ -1,7 +1,8 @@
 #from . import app, db, CommonTable, CommonSchema
 from . import validators
 
-from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
+#from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
+import sqlalchemy as sqla
 
 from marshmallow import fields, Schema, post_load
 
@@ -10,10 +11,6 @@ from flask import request, abort
 
 from . import CommonAPI
 from .utils import all_required_fields_dict
-
-
-#def register_endpoint(app, rule, function, **options):
-#    app.add_url_rule(rule, endpoint=function.__name__, view_func=function, **options)
 
 
 class UsersAPI(CommonAPI):
@@ -29,8 +26,8 @@ class UsersAPI(CommonAPI):
         class Users(self.app.CommonTable):
             __tablename__ = 'users'
 
-            username = Column(String, unique=True)
-            password = Column(String)
+            username = sqla.Column(sqla.String, unique=True)
+            password = sqla.Column(sqla.String)
 
         class UsersSchema(self.app.CommonSchema):
             #id = None

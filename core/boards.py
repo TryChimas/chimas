@@ -1,8 +1,8 @@
 #from . import CommonTable, CommonSchema
 from . import validators
 
-from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
-
+#from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
+import sqlalchemy as sqla
 from marshmallow import fields, Schema, post_load
 
 from flask import request, abort
@@ -24,8 +24,8 @@ class BoardsAPI(CommonAPI):
             __tablename__ = 'boards'
 
             #id = None
-            title = Column(String, unique=True)
-            description = Column(String)
+            title = sqla.Column(sqla.String, unique=True)
+            description = sqla.Column(sqla.String)
 
         class BoardsSchema(self.app.CommonSchema):
             title = fields.Str(validate=validators.board_title)

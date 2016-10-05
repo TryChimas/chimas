@@ -1,5 +1,5 @@
 #from .boards import Boards
-from flask import current_app
+#from flask import current_app
 
 def all_required_fields_dict(required_fields, user_input_data):
     user_data = {}

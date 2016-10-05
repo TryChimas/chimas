@@ -1,6 +1,7 @@
 #from . import app, db, CommonTable, CommonSchema
 
-from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
+#from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
+import sqlalchemy as sqla
 
 from marshmallow import fields, Schema, post_load
 
@@ -29,9 +30,9 @@ class AuthenticationAPI:
             __tablename__ = 'authtokens'
 
             id = None
-            username = Column(String)
-            token = Column(String, primary_key=True, unique=True, autoincrement=True)
-            expires = Column(String)
+            username = sqla.Column(sqla.String)
+            token = sqla.Column(sqla.String, primary_key=True, unique=True, autoincrement=True)
+            expires = sqla.Column(sqla.String)
 
         class AuthTokensSchema(app.CommonSchema):
             id = None
