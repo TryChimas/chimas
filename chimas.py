@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-import sys
-from os import path
-#sys.path.insert(1, sys.path[0]+'/inc/')
-
 from core import ROOT_PATH, Chimas
+
+import core
+
+Chimas = core.Chimas
 
 from werkzeug.wsgi import DispatcherMiddleware
 
