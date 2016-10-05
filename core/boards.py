@@ -1,19 +1,19 @@
-#from . import CommonTable, CommonSchema
+from flask import request, abort
+
+import sqlalchemy as sqla
+
+from marshmallow import fields, Schema, post_load
 from . import validators
 
-#from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
-import sqlalchemy as sqla
-from marshmallow import fields, Schema, post_load
-
-from flask import request, abort
 from . import CommonAPI
 
 from .utils import all_required_fields_dict
+
 class BoardsAPI(CommonAPI):
     def __init__(self, app):
         super(BoardsAPI, self).__init__(app)
 
-        #self.app = app
+        self.app = app
 
         api_endpoints = [
             ('/boards/new', self.create_board, {'methods':['POST']}) ]

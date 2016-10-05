@@ -1,7 +1,6 @@
 #from core import app, ROOT_PATH, ETC_PATH
 from core import ROOT_PATH, ETC_PATH
 
-import flask
 import click
 import toml
 
@@ -55,6 +54,7 @@ class ChimasConfig:
 
 config_parser = ChimasConfig(config_params)
 
+# maybe 'context' will be renamed to 'option' and passed seamlessly
 @config_parser.parser(context='servername', required_args=['listen','port'])
 def parse_server_name(listen=None, port=None):
     #app_config['SERVER_NAME'] = listen + ":" + str(port)

@@ -1,23 +1,10 @@
-#from . import app, db, CommonTable, CommonSchema
-
-#from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
 import sqlalchemy as sqla
 
 from marshmallow import fields, Schema, post_load
 
-from functools import wraps
-from flask import request, abort, make_response
-#from flask import current_app as app
+from flask import request, abort
+
 from werkzeug.datastructures import Authorization
-
-# class ChimasAuthentication:
-#     # def __init__(self, scheme='Token', realm=None):
-#     def __init__(self, authentication_api):
-#         self.scheme = 'Token'
-#         self.realm = None
-#
-#         self.authentication_api = authentication_api
-
 
 class AuthenticationAPI:
     def __init__(self, app):

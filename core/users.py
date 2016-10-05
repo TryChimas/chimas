@@ -1,17 +1,11 @@
-#from . import app, db, CommonTable, CommonSchema
-from . import validators
-
-#from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
+from flask import request, abort
 import sqlalchemy as sqla
 
 from marshmallow import fields, Schema, post_load
-
-from flask import request, abort
-#from flask import current_app as app
+from . import validators
 
 from . import CommonAPI
 from .utils import all_required_fields_dict
-
 
 class UsersAPI(CommonAPI):
     def __init__(self, app):

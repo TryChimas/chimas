@@ -1,14 +1,7 @@
-#from . import CommonTable
-
 from sqlalchemy.orm import relationship, noload, joinedload
 from marshmallow import fields, Schema
 
 from flask import request, abort
-#from flask import make_response as response
-#from flask import current_app as app
-
-#from .boards import Boards, BoardsSchema
-#from .posts import Posts, PostsSchema
 
 #from .authorization import auth
 

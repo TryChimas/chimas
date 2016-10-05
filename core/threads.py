@@ -1,12 +1,7 @@
-#from . import, CommonTable, CommonSchema
+from flask import request, abort
 
 from sqlalchemy.orm import relationship
 from marshmallow import fields, Schema
-
-from flask import request, abort
-#from flask import current_app as app
-
-#from .posts import Posts, PostsSchema
 
 from . import CommonAPI
 
@@ -14,7 +9,8 @@ class ThreadsAPI(CommonAPI):
     def __init__(self, app):
         super(ThreadsAPI, self).__init__(app)
 
-        #self.app = app
+        self.app = app
+        
         api_endpoints = [
             ('/threads/<string:post_id>', self.get_thread, {'methods':['GET']}),
             ('/threads/<string:post_id>/tree', self.get_thread_tree, {'methods':['GET']}) ]

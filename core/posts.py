@@ -1,13 +1,11 @@
-#from . import CommonTable, CommonSchema
 from . import validators
 
 from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
-from sqlalchemy.orm import relationship
+#from sqlalchemy.orm import relationship
 
 from marshmallow import fields, Schema, post_load
 
 from flask import request, abort, g
-#from flask import current_app as app
 
 #from .authorization import auth
 

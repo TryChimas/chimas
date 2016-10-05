@@ -1,4 +1,3 @@
-from sqlalchemy.orm import relationship, noload, joinedload
 from marshmallow import fields, Schema
 
 from flask import request, abort
@@ -8,8 +7,6 @@ from os import urandom
 from . import CommonAPI
 
 from .utils import all_required_fields_dict
-
-from functools import wraps
 
 class LoginAPI(CommonAPI):
     def __init__(self, app):

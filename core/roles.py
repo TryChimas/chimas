@@ -1,12 +1,8 @@
-#from . import, CommonTable
-
-#from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
 import sqlalchemy as sqla
 
 from marshmallow import fields, Schema
 
 from flask import request
-#from flask import current_app as app
 
 from . import CommonAPI
 
@@ -14,7 +10,8 @@ class RolesAPI(CommonAPI):
     def __init__(self, app):
         super(RolesAPI, self).__init__(app)
 
-        #self.app = app
+        self.app = app
+
         api_endpoints = [
             ('/roles', self.list_roles, {'methods':['GET']}),
             ('/roles/<string:role>/<string:arguments>', self.fetch_role_info, {'methods':['GET']}),

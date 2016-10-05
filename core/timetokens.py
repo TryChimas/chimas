@@ -1,9 +1,5 @@
-#from flask import current_app as app
-
-#from . import CommonTable, CommonSchema
 from . import validators
 
-#from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, func
 import sqlalchemy as sqla
 
 from marshmallow import fields, Schema, post_load
