@@ -3,9 +3,6 @@ from marshmallow import fields, Schema
 
 from flask import request, abort
 
-#from .users import Users, UsersSchema
-#from .authentication import AuthTokens, AuthTokensSchema
-
 from os import urandom
 
 from . import CommonAPI
@@ -13,9 +10,6 @@ from . import CommonAPI
 from .utils import all_required_fields_dict
 
 from functools import wraps
-
-#def register_endpoint(app, rule, function, **options):
-#    app.add_url_rule(rule, endpoint=function.__name__, view_func=function, **options)
 
 class LoginAPI(CommonAPI):
     def __init__(self, app):

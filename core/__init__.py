@@ -74,41 +74,47 @@ class Chimas(Flask):
         self.CommonTable = CommonTable
         self.CommonSchema = CommonSchema
 
-        #self.before_first_request(self.pre_start)
-        self.pre_start()
-
-
-    def pre_start(self):
         self.config.update(config.app_config)
 
-        self.errorhandling = errorhandling.ErrorHandlingAPI(self)
+        # this transforms the 'ErrorHandling' in this list to:
+        # self.errorhandling = errorhandling.ErrorHandlingAPI(self)
+        # and also do this to all the api list items
+        api_list = [
+            'ErrorHandling', 'Authentication', 'Authorization', 'Users',
+            'Boards', 'Posts', 'Topics', 'Threads', 'Login', 'TimeTokens',
+            'Roles' ]
 
-        self.authentication = authentication.AuthenticationAPI(self)
-        self.authorization = authorization.AuthorizationAPI(self)
+        # }:-{> hell-o
+        for api in api_list:
 
-        self.users = users.UsersAPI(self)
-        self.boards = boards.BoardsAPI(self)
-        self.posts = posts.PostsAPI(self)
-        self.topics = topics.TopicsAPI(self)
-        self.threads = threads.ThreadsAPI(self)
-        self.login = login.LoginAPI(self)
-        self.timetokens = timetokens.TimeTokensAPI(self)
-        self.roles = roles.RolesAPI(self)
+            # 1. 'ErrorHandling'.lower() == 'errorhandling'. So method and module.
+            method = module = api.lower()
+            #module_api = eval("{0}.{1}API(self)".format(module,api) )
+
+            # 2. eval('errorhandling.ErrorHandlingAPI(self)')
+            #  module_api = eval(".".join([module,api])+'API(self)' )
+            module_api = eval("".join([module,'.',api,'API(self)'] ))
+
+            # 3. self.errorhandling = errorhandling.ErrorHandlingAPI(self)
+            setattr(self, method, module_api)
+
+        # self.errorhandling = errorhandling.ErrorHandlingAPI(self)
+        #
+        # self.authentication = authentication.AuthenticationAPI(self)
+        # self.authorization = authorization.AuthorizationAPI(self)
+        #
+        # self.users = users.UsersAPI(self)
+        # self.boards = boards.BoardsAPI(self)
+        # self.posts = posts.PostsAPI(self)
+        # self.topics = topics.TopicsAPI(self)
+        # self.threads = threads.ThreadsAPI(self)
+        # self.login = login.LoginAPI(self)
+        # self.timetokens = timetokens.TimeTokensAPI(self)
+        # self.roles = roles.RolesAPI(self)
 
         print(self.url_map)
 
-        @self.before_request
-        def check_authentication():
-            #print(instance)
-            has_authentication = self.authentication.verify_authentication()
-
-            if has_authentication:
-                g.is_authenticated = True
-                g.username = has_authentication['username']
-            else:
-                g.is_authenticated = False
-
-        self.db.create_all()
+        self.before_request(self.check_authentication)
 
         try:
             dummyuser = self.users.Users(username='admin', password='p4ssw0rd')
@@ -116,3 +122,14 @@ class Chimas(Flask):
             self.db.session.commit()
         except:
             pass
+
+        self.db.create_all()
+
+    def check_authentication(self):
+        has_authentication = self.authentication.verify_authentication()
+
+        if has_authentication:
+            g.is_authenticated = True
+            g.username = has_authentication['username']
+        else:
+            g.is_authenticated = False
