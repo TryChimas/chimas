@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from chimas.core import ROOT_PATH, Chimas
+from .core import ROOT_PATH, Chimas
 
 #import core
 
