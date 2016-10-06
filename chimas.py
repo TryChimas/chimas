@@ -41,13 +41,15 @@ def start(directory='.'):
 @chimascli.command()
 #@click.argument('directory')
 def debug():
-    print("sys.path: " + sys.path)
+    print("__file__: " + __file__)
+    print("sys.path: " + ", ".join(sys.path))
     print("sys.path[0]: " + sys.path[0])
     print("ROOT_PATH: " + ROOT_PATH)
 
-# run by script
-if __name__ == "__main__":
+def run_chimas():
     from werkzeug.serving import run_simple
+
+    print("__file__: " + __file__)
 
     print("sys.path: " + ", ".join(sys.path))
     print("sys.path[0]: " + sys.path[0])
@@ -67,3 +69,8 @@ if __name__ == "__main__":
             })
 
     run_simple('127.0.0.1', 41345, bbs_dispatcher)
+
+
+# run by script
+if __name__ == "__main__":
+    run_chimas()
