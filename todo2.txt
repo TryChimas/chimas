@@ -1,9 +1,0 @@
-login (authentication):
-	- POST /users/login (with {'username':'my_username', 'password':'my_password'})
-	- creates an AUTHTOKEN and returns it, as well as it's expiration date
-	- USER then uses it's username and AUTHTOKEN to make requests
-
-authorization:
-	- USER executes/requests METHOD to ENDPOINT
-	- SERVER checks for authorization needed for endpoint
-	- SERVER checks if user is authenticated (unless AUTHORIZATION = [ 'public' ]) and has authorization
