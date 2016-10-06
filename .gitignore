@@ -1,5 +1,5 @@
 # chimas
-dummy.sqlite3-autocreate
+*.sqlite3-autocreate
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

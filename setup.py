@@ -18,7 +18,7 @@ setup(
         'Programming Language :: Python :: 3.5',
     ],
     keywords='chimas bbs forum server',
-    #packages=['chimas',''],
+    scripts=['chimas.py'],
     packages=['.', 'core/'],
     install_requires=required,
     #include_package_data = True,
