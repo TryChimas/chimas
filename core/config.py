@@ -1,5 +1,5 @@
 #from core import app, ROOT_PATH, ETC_PATH
-from core import ROOT_PATH, ETC_PATH
+#from core import ROOT_PATH, ETC_PATH
 
 import click
 #import toml
