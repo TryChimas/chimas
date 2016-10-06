@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-from core import ROOT_PATH, Chimas
+from chimas.core import ROOT_PATH, Chimas
 
-import core
+#import core
 
-Chimas = core.Chimas
+#Chimas = core.Chimas
 
 from werkzeug.wsgi import DispatcherMiddleware
 

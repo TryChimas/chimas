@@ -1,1 +1,1 @@
-import core
+import chimas.core
