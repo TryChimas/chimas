@@ -8,9 +8,50 @@ Chimas = core.Chimas
 
 from werkzeug.wsgi import DispatcherMiddleware
 
+import os,sys
+
+import click
+
+@click.group()
+def chimascli():
+    pass
+
+@chimascli.command()
+@click.argument('directory')
+def init(directory):
+
+    if os.path.exists(directory):
+        print("The name '{}' exists. Please choose a non-existent directory.".format(directory))
+        return 1
+
+    print("Creating directory {}".format(directory))
+    os.makedirs(directory) # FIXME: insert modes
+
+@chimascli.command()
+@click.argument('directory')
+def start(directory='.'):
+
+    if os.path.exists(directory):
+        print("The name '{}' exists. Please choose a non-existent directory.".format(directory))
+        return 1
+
+    print("Creating directory {}".format(directory))
+    os.makedirs(directory) # FIXME: insert modes
+
+@chimascli.command()
+#@click.argument('directory')
+def debug():
+    print("sys.path: " + sys.path)
+    print("sys.path[0]: " + sys.path[0])
+    print("ROOT_PATH: " + ROOT_PATH)
+
 # run by script
 if __name__ == "__main__":
     from werkzeug.serving import run_simple
+
+    print("sys.path: " + ", ".join(sys.path))
+    print("sys.path[0]: " + sys.path[0])
+    print("ROOT_PATH: " + ROOT_PATH)
 
     #if os.path(ROOT_PATH)
     app1 = Chimas(instance='bbs1')

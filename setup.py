@@ -7,7 +7,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='chimas',
-    version='0.0.6dev2',
+    version='0.0.6dev10',
     description='This is Chimas BBS server',
     url='https://github.com/TryChimas/chimas',
     author='Iacchus Mercurius',
@@ -19,9 +19,11 @@ setup(
     ],
     keywords='chimas bbs forum server',
     #packages=['chimas',''],
-    packages=['.', 'core'],
+    packages=['.', 'core/'],
     install_requires=required,
-    package_data={'.': ['requirements.txt']},
+    package_data={
+        '.' : ['requirements.txt','etc/*'],
+    },
     #package_dir={'' : '.', 'chimas.core' : 'core/'},
     #package_dir={'' : '.'},
     #py_modules=['chimas_server'],
@@ -31,5 +33,6 @@ setup(
     entry_points='''
         [console_scripts]
         chimas=chimas:__main__
+        chimas-server=chimas:chimascli
     ''',
 )

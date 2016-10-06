@@ -13,9 +13,6 @@ import sys
 ROOT_PATH = sys.path[0] + "/"
 ETC_PATH = ROOT_PATH + "etc/"
 
-class Response(ResponseBase):
-    default_mimetype = "application/json"
-
 class CommonAPI:
     def __init__(self, app):
         self.app = app
@@ -38,6 +35,8 @@ class Chimas(Flask):
     def __init__(self, instance=None, import_name=__package__, **kwargs):
         super(Chimas, self).__init__(import_name, **kwargs)
 
+        class Response(ResponseBase):
+            default_mimetype = "application/json"
         self.response_class = Response
 
         self.instance = instance

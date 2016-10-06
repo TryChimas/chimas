@@ -84,12 +84,12 @@ class ChimasConfig:
 
             self.parser_function_map[context](**required_args)
 
-config_parser = ChimasConfig(config_params)
-
-# maybe 'context' will be renamed to 'option' and passed seamlessly
-@config_parser.parser(context='servername', required_args=['listen','port'])
-def parse_server_name(listen=None, port=None):
-    #app_config['SERVER_NAME'] = listen + ":" + str(port)
-    pass
-
-config_parser.parse_config()
+# config_parser = ChimasConfig(config_params)
+#
+# # maybe 'context' will be renamed to 'option' and passed seamlessly
+# @config_parser.parser(context='servername', required_args=['listen','port'])
+# def parse_server_name(listen=None, port=None):
+#     #app_config['SERVER_NAME'] = listen + ":" + str(port)
+#     pass
+#
+# config_parser.parse_config()
