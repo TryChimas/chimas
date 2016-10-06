@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
-from chimas.core import ROOT_PATH, Chimas
+try:
+    from chimas.core import ROOT_PATH, Chimas
+except ImportError:
+    from core import ROOT_PATH, Chimas
 
 #import core
 
