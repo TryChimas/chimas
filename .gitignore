@@ -1,5 +1,7 @@
-# chimas
+# chimas etc
 *.sqlite3-autocreate
+.ipynb_checkpoints/
+#*.ipynb why?
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
