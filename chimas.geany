@@ -28,7 +28,10 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=0
+current_page=2
+FILE_NAME_0=0;Conf;0;EUTF-8;1;1;0;%2Fhome%2Fiacchus%2Fgit-stuff%2Fchimas%2Fchimas.conf;0;4
+FILE_NAME_1=170;Python;0;EUTF-8;1;1;0;%2Fhome%2Fiacchus%2Fgit-stuff%2Fchimas%2Fchimasapp.py;0;4
+FILE_NAME_2=147;Python;0;EUTF-8;1;1;0;%2Fhome%2Fiacchus%2Fgit-stuff%2Fchimas%2Fcore%2F__init__.py;0;4
 
 [VTE]
 last_dir=/home/iacchus
@@ -36,7 +39,7 @@ last_dir=/home/iacchus
 [prjorg]
 source_patterns=*.c;*.C;*.cpp;*.cxx;*.c++;*.cc;*.m;
 header_patterns=*.h;*.H;*.hpp;*.hxx;*.h++;*.hh;
-ignored_dirs_patterns=.git;CVS;venv;__pycache__;
+ignored_dirs_patterns=.git;CVS;venv;__pycache__;.ipynb_checkpoints;
 ignored_file_patterns=*.o;*.obj;*.a;*.lib;*.so;*.dll;*.lo;*.la;*.class;*.jar;*.pyc;*.mo;*.gmo;
 generate_tag_prefs=0
 external_dirs=

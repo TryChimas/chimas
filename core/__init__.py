@@ -3,6 +3,7 @@ from flask import Flask
 
 from flask_sqlalchemy import SQLAlchemy
 import sqlalchemy as sqla
+from sqlalchemy.ext.declarative import declarative_base
 from marshmallow import fields, Schema
 
 from werkzeug.wrappers import Response as ResponseBase

@@ -1,6 +1,7 @@
 # chimas etc
 *.sqlite3-autocreate
 .ipynb_checkpoints/
+ignoredir/
 #*.ipynb why?
 
 # Byte-compiled / optimized / DLL files
