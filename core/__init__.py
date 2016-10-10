@@ -4,6 +4,9 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import sqlalchemy as sqla
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, scoped_session
+
+
 from marshmallow import fields, Schema
 
 from werkzeug.wrappers import Response as ResponseBase
@@ -34,34 +37,49 @@ from . import config
 from . import roles, authentication, authorization
 from . import users, boards, topics, posts, threads, login, timetokens
 
+class DB:
+	def __init__(self, db_file):
+		self.engine = sqla.create_engine(db_file, echo=True)
+		self.Base = declarative_base()
+		session_factory = sessionmaker(bind=self.engine)
+		self.session = scoped_session(session_factory())
+
+class Response(ResponseBase):
+	default_mimetype = "application/json"
+
 class Chimas(Flask):
     def __init__(self, instance=None, import_name=__package__, **kwargs):
         super(Chimas, self).__init__(import_name, **kwargs)
 
-        class Response(ResponseBase):
-            default_mimetype = "application/json"
         self.response_class = Response
 
         self.instance = instance
 
-        self.db = SQLAlchemy(self)
+        if instance:
+            db_file = "".join(["sqlite:///", ROOT_PATH, "dummy-", instance, ".sqlite3-autocreate"])
+        else:
+            db_file = "".join(["sqlite:///", ROOT_PATH, "dummy.sqlite3NHA-autocreate"])
+
+		#engine = sqla.create_engine('sqlite:///chimas.sqlite3', echo=True)
+		#engine = sqla.create_engine(db_file, echo=True)
+		#Base = declarative_base()
+		#Session = sessionmaker(bind=engine)
+		#session = sessionmaker(bind=engine)
+        #self.db = SQLAlchemy(self)
+
+        self.db = DB(db_file)
 
         self.config['DEBUG'] = True
 
-        if instance:
-            self.config['SQLALCHEMY_DATABASE_URI'] = "".\
-                join(["sqlite:///", ROOT_PATH, "dummy-", instance, ".sqlite3-autocreate"])
-        else:
-            self.config['SQLALCHEMY_DATABASE_URI'] = "".\
-                join(["sqlite:///", ROOT_PATH, "dummy.sqlite3NHA-autocreate"])
-
-        class CommonTable(self.db.Model):
+        class CommonTable(self.db.Base):
             __abstract__ =  True
 
             id = sqla.Column(sqla.Integer, primary_key=True, unique=True, autoincrement=True)
             created = sqla.Column(sqla.DateTime, default = datetime.datetime.now)
             updated = sqla.Column(sqla.DateTime, default = datetime.datetime.now, onupdate = datetime.datetime.now)
             deleted = sqla.Column(sqla.String, default = 0)
+
+            query = self.db.session.query_property()
 
         class CommonSchema(Schema):
             class Meta:
@@ -124,7 +142,7 @@ class Chimas(Flask):
         except:
             pass
 
-        self.db.create_all()
+        self.db.Base.metadata.create_all(self.db.engine)
 
     def check_authentication(self):
         has_authentication = self.authentication.verify_authentication()
