@@ -38,11 +38,15 @@ from . import roles, authentication, authorization
 from . import users, boards, topics, posts, threads, login, timetokens
 
 class DB:
-	def __init__(self, db_file):
-		self.engine = sqla.create_engine(db_file, echo=True)
-		self.Base = declarative_base()
-		session_factory = sessionmaker(bind=self.engine)
-		self.session = scoped_session(session_factory())
+    def __init__(self, db_file):
+        self.engine = sqla.create_engine(db_file, echo=True)
+        self.Base = declarative_base()
+        session_factory = sessionmaker(bind=self.engine)
+        self.session = scoped_session(session_factory())
+
+    def create_all(self):
+        self.Base.metadata.create_all(self.engine)
+
 
 class Response(ResponseBase):
 	default_mimetype = "application/json"
@@ -142,7 +146,7 @@ class Chimas(Flask):
         except:
             pass
 
-        self.db.Base.metadata.create_all(self.db.engine)
+        self.db.create_all()
 
     def check_authentication(self):
         has_authentication = self.authentication.verify_authentication()
