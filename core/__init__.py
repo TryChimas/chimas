@@ -40,8 +40,8 @@ class DB:
     def __init__(self, db_file):
         self.engine = sqla.create_engine(db_file, echo=True)
         self.Base = declarative_base()
-        session_factory = scoped_session(sessionmaker(bind=self.engine))
-        self.session = session_factory()
+        self.session_factory = scoped_session(sessionmaker(bind=self.engine))
+        self.session = self.session_factory()
 
     def create_all(self):
         self.Base.metadata.create_all(self.engine)
@@ -56,7 +56,7 @@ def commontable_factory(db):
         updated = sqla.Column(sqla.DateTime, default = datetime.datetime.now, onupdate = datetime.datetime.now)
         deleted = sqla.Column(sqla.String, default = 0)
 
-        #query = db.session.query_property()
+        query = db.session_factory.query_property()
     
     return CommonTable
     
@@ -141,7 +141,7 @@ class Chimas(Flask):
         # add dummy user
         session = self.db.session 
         Users = self.users.Users
-        is_there_admin = session.query(Users).filter_by( username='admin' ).first()
+        is_there_admin = Users.query.filter_by( username='admin' ).first()
 
         if not is_there_admin:
             dummyuser = Users(username='admin', password='p4ssw0rd')
