@@ -10,7 +10,7 @@ from .utils import board_id_exists, all_required_fields_dict
 from . import CommonAPI
 
 def topicstable_factory(poststable):
-    class Topics(self.app.posts.Posts):
+    class Topics(poststable):
         __tablename__ = 'posts'
 
         children = relationship("Topics", lazy='joined', join_depth=5)
