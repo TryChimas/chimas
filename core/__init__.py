@@ -1,4 +1,3 @@
-
 from flask import Flask
 
 from flask_sqlalchemy import SQLAlchemy
@@ -41,13 +40,26 @@ class DB:
     def __init__(self, db_file):
         self.engine = sqla.create_engine(db_file, echo=True)
         self.Base = declarative_base()
-        session_factory = sessionmaker(bind=self.engine)
-        self.session = scoped_session(session_factory())
+        session_factory = scoped_session(sessionmaker(bind=self.engine))
+        self.session = session_factory()
 
     def create_all(self):
         self.Base.metadata.create_all(self.engine)
 
 
+def commontable_factory(db):
+    class CommonTable(db.Base):
+        __abstract__ =  True
+    
+        id = sqla.Column(sqla.Integer, primary_key=True, unique=True, autoincrement=True)
+        created = sqla.Column(sqla.DateTime, default = datetime.datetime.now)
+        updated = sqla.Column(sqla.DateTime, default = datetime.datetime.now, onupdate = datetime.datetime.now)
+        deleted = sqla.Column(sqla.String, default = 0)
+
+        #query = db.session.query_property()
+    
+    return CommonTable
+    
 class Response(ResponseBase):
 	default_mimetype = "application/json"
 
@@ -64,27 +76,11 @@ class Chimas(Flask):
         else:
             db_file = "".join(["sqlite:///", ROOT_PATH, "dummy.sqlite3NHA-autocreate"])
 
-		#engine = sqla.create_engine('sqlite:///chimas.sqlite3', echo=True)
-		#engine = sqla.create_engine(db_file, echo=True)
-		#Base = declarative_base()
-		#Session = sessionmaker(bind=engine)
-		#session = sessionmaker(bind=engine)
-        #self.db = SQLAlchemy(self)
-
         self.db = DB(db_file)
 
         self.config['DEBUG'] = True
 
-        class CommonTable(self.db.Base):
-            __abstract__ =  True
-
-            id = sqla.Column(sqla.Integer, primary_key=True, unique=True, autoincrement=True)
-            created = sqla.Column(sqla.DateTime, default = datetime.datetime.now)
-            updated = sqla.Column(sqla.DateTime, default = datetime.datetime.now, onupdate = datetime.datetime.now)
-            deleted = sqla.Column(sqla.String, default = 0)
-
-            query = self.db.session.query_property()
-
+        self.CommonTable = commontable_factory(self.db)
         class CommonSchema(Schema):
             class Meta:
                 strict = True
@@ -94,7 +90,7 @@ class Chimas(Flask):
             updated = fields.DateTime(dump_only=True)
             deleted = fields.String(dump_only=True)
 
-        self.CommonTable = CommonTable
+        
         self.CommonSchema = CommonSchema
 
         self.config.update(config.app_config)
@@ -139,14 +135,18 @@ class Chimas(Flask):
 
         self.before_request(self.check_authentication)
 
-        try:
-            dummyuser = self.users.Users(username='admin', password='p4ssw0rd')
-            self.db.session.add(dummyuser)
-            self.db.session.commit()
-        except:
-            pass
-
         self.db.create_all()
+        self.db.session.commit()
+        
+        # add dummy user
+        session = self.db.session 
+        Users = self.users.Users
+        is_there_admin = session.query(Users).filter_by( username='admin' ).first()
+
+        if not is_there_admin:
+            dummyuser = Users(username='admin', password='p4ssw0rd')
+            session.add(dummyuser)
+            session.commit()
 
     def check_authentication(self):
         has_authentication = self.authentication.verify_authentication()
