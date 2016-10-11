@@ -6,6 +6,17 @@ from flask import request, abort
 
 from werkzeug.datastructures import Authorization
 
+def authtokenstable_factory(commontable):
+    class AuthTokens(commontable):
+        __tablename__ = 'authtokens'
+
+        id = None
+        username = sqla.Column(sqla.String)
+        token = sqla.Column(sqla.String, primary_key=True, unique=True, autoincrement=True)
+        expires = sqla.Column(sqla.String)
+        
+    return AuthTokens
+
 class AuthenticationAPI:
     def __init__(self, app):
         self.scheme = 'Token'
@@ -13,14 +24,8 @@ class AuthenticationAPI:
 
         self.app = app
 
-        class AuthTokens(app.CommonTable):
-            __tablename__ = 'authtokens'
-
-            id = None
-            username = sqla.Column(sqla.String)
-            token = sqla.Column(sqla.String, primary_key=True, unique=True, autoincrement=True)
-            expires = sqla.Column(sqla.String)
-
+        self.AuthTokens = authtokenstable_factory(app.CommonTable)
+        
         class AuthTokensSchema(app.CommonSchema):
             id = None
             username = fields.Str()
@@ -30,8 +35,7 @@ class AuthenticationAPI:
             @post_load
             def make_authtoken(self, data):
                 return AuthTokens(**data)
-
-        self.AuthTokens = AuthTokens
+        
         self.AuthTokensSchema = AuthTokensSchema
 
     def verify_authentication(self):

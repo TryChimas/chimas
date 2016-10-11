@@ -6,6 +6,16 @@ from flask import request
 
 from . import CommonAPI
 
+def rolestable_factory(commontable):
+    class Roles(commontable):
+        __tablename__ = 'roles'
+
+        #id = None
+        role = sqla.Column(sqla.String)
+        arguments = sqla.Column(sqla.String) # FIXME: arguments is best if a json/dict,eg. {'board_id':'41'}
+        username = sqla.Column(sqla.String)
+    return Roles
+    
 class RolesAPI(CommonAPI):
     def __init__(self, app):
         super(RolesAPI, self).__init__(app)
@@ -19,15 +29,7 @@ class RolesAPI(CommonAPI):
 
         self.register_endpoints(api_endpoints)
 
-        class Roles(app.CommonTable):
-            __tablename__ = 'roles'
-
-            #id = None
-            role = sqla.Column(sqla.String)
-            arguments = sqla.Column(sqla.String) # FIXME: arguments is best if a json/dict,eg. {'board_id':'41'}
-            username = sqla.Column(sqla.String)
-
-        self.Roles = Roles
+        self.Roles = rolestable_factory(app.CommonTable)
 
     #@app.route('/roles', methods=['GET'])
     def list_roles(self):

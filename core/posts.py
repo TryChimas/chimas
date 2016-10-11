@@ -13,6 +13,22 @@ from .utils import all_required_fields_dict
 
 from . import CommonAPI
 
+def poststable_factory(commontable):
+    class Posts(commontable):
+        __tablename__ = 'posts'
+
+        topic_id = Column(String)
+        reply_to_id = Column(String, ForeignKey('posts.id'), default='0')
+
+        board_id = Column(String)
+        author_id = Column(String)
+        title = Column(String)
+        post_text = Column(String)
+        hash_id = Column(String)
+        
+        #children = relationship("Posts", lazy='noload')
+    return Posts
+    
 class PostsAPI(CommonAPI):
 
     def __init__(self, app):
@@ -27,20 +43,8 @@ class PostsAPI(CommonAPI):
             ('/posts/<string:post_id>/delete', self.delete_post, {'methods':['POST']}) ]
 
         self.register_endpoints(api_endpoints)
-
-        class Posts(app.CommonTable):
-            __tablename__ = 'posts'
-
-            topic_id = Column(String)
-            reply_to_id = Column(String, ForeignKey('posts.id'), default='0')
-
-            board_id = Column(String)
-            author_id = Column(String)
-            title = Column(String)
-            post_text = Column(String)
-            hash_id = Column(String)
-
-            #children = relationship("Posts", lazy='noload')
+            
+        self.Posts = poststable_factory(app.CommonTable)
 
         class PostsSchema(app.CommonSchema):
             topic_id = fields.Int()
@@ -58,7 +62,6 @@ class PostsAPI(CommonAPI):
             def make_post(self, data):
                 return Posts(**data)
 
-        self.Posts = Posts
         self.PostsSchema = PostsSchema
 
     # get post

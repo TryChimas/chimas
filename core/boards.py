@@ -9,6 +9,16 @@ from . import CommonAPI
 
 from .utils import all_required_fields_dict
 
+def boardstable_factory(commontable):
+    class Boards(commontable):
+        __tablename__ = 'boards'
+
+        #id = None
+        title = sqla.Column(sqla.String, unique=True)
+        description = sqla.Column(sqla.String)
+
+    return Boards
+        
 class BoardsAPI(CommonAPI):
     def __init__(self, app):
         super(BoardsAPI, self).__init__(app)
@@ -20,12 +30,7 @@ class BoardsAPI(CommonAPI):
 
         self.register_endpoints(api_endpoints)
 
-        class Boards(self.app.CommonTable):
-            __tablename__ = 'boards'
-
-            #id = None
-            title = sqla.Column(sqla.String, unique=True)
-            description = sqla.Column(sqla.String)
+        self.Boards = boardstable_factory(self.app.CommonTable)
 
         class BoardsSchema(self.app.CommonSchema):
             title = fields.Str(validate=validators.board_title)
@@ -35,7 +40,7 @@ class BoardsAPI(CommonAPI):
             def make_board(self, data):
                 return Boards(**data)
 
-        self.Boards = Boards
+        #self.Boards = Boards
         self.BoardsSchema = BoardsSchema
 
     #@app.route('/boards/new', methods=['POST'])
