@@ -6,16 +6,16 @@ from flask import request, abort
 
 from werkzeug.datastructures import Authorization
 
-def authtokenstable_factory(commontable):
-    class AuthTokens(commontable):
-        __tablename__ = 'authtokens'
-
-        id = None
-        username = sqla.Column(sqla.String)
-        token = sqla.Column(sqla.String, primary_key=True, unique=True, autoincrement=True)
-        expires = sqla.Column(sqla.String)
-
-    return AuthTokens
+# def authtokenstable_factory(commontable):
+#     class AuthTokens(commontable):
+#         __tablename__ = 'authtokens'
+#
+#         id = None
+#         username = sqla.Column(sqla.String)
+#         token = sqla.Column(sqla.String, primary_key=True, unique=True, autoincrement=True)
+#         expires = sqla.Column(sqla.String)
+#
+#     return AuthTokens
 
 def authtokensschema_factory(commonschema):
     class AuthTokensSchema(commonschema):

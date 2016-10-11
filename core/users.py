@@ -9,14 +9,14 @@ from . import validators
 from . import CommonAPI
 from .utils import all_required_fields_dict
 
-def userstable_factory(commontable):
-        class Users(commontable):
-                __tablename__ = 'users'
-
-                username = sqla.Column(sqla.String, unique=True)
-                password = sqla.Column(sqla.String)
-
-        return Users
+# def userstable_factory(commontable):
+#         class Users(commontable):
+#                 __tablename__ = 'users'
+#
+#                 username = sqla.Column(sqla.String, unique=True)
+#                 password = sqla.Column(sqla.String)
+#
+#         return Users
 
 def usersschema_factory(usersschema):
     class UsersSchema(usersschema):

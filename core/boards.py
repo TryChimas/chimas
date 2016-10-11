@@ -9,15 +9,15 @@ from . import CommonAPI
 
 from .utils import all_required_fields_dict
 
-def boardstable_factory(commontable):
-    class Boards(commontable):
-        __tablename__ = 'boards'
-
-        #id = None
-        title = sqla.Column(sqla.String, unique=True)
-        description = sqla.Column(sqla.String)
-
-    return Boards
+# def boardstable_factory(commontable):
+#     class Boards(commontable):
+#         __tablename__ = 'boards'
+#
+#         #id = None
+#         title = sqla.Column(sqla.String, unique=True)
+#         description = sqla.Column(sqla.String)
+#
+#     return Boards
 
 def boardsschema_factory(commonschema):
     class BoardsSchema(commonschema):

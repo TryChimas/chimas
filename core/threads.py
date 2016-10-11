@@ -5,10 +5,10 @@ from marshmallow import fields, Schema
 
 from . import CommonAPI
 
-def threadstable_factory(poststable):
-    class Threads(poststable):
-        children = relationship("Threads", lazy='joined', join_depth=2)
-    return Threads
+# def threadstable_factory(poststable):
+#     class Threads(poststable):
+#         children = relationship("Threads", lazy='joined', join_depth=2)
+#     return Threads
 
 def threadsschema_factory(postsschema):
     class ThreadsSchema(postsschema):

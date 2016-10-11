@@ -9,12 +9,12 @@ from .utils import board_id_exists, all_required_fields_dict
 
 from . import CommonAPI
 
-def topicstable_factory(poststable):
-    class Topics(poststable):
-        __tablename__ = 'posts'
-
-        children = relationship("Topics", lazy='joined', join_depth=5)
-    return Topics
+# def topicstable_factory(poststable):
+#     class Topics(poststable):
+#         __tablename__ = 'posts'
+#
+#         children = relationship("Topics", lazy='joined', join_depth=5)
+#     return Topics
 
 class TopicsAPI(CommonAPI):
     def __init__(self, app):

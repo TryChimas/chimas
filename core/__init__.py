@@ -37,29 +37,29 @@ from . import config
 from . import roles, authentication, authorization
 from . import users, boards, topics, posts, threads, login, timetokens
 
-class DB:
-    def __init__(self, db_file):
-        self.engine = sqla.create_engine(db_file, echo=True)
-        self.Base = declarative_base()
-        self.session_factory = scoped_session(sessionmaker(bind=self.engine))
-        self.session = self.session_factory()
-
-    def create_all(self):
-        self.Base.metadata.create_all(self.engine)
-
-
-def commontable_factory(db):
-    class CommonTable(db.Base):
-        __abstract__ =  True
-
-        id = sqla.Column(sqla.Integer, primary_key=True, unique=True, autoincrement=True)
-        created = sqla.Column(sqla.DateTime, default = datetime.datetime.now) # FIXME: use timestamp here
-        updated = sqla.Column(sqla.DateTime, default = datetime.datetime.now, onupdate = datetime.datetime.now)
-        deleted = sqla.Column(sqla.String, default = 0)
-
-        query = db.session_factory.query_property()
-
-    return CommonTable
+# class DB:
+#     def __init__(self, db_file):
+#         self.engine = sqla.create_engine(db_file, echo=True)
+#         self.Base = declarative_base()
+#         self.session_factory = scoped_session(sessionmaker(bind=self.engine))
+#         self.session = self.session_factory()
+#
+#     def create_all(self):
+#         self.Base.metadata.create_all(self.engine)
+#
+#
+# def commontable_factory(db):
+#     class CommonTable(db.Base):
+#         __abstract__ =  True
+#
+#         id = sqla.Column(sqla.Integer, primary_key=True, unique=True, autoincrement=True)
+#         created = sqla.Column(sqla.DateTime, default = datetime.datetime.now) # FIXME: use timestamp here
+#         updated = sqla.Column(sqla.DateTime, default = datetime.datetime.now, onupdate = datetime.datetime.now)
+#         deleted = sqla.Column(sqla.String, default = 0)
+#
+#         query = db.session_factory.query_property()
+#
+#     return CommonTable
 
 def commonschema_factory():
     class CommonSchema(mmallow.Schema):

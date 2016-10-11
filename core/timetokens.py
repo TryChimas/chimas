@@ -5,17 +5,17 @@ import sqlalchemy as sqla
 from marshmallow import fields, Schema, post_load
 import time, datetime
 
-def timetokenstable_factory(commontable):
-    class TimeTokens(commontable):
-        __tablename__ = 'timetokens'
+# def timetokenstable_factory(commontable):
+#     class TimeTokens(commontable):
+#         __tablename__ = 'timetokens'
+#
+#         tokentype = sqla.Column(sqla.String)
+#         value = sqla.Column(sqla.String)
+#         expires = sqla.Column(sqla.String) # seconds
+#         secret = sqla.Column(sqla.String)
+#
+#     return TimeTokens
 
-        tokentype = sqla.Column(sqla.String)
-        value = sqla.Column(sqla.String)
-        expires = sqla.Column(sqla.String) # seconds
-        secret = sqla.Column(sqla.String)
-        
-    return TimeTokens
-    
 class TimeTokensAPI:
     def __init__(self, app):
 

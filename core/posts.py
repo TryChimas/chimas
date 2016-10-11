@@ -13,21 +13,21 @@ from .utils import all_required_fields_dict
 
 from . import CommonAPI
 
-def poststable_factory(commontable):
-    class Posts(commontable):
-        __tablename__ = 'posts'
-
-        topic_id = Column(String)
-        reply_to_id = Column(String, ForeignKey('posts.id'), default='0')
-
-        board_id = Column(String)
-        author_id = Column(String)
-        title = Column(String)
-        post_text = Column(String)
-        hash_id = Column(String)
-
-        #children = relationship("Posts", lazy='noload')
-    return Posts
+# def poststable_factory(commontable):
+#     class Posts(commontable):
+#         __tablename__ = 'posts'
+#
+#         topic_id = Column(String)
+#         reply_to_id = Column(String, ForeignKey('posts.id'), default='0')
+#
+#         board_id = Column(String)
+#         author_id = Column(String)
+#         title = Column(String)
+#         post_text = Column(String)
+#         hash_id = Column(String)
+#
+#         #children = relationship("Posts", lazy='noload')
+#     return Posts
 
 def postsschema_factory(commonschema):
     class PostsSchema(commonschema):
