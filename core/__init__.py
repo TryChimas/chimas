@@ -1,10 +1,9 @@
 from flask import Flask
 
-from flask_sqlalchemy import SQLAlchemy
+#from flask_sqlalchemy import SQLAlchemy
 import sqlalchemy as sqla
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
-
 
 #from marshmallow import fields, Schema
 import marshmallow as mmallow
