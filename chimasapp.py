@@ -16,10 +16,10 @@ import os,sys
 import click
 
 @click.group()
-def chimascli():
+def chimasapp():
     pass
 
-@chimascli.command()
+@chimasapp.command()
 @click.argument('directory')
 def init(directory):
 
@@ -30,7 +30,7 @@ def init(directory):
     print("Creating directory {}".format(directory))
     os.makedirs(directory) # FIXME: insert modes
 
-@chimascli.command()
+@chimasapp.command()
 @click.argument('directory')
 def start(directory='.'):
 
@@ -39,9 +39,9 @@ def start(directory='.'):
         return 1
 
     print("Creating directory {}".format(directory))
-    os.makedirs(directory) # FIXME: insert modes
+    #os.makedirs(directory) # FIXME: insert modes
 
-@chimascli.command()
+@chimasapp.command()
 def debug():
     print("__file__: " + __file__)
     print("sys.path: " + ", ".join(sys.path))
@@ -74,5 +74,5 @@ def run_chimas():
 
 
 # run by script
-#if __name__ == "__main__":
-#    run_chimas()
+if __name__ == "__main__":
+    run_chimas()
