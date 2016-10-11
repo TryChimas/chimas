@@ -6,7 +6,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
 
 
-from marshmallow import fields, Schema
+#from marshmallow import fields, Schema
+import marshmallow as mmallow
 
 from werkzeug.wrappers import Response as ResponseBase
 
@@ -50,16 +51,28 @@ class DB:
 def commontable_factory(db):
     class CommonTable(db.Base):
         __abstract__ =  True
-    
+
         id = sqla.Column(sqla.Integer, primary_key=True, unique=True, autoincrement=True)
-        created = sqla.Column(sqla.DateTime, default = datetime.datetime.now)
+        created = sqla.Column(sqla.DateTime, default = datetime.datetime.now) # FIXME: use timestamp here
         updated = sqla.Column(sqla.DateTime, default = datetime.datetime.now, onupdate = datetime.datetime.now)
         deleted = sqla.Column(sqla.String, default = 0)
 
         query = db.session_factory.query_property()
-    
+
     return CommonTable
-    
+
+def commonschema_factory():
+    class CommonSchema(mmallow.Schema):
+        class Meta:
+            strict = True
+
+        id = mmallow.fields.Integer(dump_only=True)
+        created = mmallow.fields.DateTime(dump_only=True) # read-only fields
+        updated = mmallow.fields.DateTime(dump_only=True)
+        deleted = mmallow.fields.String(dump_only=True)
+
+    return CommonSchema
+
 class Response(ResponseBase):
 	default_mimetype = "application/json"
 
@@ -81,17 +94,7 @@ class Chimas(Flask):
         self.config['DEBUG'] = True
 
         self.CommonTable = commontable_factory(self.db)
-        class CommonSchema(Schema):
-            class Meta:
-                strict = True
-
-            id = fields.Integer(dump_only=True)
-            created = fields.DateTime(dump_only=True) # read-only fields
-            updated = fields.DateTime(dump_only=True)
-            deleted = fields.String(dump_only=True)
-
-        
-        self.CommonSchema = CommonSchema
+        self.CommonSchema = commonschema_factory()
 
         self.config.update(config.app_config)
 
@@ -137,9 +140,9 @@ class Chimas(Flask):
 
         self.db.create_all()
         self.db.session.commit()
-        
+
         # add dummy user
-        session = self.db.session 
+        session = self.db.session
         Users = self.users.Users
         is_there_admin = Users.query.filter_by( username='admin' ).first()
 

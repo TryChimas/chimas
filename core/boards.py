@@ -18,7 +18,18 @@ def boardstable_factory(commontable):
         description = sqla.Column(sqla.String)
 
     return Boards
-        
+
+def boardsschema_factory(commonschema):
+    class BoardsSchema(commonschema):
+        title = fields.Str(validate=validators.board_title)
+        description = fields.Str(validate=validators.board_description)
+
+        @post_load
+        def make_board(self, data):
+            return Boards(**data)
+
+    return BoardsSchema
+
 class BoardsAPI(CommonAPI):
     def __init__(self, app):
         super(BoardsAPI, self).__init__(app)
@@ -32,16 +43,17 @@ class BoardsAPI(CommonAPI):
 
         self.Boards = boardstable_factory(self.app.CommonTable)
 
-        class BoardsSchema(self.app.CommonSchema):
-            title = fields.Str(validate=validators.board_title)
-            description = fields.Str(validate=validators.board_description)
-
-            @post_load
-            def make_board(self, data):
-                return Boards(**data)
+        # class BoardsSchema(self.app.CommonSchema):
+        #     title = fields.Str(validate=validators.board_title)
+        #     description = fields.Str(validate=validators.board_description)
+        #
+        #     @post_load
+        #     def make_board(self, data):
+        #         return Boards(**data)
 
         #self.Boards = Boards
-        self.BoardsSchema = BoardsSchema
+        #self.BoardsSchema = BoardsSchema
+        self.BoardsSchema = boardsschema_factory(app.CommonSchema)
 
     #@app.route('/boards/new', methods=['POST'])
     def create_board(self):

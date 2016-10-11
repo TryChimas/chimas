@@ -25,10 +25,29 @@ def poststable_factory(commontable):
         title = Column(String)
         post_text = Column(String)
         hash_id = Column(String)
-        
+
         #children = relationship("Posts", lazy='noload')
     return Posts
-    
+
+def postsschema_factory(commonschema):
+    class PostsSchema(commonschema):
+        topic_id = fields.Int()
+        reply_to_id = fields.Int()
+
+        board_id = fields.Str()
+        author_id = fields.Str()
+        title = fields.Str(validate=validators.post_title)
+        post_text = fields.Str(validate=validators.post_text)
+        hash_id = fields.Str()
+
+        children = fields.Nested('PostsSchema', many=True)
+
+        @post_load
+        def make_post(self, data):
+            return Posts(**data)
+
+    return PostsSchema
+
 class PostsAPI(CommonAPI):
 
     def __init__(self, app):
@@ -43,26 +62,26 @@ class PostsAPI(CommonAPI):
             ('/posts/<string:post_id>/delete', self.delete_post, {'methods':['POST']}) ]
 
         self.register_endpoints(api_endpoints)
-            
+
+
+        # class PostsSchema(app.CommonSchema):
+        #     topic_id = fields.Int()
+        #     reply_to_id = fields.Int()
+        #
+        #     board_id = fields.Str()
+        #     author_id = fields.Str()
+        #     title = fields.Str(validate=validators.post_title)
+        #     post_text = fields.Str(validate=validators.post_text)
+        #     hash_id = fields.Str()
+        #
+        #     children = fields.Nested('PostsSchema', many=True)
+        #
+        #     @post_load
+        #     def make_post(self, data):
+        #         return Posts(**data)
+
         self.Posts = poststable_factory(app.CommonTable)
-
-        class PostsSchema(app.CommonSchema):
-            topic_id = fields.Int()
-            reply_to_id = fields.Int()
-
-            board_id = fields.Str()
-            author_id = fields.Str()
-            title = fields.Str(validate=validators.post_title)
-            post_text = fields.Str(validate=validators.post_text)
-            hash_id = fields.Str()
-
-            children = fields.Nested('PostsSchema', many=True)
-
-            @post_load
-            def make_post(self, data):
-                return Posts(**data)
-
-        self.PostsSchema = PostsSchema
+        self.PostsSchema = postsschema_factory(app.CommonSchema)
 
     # get post
     #@app.route('/posts/<string:post_id>', methods=['GET'])

@@ -9,6 +9,13 @@ from .utils import board_id_exists, all_required_fields_dict
 
 from . import CommonAPI
 
+def topicstable_factory(poststable):
+    class Topics(self.app.posts.Posts):
+        __tablename__ = 'posts'
+
+        children = relationship("Topics", lazy='joined', join_depth=5)
+    return Topics
+
 class TopicsAPI(CommonAPI):
     def __init__(self, app):
         super(TopicsAPI, self).__init__(app)
@@ -21,12 +28,12 @@ class TopicsAPI(CommonAPI):
 
         self.register_endpoints(api_endpoints)
 
-        class Topics(self.app.posts.Posts):
-            __tablename__ = 'posts'
+        # class Topics(self.app.posts.Posts):
+        #     __tablename__ = 'posts'
+        #
+        #     children = relationship("Topics", lazy='joined', join_depth=5)
 
-            children = relationship("Topics", lazy='joined', join_depth=5)
-
-        self.Topics = Topics
+        self.Topics = topicstable_factory(app.posts.Posts)
 
     # list topics
     #@app.route('/boards/<string:board_id>/topics/', methods=['GET'])

@@ -14,8 +14,21 @@ def authtokenstable_factory(commontable):
         username = sqla.Column(sqla.String)
         token = sqla.Column(sqla.String, primary_key=True, unique=True, autoincrement=True)
         expires = sqla.Column(sqla.String)
-        
+
     return AuthTokens
+
+def authtokensschema_factory(commonschema):
+    class AuthTokensSchema(commonschema):
+        id = None
+        username = fields.Str()
+        token = fields.Str()
+        expires = fields.Str()
+
+        @post_load
+        def make_authtoken(self, data):
+            return AuthTokens(**data)
+
+    return AuthTokensSchema
 
 class AuthenticationAPI:
     def __init__(self, app):
@@ -25,18 +38,7 @@ class AuthenticationAPI:
         self.app = app
 
         self.AuthTokens = authtokenstable_factory(app.CommonTable)
-        
-        class AuthTokensSchema(app.CommonSchema):
-            id = None
-            username = fields.Str()
-            token = fields.Str()
-            expires = fields.Str()
-
-            @post_load
-            def make_authtoken(self, data):
-                return AuthTokens(**data)
-        
-        self.AuthTokensSchema = AuthTokensSchema
+        self.AuthTokensSchema = authtokensschema_factory(app.CommonSchema)
 
     def verify_authentication(self):
         # process http header
