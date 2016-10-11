@@ -28,12 +28,14 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=4
+current_page=0
 FILE_NAME_0=1444;Python;0;EUTF-8;0;1;0;%2Fhome%2Fiacchus%2Fgit-stuff%2Fchimas%2Fchimasapp.py;0;4
 FILE_NAME_1=869;Python;0;EUTF-8;0;1;0;%2Fhome%2Fiacchus%2Fgit-stuff%2Fchimas%2Fcore%2F__init__.py;0;4
 FILE_NAME_2=0;Python;0;EUTF-8;0;1;0;%2Fhome%2Fiacchus%2Fgit-stuff%2Fchimas%2Fcore%2Fusers.py;0;4
 FILE_NAME_3=0;Python;0;EUTF-8;0;1;0;%2Fhome%2Fiacchus%2Fgit-stuff%2Fchimas%2Fcore%2Fvalidators.py;0;4
 FILE_NAME_4=558;Python;0;EUTF-8;0;1;0;%2Fhome%2Fiacchus%2Fgit-stuff%2Fchimas%2Fcore%2Fauthentication.py;0;4
+FILE_NAME_5=319;Python;0;EUTF-8;0;1;0;%2Fhome%2Fiacchus%2Fgit-stuff%2Fchimas%2Fcore%2Ftopics.py;0;4
+FILE_NAME_6=0;Python;0;EUTF-8;0;1;0;%2Fhome%2Fiacchus%2Fgit-stuff%2Fchimas%2F__init__.py;0;4
 
 [VTE]
 last_dir=/home/iacchus

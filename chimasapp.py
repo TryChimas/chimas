@@ -42,7 +42,6 @@ def start(directory='.'):
     os.makedirs(directory) # FIXME: insert modes
 
 @chimascli.command()
-#@click.argument('directory')
 def debug():
     print("__file__: " + __file__)
     print("sys.path: " + ", ".join(sys.path))
@@ -75,5 +74,5 @@ def run_chimas():
 
 
 # run by script
-if __name__ == "__main__":
-    run_chimas()
+#if __name__ == "__main__":
+#    run_chimas()
