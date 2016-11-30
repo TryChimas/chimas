@@ -18,3 +18,10 @@ Default port is 41345 (ximas)
 ### License
 
 Licensed Under GPL v.3
+# chimas-pypi
+Python package wrapper for TryChimas/chimas repository
+
+
+### Running the make
+
+I use [`make.sh`](make.sh) script to run it.
