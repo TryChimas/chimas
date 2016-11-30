@@ -23,8 +23,8 @@ setup(
      #   '.' :'chimas'},
     #py_modules=['chimas/chimasapp'],
     #packages=['chimas', 'chimas.core'],
-    packages=['chimas', 'chimas.core'],
-    scripts=['chimas/chimasapp.py'],
+    packages=['chimas',],
+    #scripts=['chimas/chimasapp.py'],
     install_requires=[
         'configobj==5.0.6',
         'Flask==0.11.1',
@@ -43,9 +43,9 @@ setup(
     #install_requires=[
     #    'Click',
     #],
-    entry_points='''
-        [console_scripts]
-        chimascli=chimasapp:run_chimas
-        chimas-server=chimasapp:chimascli
-    ''',
+    #entry_points='''
+    #    [console_scripts]
+    #    chimascli=chimasapp:run_chimas
+    #    chimas-server=chimasapp:chimascli
+    #''',
 )
