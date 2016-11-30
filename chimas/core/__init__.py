@@ -15,8 +15,10 @@ import sys
 
 #print("HEllo i am core.__init__ and __file__ is" + __file__)
 
+# for the current bug check this
 ROOT_PATH = sys.path[0] + "/"
 ETC_PATH = ROOT_PATH + "etc/"
+print(ROOT_PATH)
 
 class CommonAPI:
     def __init__(self, app):

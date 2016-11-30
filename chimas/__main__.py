@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.5
+#!/usr/bin/env python
 
 try:
     from chimas.core import ROOT_PATH, Chimas
@@ -74,5 +74,5 @@ def run_chimas():
 
 
 # run by script
-#if __name__ == "__main__":
-#    run_chimas()
+if __name__ == "__main__":
+    run_chimas()
