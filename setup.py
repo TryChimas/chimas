@@ -27,7 +27,7 @@ setup(
         'configobj==5.0.6',
         'Flask==0.11.1',
         'Flask-SQLAlchemy==2.1',
-        'marshmallow==2.10.0',
+        'marshmallow==2.15.1',
         'SQLAlchemy==1.0.15',
         ],
 
