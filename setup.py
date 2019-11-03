@@ -25,7 +25,7 @@ setup(
     #scripts=['chimas/chimasapp.py'],
     install_requires=[
         'configobj==5.0.6',
-        'Flask==0.11.1',
+        'Flask==1.0',
         'Flask-SQLAlchemy==2.1',
         'marshmallow==2.10.0',
         'SQLAlchemy==1.0.15',
